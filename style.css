@@ -1,12 +1,33 @@
 @font-face {
-    font-family: "Josefin Sans";
-    src: url("./src/Fonts/Josefin_Sans/JosefinSans-VariableFont_wght.ttf");
+    font-family: "Montserrat";
+    src: url("./src/Fonts/Montserrat/Montserrat-Regular.ttf");
 }
-
 @font-face {
-    font-family: "Josefin Sans";
+    font-family: "Montserrat";
     font-style: italic;
-    src: url("./src/Fonts/Josefin_Sans/JosefinSans-Italic-VariableFont_wght.ttf");
+    src: url("./src/Fonts/Montserrat/Montserrat-Italic.ttf");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-weight: bold;
+    src: url("./src/Fonts/Montserrat/Montserrat-Black.ttf");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-weight: bold;
+    font-style: italic;
+    src: url("./src/Fonts/Montserrat/Montserrat-BlackItalic.ttf");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-weight: lighter;
+    src: url("./src/Fonts/Montserrat/Montserrat-Light.ttf");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-weight: lighter;
+    font-style: italic;
+    src: url("./src/Fonts/Montserrat/Montserrat-LightItalic.ttf");
 }
 
 * {
@@ -14,7 +35,7 @@
 }
 
 :root {
-    font-family: "Josefin Sans", "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+    font-family: "Montserrat", "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
     font-size: 20px;
 }
 
