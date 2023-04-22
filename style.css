@@ -1,22 +1,22 @@
 @font-face {
     font-family: "Montserrat";
-    src: url("./src/Fonts/Montserrat/Montserrat-Regular.ttf");
+    src: url("./src/Fonts/Montserrat/Montserrat-Medium.ttf");
 }
 @font-face {
     font-family: "Montserrat";
     font-style: italic;
-    src: url("./src/Fonts/Montserrat/Montserrat-Italic.ttf");
+    src: url("./src/Fonts/Montserrat/Montserrat-MediumItalic.ttf");
 }
 @font-face {
     font-family: "Montserrat";
     font-weight: bold;
-    src: url("./src/Fonts/Montserrat/Montserrat-Black.ttf");
+    src: url("./src/Fonts/Montserrat/Montserrat-Bold.ttf");
 }
 @font-face {
     font-family: "Montserrat";
     font-weight: bold;
     font-style: italic;
-    src: url("./src/Fonts/Montserrat/Montserrat-BlackItalic.ttf");
+    src: url("./src/Fonts/Montserrat/Montserrat-BoldItalic.ttf");
 }
 @font-face {
     font-family: "Montserrat";
