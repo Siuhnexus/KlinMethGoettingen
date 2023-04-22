@@ -1,0 +1,63 @@
+---
+title: "KlinMeth-Vorkurs - Sitzung 1"
+author: "Bente Hinkenhuis"
+format:
+  html:
+    toc: true
+    css: ../style.css
+editor: visual
+---
+
+# KlinMeth-Vorkurs - Installation und Erste Schritte
+
+Zunächst wollen wir R installieren. Dazu holt ihr euch das Installationsprogramm für euer jeweiliges Betriebssystem mit den folgenden Links:
+
+-   Windows: <https://ftp.gwdg.de/pub/misc/cran/bin/windows/base/old/4.3.0/R-4.3.0-win.exe>
+-   macOS (silicon M1/M2): <https://ftp.gwdg.de/pub/misc/cran/bin/macosx/big-sur-arm64/base/R-4.3.0-arm64.pkg>
+-   macOS (Intel): <https://ftp.gwdg.de/pub/misc/cran/bin/macosx/big-sur-x86_64/base/R-4.3.0-x86_64.pkg>
+-   Linux: <https://ftp.gwdg.de/pub/misc/cran/bin/linux/>, Distribution auswählen und Verion 4.3.0 herunterladen
+
+Wenn ihr die Installation erfolgreich abgeschlossen habt, könnt ihr schon Statistik mit R machen. Mit R selbst geht das aber nur über ein Kommandozeilenfenster. Da das nicht so einfach ist, brauchen wir noch eine sogenannte Entwicklungsumgebung. Die heißt bei R RStudio und muss auch noch installiert werden:
+
+-   Windows: <https://download1.rstudio.org/electron/windows/RStudio-2023.03.0-386.exe>
+
+-   macOS (11+): <https://download1.rstudio.org/electron/macos/RStudio-2023.03.0-386.dmg>
+
+-   Linux: Sucht [hier](https://posit.co/download/rstudio-desktop/) nach eurer Distribution
+
+Wenn ihr alles installiert habt, könnt ihr RStudio starten.
+
+## Was ist R?
+
+-   Programmiersprache für statistische Auswertung
+-   R kann **als Programm zur Verarbeitung von Informationen** verstanden werden
+    -   **Input:** **Objekte** (Datensätze) mit unterschiedlichen **Informationen** (UVs, AVs, Items)
+    -   **Processing:** Manipulation dieser Objekte/Informationen, zusammenfassen der Informationen, statistische Berechnungen
+    -   **Output:** Tabellen, Plots, statistische Ergebnisse
+
+### Warum R?
+
+-   R ist kostenfrei
+-   R besitzt einen riesigen und stetig wachsenden Funktionsumfang, der flexibel einsetzbar ist
+-   Berechnungen sind durch Skripte gut nachvollziehbar/nachrechenbar
+
+### Wie lerne ich R?
+
+-   **Cheat Sheets**: https://www.rstudio.com/resources/cheatsheets/
+-   Buch von Andy Field: **Discovering statistics using r**
+    -   Skripte und Datensätze: <http://studysites.uk.sagepub.com/dsur/study/default.htm>
+-   R-Paket **Swirl**: http://swirlstats.com/
+-   Google, https://stats.stackexchange.com
+-   Dieser Vorkurs
+
+## Aufbau von RStudio
+
+-   Unten Links findet sich die **Konsole**, wo die Ausgabe der meisten Befehle landet
+-   Sobald eine Datei geöffnet wurde (Skript, Markdown, Daten etc.), erscheint sie oben links im **Editor**
+-   Oben rechts ist das **Environment**. Dort erscheinen alle Objekte, die momentan geladen sind (mehr dazu später)
+-   Dateien, **Plotfenster**, Paketübersicht und **Hilfefenster** lassen sich über die einzelnen Tabs im Fenster unten rechts aufrufen (auch dazu später mehr)
+-   Aus Versehen ein Fenster geschlossen? **View \> Panes \> Show All Panes** stellt die ursprüngliche Ansicht wieder her
+
+## Quarto-Dokumente
+
+Wir werden im Rahmen dieses Kurses mit Quarto-Dokumenten arbeiten. Deshalb wollen wir uns nun mit diesen Dokumenten vertraut machen. Geht dazu auf **File \> New File \> Quarto Document...** und gebt einen passenden Titel ein. Drückt anschließend auf Ok.
