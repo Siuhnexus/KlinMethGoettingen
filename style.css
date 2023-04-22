@@ -1,0 +1,28 @@
+@font-face {
+    font-family: "Josefin Sans";
+    src: url("./src/Fonts/Josefin_Sans/JosefinSans-VariableFont_wght.ttf");
+}
+
+@font-face {
+    font-family: "Josefin Sans";
+    font-style: italic;
+    src: url("./src/Fonts/Josefin_Sans/JosefinSans-Italic-VariableFont_wght.ttf");
+}
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    font-family: "Josefin Sans", "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+    font-size: 20px;
+}
+
+section {
+    padding: 3em;
+}
+
+.container {
+    width: 85%;
+    max-width: 1200px;
+}
