@@ -1,31 +1,31 @@
 @font-face {
     font-family: "Montserrat";
-    src: url("./src/Fonts/Montserrat/Montserrat-Medium.ttf");
+    src: url("./src/Fonts/Montserrat/Montserrat-Regular.ttf");
 }
 @font-face {
     font-family: "Montserrat";
     font-style: italic;
-    src: url("./src/Fonts/Montserrat/Montserrat-MediumItalic.ttf");
+    src: url("./src/Fonts/Montserrat/Montserrat-Italic.ttf");
 }
 @font-face {
     font-family: "Montserrat";
     font-weight: bold;
-    src: url("./src/Fonts/Montserrat/Montserrat-Bold.ttf");
+    src: url("./src/Fonts/Montserrat/Montserrat-ExtraBold.ttf");
 }
 @font-face {
     font-family: "Montserrat";
     font-weight: bold;
     font-style: italic;
-    src: url("./src/Fonts/Montserrat/Montserrat-BoldItalic.ttf");
+    src: url("./src/Fonts/Montserrat/Montserrat-ExtraBoldItalic.ttf");
 }
 @font-face {
     font-family: "Montserrat";
-    font-weight: lighter;
+    font-weight: 100;
     src: url("./src/Fonts/Montserrat/Montserrat-Light.ttf");
 }
 @font-face {
     font-family: "Montserrat";
-    font-weight: lighter;
+    font-weight: 100;
     font-style: italic;
     src: url("./src/Fonts/Montserrat/Montserrat-LightItalic.ttf");
 }
@@ -37,13 +37,95 @@
 :root {
     font-family: "Montserrat", "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
     font-size: 20px;
+    min-height: 100vh;
+
+    --clr-primary: rgb(255, 173, 80);
+    --clr-secondary: rgb(188, 101, 255);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        background-color: #111;
+        color: white;
+        --clr-primary: rgb(188, 100, 0);
+        --clr-secondary: rgb(154, 23, 255);
+    }
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
 }
 
 section {
-    padding: 3em;
+    padding: 2em;
 }
 
 .container {
     width: 85%;
     max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+    background-color: var(--clr-primary);
+    margin: 0 0.5em;
+    padding: 0.5em 1.25em;
+    border-radius: 0.25em;
+    font-weight: bold;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.2);
+    transition: transform 150ms ease-in-out;
+}
+.btn:hover {
+    transform: scale(1.05);
+}
+.btn:active {
+    transform: scale(0.85);
+}
+.btn.secondary {
+    background-color: var(--clr-secondary);
+}
+p .btn {
+    margin-left: 1em;
+}
+@media (prefers-color-scheme: dark) {
+    .btn {
+        box-shadow: 0px 2px 5px 0px rgba(255, 255, 255, 0.2);
+    }
+}
+
+section.precourse {
+    --bg-1: rgb(253, 131, 222);
+    --bg-2: rgb(213, 130, 255);
+    --bg-3: rgb(201, 177, 255);
+
+    background: var(--bg-1);
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 59%, var(--bg-3) 100%);
+    background: -moz-linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 59%, var(--bg-3) 100%);
+    background: -webkit-linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 59%, var(--bg-3) 100%);
+}
+section.course {
+    --bg-1: rgb(255, 154, 197);
+    --bg-2: rgb(255, 147, 147);
+    --bg-3: rgb(255, 199, 150);
+
+    background: var(--bg-1);
+    background: linear-gradient(45deg, var(--bg-1) 0%, var(--bg-2) 59%, var(--bg-3) 100%);
+    background: -moz-linear-gradient(45deg, var(--bg-1) 0%, var(--bg-2) 59%, var(--bg-3) 100%);
+    background: -webkit-linear-gradient(45deg, var(--bg-1) 0%, var(--bg-2) 59%, var(--bg-3) 100%);
+}
+@media (prefers-color-scheme: dark) {
+    section.precourse {
+        --bg-1: rgb(181, 1, 136);
+        --bg-2: rgb(97, 0, 145);
+        --bg-3: rgb(50, 0, 168);
+    }
+    section.course {
+    --bg-1: rgb(232, 0, 101);
+    --bg-2: rgb(255, 31, 31);
+    --bg-3: rgb(219, 103, 2);
+    }
 }
