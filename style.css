@@ -41,6 +41,10 @@
 
     --clr-primary: rgb(255, 173, 80);
     --clr-secondary: rgb(188, 101, 255);
+
+    --a-clr: rgb(188, 100, 0);
+    --a-hover: rgb(153, 82, 0);
+    --a-visited: rgb(154, 23, 255);
 }
 @media (prefers-color-scheme: dark) {
     :root {
@@ -48,6 +52,10 @@
         color: white;
         --clr-primary: rgb(188, 100, 0);
         --clr-secondary: rgb(154, 23, 255);
+        
+        --a-clr: rgb(255, 173, 80);
+        --a-hover: rgb(255, 195, 128);
+        --a-visited: rgb(188, 101, 255);
     }
 }
 
@@ -67,10 +75,20 @@ section {
 }
 
 a {
-    color: var(--clr-primary); /* ! Wrong color, make text primary */
+    color: var(--a-clr);
+}
+a:hover {
+    color: var(--a-hover);
+}
+a:visited {
+    color: var(--a-visited);
 }
 .sidebar nav[role="doc-toc"] ul > li > a.active, .sidebar nav[role="doc-toc"] ul > li > ul > li > a.active, .sidebar nav[role="doc-toc"] ul > li > ul > li > ul > li > a.active {
-    color: var(--clr-primary) !important;
+    color: var(--a-clr) !important;
+    border-left-color: currentColor;
+}
+.sidebar nav[role="doc-toc"] ul > li > a:hover, .sidebar nav[role="doc-toc"] ul > li > ul > li > a:hover, .sidebar nav[role="doc-toc"] ul > li > ul > li > ul > li > a:hover {
+    color: var(--a-hover) !important;
     border-left-color: currentColor;
 }
 
@@ -89,7 +107,7 @@ div.sourceCode {
     margin-right: auto;
 }
 
-.btn {
+.btn, a.btn {
     display: inline-block;
     text-decoration: none;
     color: inherit;

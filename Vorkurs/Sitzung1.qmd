@@ -4,7 +4,10 @@ author: "Bente Hinkenhuis"
 format:
   html:
     toc: true
+    smooth-scroll: true
     css: ../style.css
+    grid: 
+      body-width: 1200px
 editor: visual
 ---
 
@@ -176,7 +179,7 @@ dat_na = read.csv("motivation_precourse_na.csv")
 dat_weird_na = read.csv("motivation_precourse_weird_na.csv", na="99")
 ```
 
-Testweise könnt ihr mal ausprobieren, was passiert, wenn wir die Daten einlesen. Richtig eingelesene Daten haben 500 observations, 4 Variablen und NAs werden beim Anschauen des Datensatzes mit einem kursiv gedruckten *NA* angezeigt.
+Testweise könnt ihr mal ausprobieren, was passiert, wenn wir die Daten mit der falschen Funktion/falschen Angaben einlesen. Richtig eingelesene Daten haben 500 observations, 4 Variablen und NAs werden beim Anschauen des Datensatzes mit einem kursiv gedruckten *NA* angezeigt.
 
 Das war es auch schon für heute. Wir haben gerade im letzten Teil schon ein paar R-spezifische Programmierschreibweisen implizit benutzt, ohne zu sehr darauf einzugehen, wieso die so sind, wie sie sind. Das wollen wir in der nächsten Sitzung nachholen und dann einen Blick auf verschiedene Variablenformate werfen.
 
