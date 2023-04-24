@@ -21,6 +21,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -56,6 +119,16 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#aufbau-von-rstudio" id="toc-aufbau-von-rstudio" class="nav-link" data-scroll-target="#aufbau-von-rstudio">Aufbau von RStudio</a></li>
   <li><a href="#quarto-dokumente" id="toc-quarto-dokumente" class="nav-link" data-scroll-target="#quarto-dokumente">Quarto-Dokumente</a></li>
+  <li><a href="#pfade-working-directory-und-dateiimport" id="toc-pfade-working-directory-und-dateiimport" class="nav-link" data-scroll-target="#pfade-working-directory-und-dateiimport">Pfade, Working Directory und Dateiimport</a>
+  <ul class="collapse">
+  <li><a href="#working-directory" id="toc-working-directory" class="nav-link" data-scroll-target="#working-directory">Working directory</a></li>
+  <li><a href="#daten-einlesen" id="toc-daten-einlesen" class="nav-link" data-scroll-target="#daten-einlesen">Daten einlesen</a></li>
+  </ul></li>
+  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang">Anhang</a>
+  <ul class="collapse">
+  <li><a href="#datenerschaffung-nur-für-testzweckesimulationen-erlaubt" id="toc-datenerschaffung-nur-für-testzweckesimulationen-erlaubt" class="nav-link" data-scroll-target="#datenerschaffung-nur-für-testzweckesimulationen-erlaubt">Datenerschaffung (nur für Testzwecke/Simulationen erlaubt)</a></li>
+  <li><a href="#datenformate" id="toc-datenformate" class="nav-link" data-scroll-target="#datenformate">Datenformate</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -147,6 +220,124 @@ ul.task-list li input[type="checkbox"] {
 <section id="quarto-dokumente" class="level2">
 <h2 class="anchored" data-anchor-id="quarto-dokumente">Quarto-Dokumente</h2>
 <p>Wir werden im Rahmen dieses Kurses mit Quarto-Dokumenten arbeiten. Deshalb wollen wir uns nun mit diesen Dokumenten vertraut machen. Geht dazu auf <strong>File &gt; New File &gt; Quarto Document…</strong> und gebt einen passenden Titel ein. Drückt anschließend auf Ok.</p>
+<p>Nun solltet ihr ein Fenster sehen, in dem ihr Text schreiben könnt. Das ist aber nicht das einzige:</p>
+<ul>
+<li><p>Text lässt sich formatieren (<strong>fett</strong> und <em>kursiv</em> bspw.)</p></li>
+<li><p>Es lassen sich Überschriften, Bulletpoints und Links einfügen</p></li>
+<li><p>R-Code lässt sich auch eingeben und ausführen</p></li>
+</ul>
+<p>Spezielle Elemente wie Überschriften oder R-Code lassen sich einfügen, indem ihr <strong>/</strong> eingebt. Wenn ihr danach bspw. Heading schreibt, lassen sich verschiedene Überschriften einfügen:</p>
+<ul>
+<li><p><strong>/Heading1</strong> oder <strong>/h1</strong> für die Überschrift des gesamten Dokuments</p></li>
+<li><p><strong>/Heading2</strong> oder <strong>/h2</strong> für eine Abschnittsüberschrift</p></li>
+<li><p><strong>/Heading3</strong> oder <strong>/h3</strong> für einen Unterabschnitt</p></li>
+<li><p><strong>/Heading4</strong> oder <strong>/h4</strong> für eine kleine Überschrift</p></li>
+</ul>
+<p>Gebt jetzt <strong>/R</strong> ein, um einen R Code Chunk einzufügen. Innerhalb von Code Chunks lässt sich R Code schreiben und ausführen. Das probieren wir im nächsten Schritt aus.</p>
+</section>
+<section id="pfade-working-directory-und-dateiimport" class="level2">
+<h2 class="anchored" data-anchor-id="pfade-working-directory-und-dateiimport">Pfade, Working Directory und Dateiimport</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs"</code></pre>
+</div>
+</div>
+<p>Codechunks lassen sich mit einem Klick auf den kleinen grünen Pfeil oben rechts ausführen.</p>
+<p>Dieser Befehl gibt das aktuelle Working Directory zurück. Was das ist, klären wir später. Wichtig ist, dass wir durch diesen Befehl den <strong>Pfad zu einem Ordner</strong> sehen. Wenn ihr in eurem Explorer oder Finder durch euer Ordnersystem navigiert und auf Ordner doppelklickt, macht ihr nichts anderes, als zu dem aktuellen <strong>Pfad</strong> einen Teil hinzuzufügen, um in den angeklickten Ordner zu gelangen.</p>
+<p>Um das noch besser nachzuvollziehen, macht einen Rechtsklick auf die Leiste, in der die Ordnerstruktur angezeigt wird (Windows) und wählt “Adresse als Text kopieren” aus. Wenn ihr den Pfad in euer Dokument einfügt, solltet ihr folgendes oder ähnliches sehen:</p>
+<ul>
+<li><p>C:\Users\bente\Documents\Studium\BachelorPsychologie\Projekte\KlinMethGoettingen\Vorkurs wenn ihr Windows nutzt</p></li>
+<li><p>C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs bei macOS oder Linux</p></li>
+</ul>
+<p>Wie ihr seht, werden <strong>Pfade</strong> außer der Eigenheit des Trennzeichens zwischen den Ordnern in allen Betriebssystemen ähnlich ausgedrückt. In R haben wir den praktischen Vorteil, dass die Unix-Schreibweise von Pfaden (mit dem <strong>/</strong> zwischen den Ordnern) in allen Betriebssystemen funktioniert. Das ist auch der Grund, warum der Befehl oben einen Unix-Pfad liefert.</p>
+<p>Alle Pfade die mit einem Buchstaben und einem Doppelpunkt starten sind <strong>absolute Pfade</strong>. Von der Festplatte bis zum 5. Unterordner sind alle Teile vorhanden, um aus dem Nichts zum gewünschten Ordner zu kommen. Manchmal sind sie praktisch, aber oft werden diese Pfade sehr lang und unübersichtlich, sodass man sich schnell eine andere Möglichkeit wünscht.</p>
+<p>Diese andere Möglichkeit gibt es auch. Es gibt nämlich auch <strong>relative Pfade</strong>. Diese zeigen basierend auf dem <strong>aktuellen</strong> Ordner an, wie zum gewünschten Ordner navigiert wird. Der aktuelle Ordner heißt in R <strong>Working directory</strong>.</p>
+<section id="working-directory" class="level3">
+<h3 class="anchored" data-anchor-id="working-directory">Working directory</h3>
+<p>Der Befehl von oben gibt aus, was das aktuelle Working directory ist. Im Fall dieses Dokuments ist es der Ordner auf meiner Festplatte, in dem diese Datei liegt. Meist sind Daten auch in diesem Ordner und können mit relativen Pfaden einfach angesteuert werden.</p>
+<p>Um das zu demonstrieren, laden wir nun unsere erste Datei ein.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"motivation_precourse.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Ihr solltet nach dem Ausführen oben rechts im <strong>Environment</strong> sehen, dass ein neuer Eintrag mit dem Namen “dat” und dem Text “500 obs. of 5 variables” erschienen ist (dafür müsst ihr die Daten haben und das Working directory passend gesetzt haben).</p>
+<p>Sollte es einen Fehler geben, drückt <strong>STRG + SHIFT + H</strong> oder <strong>CMD + SHIFT + H</strong> bei Macs, navigiert zu dem Ordner, indem die Daten liegen, und drückt auf “Öffnen”. Probiert es dann nochmal.</p>
+<p>Wir haben hier unseren ersten relativen Pfad geschrieben, in unserem Fall einfach den Dateinamen. Relative Pfade haben keinen Schrägstrich Am Anfang und auch keinen Buchstaben mit Doppelpunkt. So ist klar, dass der Pfad vom aktuellen Ordner ausgeht. Nun möchte ich euch ein paar Kombinationen von verschiedenen Working directorys und den zu unserer Datei führenden relativen Pfaden zeigen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen"</span>) <span class="co"># Der Überordner von dem Ordner mit der Datei</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"Vorkurs/motivation_precourse.csv"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Sitzungen"</span>) <span class="co"># Der Geschwisterordner von dem Ordner mit der Datei</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>dat3 <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"../Vorkurs/motivation_precourse.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Wenn man <strong>../</strong> schreibt, bedeutet das “Wechsle in den Überordner des aktuellen Ordners”. Wir gelangen hier also aus dem Sitzungen-Ordner in den KlinMethGoettingen-Ordner.</p>
+<p>Mit absoluten und relativen Pfaden kommt man im R-Alltag gut zurecht. Es gibt aber in R noch einen Sonderordner, den sogenannten <strong>Home</strong>-Ordner. Dieser ist in den allermeisten Fällen (bei Windows) der Pfad zum Dokumente-Ordner und wird am Anfang des Pfades mit einer Tilde (<strong>~/</strong>) dargestellt. Wir wollen diese Schreibweise eigentlich nicht nutzen, aber R gibt sie manchmal automatisch aus, wenn wir das Working directory von R setzen lassen.</p>
+<p>Wenn ich wollte, könnte ich also auch so meine Datei ansteuern:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat4 <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"~/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs/motivation_precourse.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Wir werden in den Sitzungen oft mit dem Working directory und relativen Pfaden arbeiten und versuchen, absolute Pfade und den Home-Ordner zu vermeiden.</p>
+</section>
+<section id="daten-einlesen" class="level3">
+<h3 class="anchored" data-anchor-id="daten-einlesen">Daten einlesen</h3>
+<p>Am Anfang jeder Analyse müssen die gesammelten Daten eingeladen werden. Gerade eben hat das mit der Funktion read.csv reibungslos funktioniert und so wird es auch während der Sitzungen sein, dennoch gibt es verschiedene Formate in verschiedenen Regionen oder bei verschiedenen Umfragetools/Arbeitsgruppen/Universitäten etc.</p>
+<p>Deshalb wollen wir uns nun 5 verschiedene Formate anschauen, in denen diese Daten gespeichert sein können.</p>
+<p><strong>Deutsche Formatierung</strong>: Standardmäßig wird in R das Komma als Trennzeichen zwischen Werten (<strong>sep</strong>) und der Punkt als Dezimaltrennzeichen (<strong>dec</strong>) verwendet (englischsprachiger Standard). Im Deutschen dient das Komma aber als Dezimaltrennzeichen, sodass als Standard das Semikolon als Wertetrenner verwendet wird. So formatierte Dateien können mit read.csv2 eingelesen werden.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat_deutsch <span class="ot">=</span> <span class="fu">read.csv2</span>(<span class="st">"motivation_precourse_deutsch.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Whitespace-Trennung</strong>: Manchmal werden Dateien weder mit “.”, noch mit “;”, sondern mit einem Leerzeichen oder einem Tabulator getrennt (keine Sorge wenn ihr nicht wisst, was ein Tabulator sein soll, ist nicht weiter wichtig). Unter diesen Umständen können wir zu data.table wechseln. Diese Funktion macht keine Vorannahmen über die Formatierung, deshalb müssen wir ihr auch das Dezimaltrennzeichen mitteilen und einstellen, ob die Datei Spaltennamen enthält oder nicht.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat_ws <span class="ot">=</span> <span class="fu">read.table</span>(<span class="st">"motivation_precourse_ws.csv"</span>, <span class="at">sep=</span><span class="st">" "</span>, <span class="at">dec=</span><span class="st">"."</span>, <span class="at">header=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Datei ohne Spaltennamen</strong>: Eigentlich sollten in jeder Datei Spaltennamen vorhanden sein, aber leider ist das nicht immer so. In diesem Fall setzen wir “header” auf FALSE oder F.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dat_nohead <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"motivation_precourse_nohead.csv"</span>, <span class="at">header=</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Fehlende Werte</strong>: Standardmäßig nimmt read.csv an, dass fehlende Werte als “NA” gekennzeichnet sind. Schauen wir uns dazu folgende Daten nach dem Einlesen genauer an.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dat_na <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"motivation_precourse_na.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Andere Formate für NAs</strong>: Für die Kodierung von NAs gibt es aber viele verschiedene Konventionen. Möglich sind einfach leere Einträge, die Zahl -1, MISSING, oder auch die Zahl 99. Letzteres ist in der nächsten Datei passiert. Glücklicherweise lässt sich über “na” einstellen, welche Formatierung vorliegt.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dat_weird_na <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"motivation_precourse_weird_na.csv"</span>, <span class="at">na=</span><span class="st">"99"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Testweise könnt ihr mal ausprobieren, was passiert, wenn wir die Daten einlesen. Richtig eingelesene Daten haben 500 observations, 4 Variablen und NAs werden beim Anschauen des Datensatzes mit einem kursiv gedruckten <em>NA</em> angezeigt.</p>
+<p>Das war es auch schon für heute. Wir haben gerade im letzten Teil schon ein paar R-spezifische Programmierschreibweisen implizit benutzt, ohne zu sehr darauf einzugehen, wieso die so sind, wie sie sind. Das wollen wir in der nächsten Sitzung nachholen und dann einen Blick auf verschiedene Variablenformate werfen.</p>
+</section>
+</section>
+<section id="anhang" class="level2">
+<h2 class="anchored" data-anchor-id="anhang">Anhang</h2>
+<p>Im Anhang findet ihr zu jeder Sitzung Codechunks, die ich für die Erstellung der Sitzung benutzt habe. Vielleicht sind die ja für den einen oder die andere spannend.</p>
+<section id="datenerschaffung-nur-für-testzweckesimulationen-erlaubt" class="level3">
+<h3 class="anchored" data-anchor-id="datenerschaffung-nur-für-testzweckesimulationen-erlaubt">Datenerschaffung (nur für Testzwecke/Simulationen erlaubt)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">500</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>affected <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">250</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">250</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>precourse <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">125</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">125</span>), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">125</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">125</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(precourse)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>precourse <span class="ot">=</span> <span class="fu">factor</span>(dat<span class="sc">$</span>precourse, <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Ohne"</span>, <span class="st">"Mit"</span>))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>mot_pre <span class="ot">=</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">3</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n), <span class="dv">0</span>), <span class="dv">10</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>mot_post <span class="ot">=</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">3</span> <span class="sc">+</span> precourse <span class="sc">*</span> affected <span class="sc">*</span> <span class="dv">4</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n), <span class="dv">0</span>), <span class="dv">10</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> dat[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n),]</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>subjectNr <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span>n</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat, <span class="st">"motivation_precourse.csv"</span>, <span class="at">row.names=</span>F)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(affected, precourse, n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="datenformate" class="level3">
+<h3 class="anchored" data-anchor-id="datenformate">Datenformate</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(dat, <span class="st">"motivation_precourse_deutsch.csv"</span>, <span class="at">sep=</span><span class="st">";"</span>, <span class="at">dec=</span><span class="st">","</span>, <span class="at">row.names=</span>F)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(dat, <span class="st">"motivation_precourse_ws.csv"</span>, <span class="at">sep=</span><span class="st">" "</span>, <span class="at">row.names=</span>F)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(dat, <span class="st">"motivation_precourse_nohead.csv"</span>, <span class="at">sep=</span><span class="st">","</span>, <span class="at">dec=</span><span class="st">"."</span>, <span class="at">col.names=</span>F, <span class="at">row.names=</span>F)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>dat_na <span class="ot">=</span> dat</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>dat_na<span class="sc">$</span>mot_post[<span class="fu">sample</span>(dat_na<span class="sc">$</span>subjectNr, <span class="dv">50</span>)] <span class="ot">=</span> <span class="cn">NA</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(dat_na, <span class="st">"motivation_precourse_na.csv"</span>, <span class="at">sep=</span><span class="st">","</span>, <span class="at">dec=</span><span class="st">"."</span>, <span class="at">row.names=</span>F)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(dat_na, <span class="st">"motivation_precourse_weird_na.csv"</span>, <span class="at">sep=</span><span class="st">","</span>, <span class="at">dec=</span><span class="st">"."</span>, <span class="at">na=</span><span class="st">"99"</span>, <span class="at">row.names=</span>F)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(dat_na)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 </section>
 </section>
 

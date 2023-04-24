@@ -56,8 +56,30 @@ html, body {
     padding: 0;
 }
 
+body {
+    font-family: inherit;
+    background-color: inherit;
+    color: inherit;
+}
+
 section {
     padding: 2em;
+}
+
+a {
+    color: var(--clr-primary); /* ! Wrong color, make text primary */
+}
+.sidebar nav[role="doc-toc"] ul > li > a.active, .sidebar nav[role="doc-toc"] ul > li > ul > li > a.active, .sidebar nav[role="doc-toc"] ul > li > ul > li > ul > li > a.active {
+    color: var(--clr-primary) !important;
+    border-left-color: currentColor;
+}
+
+pre {
+    color: inherit;
+}
+
+div.sourceCode {
+    background-color: rgb(233, 236, 239);
 }
 
 .container {

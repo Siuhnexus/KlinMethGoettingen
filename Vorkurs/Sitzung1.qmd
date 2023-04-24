@@ -61,3 +61,154 @@ Wenn ihr alles installiert habt, könnt ihr RStudio starten.
 ## Quarto-Dokumente
 
 Wir werden im Rahmen dieses Kurses mit Quarto-Dokumenten arbeiten. Deshalb wollen wir uns nun mit diesen Dokumenten vertraut machen. Geht dazu auf **File \> New File \> Quarto Document...** und gebt einen passenden Titel ein. Drückt anschließend auf Ok.
+
+Nun solltet ihr ein Fenster sehen, in dem ihr Text schreiben könnt. Das ist aber nicht das einzige:
+
+-   Text lässt sich formatieren (**fett** und *kursiv* bspw.)
+
+-   Es lassen sich Überschriften, Bulletpoints und Links einfügen
+
+-   R-Code lässt sich auch eingeben und ausführen
+
+Spezielle Elemente wie Überschriften oder R-Code lassen sich einfügen, indem ihr **/** eingebt. Wenn ihr danach bspw. Heading schreibt, lassen sich verschiedene Überschriften einfügen:
+
+-   **/Heading1** oder **/h1** für die Überschrift des gesamten Dokuments
+
+-   **/Heading2** oder **/h2** für eine Abschnittsüberschrift
+
+-   **/Heading3** oder **/h3** für einen Unterabschnitt
+
+-   **/Heading4** oder **/h4** für eine kleine Überschrift
+
+Gebt jetzt **/R** ein, um einen R Code Chunk einzufügen. Innerhalb von Code Chunks lässt sich R Code schreiben und ausführen. Das probieren wir im nächsten Schritt aus.
+
+## Pfade, Working Directory und Dateiimport
+
+```{r}
+getwd()
+```
+
+Codechunks lassen sich mit einem Klick auf den kleinen grünen Pfeil oben rechts ausführen.
+
+Dieser Befehl gibt das aktuelle Working Directory zurück. Was das ist, klären wir später. Wichtig ist, dass wir durch diesen Befehl den **Pfad zu einem Ordner** sehen. Wenn ihr in eurem Explorer oder Finder durch euer Ordnersystem navigiert und auf Ordner doppelklickt, macht ihr nichts anderes, als zu dem aktuellen **Pfad** einen Teil hinzuzufügen, um in den angeklickten Ordner zu gelangen.
+
+Um das noch besser nachzuvollziehen, macht einen Rechtsklick auf die Leiste, in der die Ordnerstruktur angezeigt wird (Windows) und wählt "Adresse als Text kopieren" aus. Wenn ihr den Pfad in euer Dokument einfügt, solltet ihr folgendes oder ähnliches sehen:
+
+-   C:\\Users\\bente\\Documents\\Studium\\BachelorPsychologie\\Projekte\\KlinMethGoettingen\\Vorkurs wenn ihr Windows nutzt
+
+-   C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs bei macOS oder Linux
+
+Wie ihr seht, werden **Pfade** außer der Eigenheit des Trennzeichens zwischen den Ordnern in allen Betriebssystemen ähnlich ausgedrückt. In R haben wir den praktischen Vorteil, dass die Unix-Schreibweise von Pfaden (mit dem **/** zwischen den Ordnern) in allen Betriebssystemen funktioniert. Das ist auch der Grund, warum der Befehl oben einen Unix-Pfad liefert.
+
+Alle Pfade die mit einem Buchstaben und einem Doppelpunkt starten sind **absolute Pfade**. Von der Festplatte bis zum 5. Unterordner sind alle Teile vorhanden, um aus dem Nichts zum gewünschten Ordner zu kommen. Manchmal sind sie praktisch, aber oft werden diese Pfade sehr lang und unübersichtlich, sodass man sich schnell eine andere Möglichkeit wünscht.
+
+Diese andere Möglichkeit gibt es auch. Es gibt nämlich auch **relative Pfade**. Diese zeigen basierend auf dem **aktuellen** Ordner an, wie zum gewünschten Ordner navigiert wird. Der aktuelle Ordner heißt in R **Working directory**.
+
+### Working directory
+
+Der Befehl von oben gibt aus, was das aktuelle Working directory ist. Im Fall dieses Dokuments ist es der Ordner auf meiner Festplatte, in dem diese Datei liegt. Meist sind Daten auch in diesem Ordner und können mit relativen Pfaden einfach angesteuert werden.
+
+Um das zu demonstrieren, laden wir nun unsere erste Datei ein.
+
+```{r}
+dat = read.csv("motivation_precourse.csv")
+```
+
+Ihr solltet nach dem Ausführen oben rechts im **Environment** sehen, dass ein neuer Eintrag mit dem Namen "dat" und dem Text "500 obs. of 5 variables" erschienen ist (dafür müsst ihr die Daten haben und das Working directory passend gesetzt haben).
+
+Sollte es einen Fehler geben, drückt **STRG + SHIFT + H** oder **CMD + SHIFT + H** bei Macs, navigiert zu dem Ordner, indem die Daten liegen, und drückt auf "Öffnen". Probiert es dann nochmal.
+
+Wir haben hier unseren ersten relativen Pfad geschrieben, in unserem Fall einfach den Dateinamen. Relative Pfade haben keinen Schrägstrich Am Anfang und auch keinen Buchstaben mit Doppelpunkt. So ist klar, dass der Pfad vom aktuellen Ordner ausgeht. Nun möchte ich euch ein paar Kombinationen von verschiedenen Working directorys und den zu unserer Datei führenden relativen Pfaden zeigen.
+
+```{r}
+setwd("C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen") # Der Überordner von dem Ordner mit der Datei
+dat2 = read.csv("Vorkurs/motivation_precourse.csv")
+
+setwd("C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Sitzungen") # Der Geschwisterordner von dem Ordner mit der Datei
+dat3 = read.csv("../Vorkurs/motivation_precourse.csv")
+```
+
+Wenn man **../** schreibt, bedeutet das "Wechsle in den Überordner des aktuellen Ordners". Wir gelangen hier also aus dem Sitzungen-Ordner in den KlinMethGoettingen-Ordner.
+
+Mit absoluten und relativen Pfaden kommt man im R-Alltag gut zurecht. Es gibt aber in R noch einen Sonderordner, den sogenannten **Home**-Ordner. Dieser ist in den allermeisten Fällen (bei Windows) der Pfad zum Dokumente-Ordner und wird am Anfang des Pfades mit einer Tilde (**\~/**) dargestellt. Wir wollen diese Schreibweise eigentlich nicht nutzen, aber R gibt sie manchmal automatisch aus, wenn wir das Working directory von R setzen lassen.
+
+Wenn ich wollte, könnte ich also auch so meine Datei ansteuern:
+
+```{r}
+dat4 = read.csv("~/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs/motivation_precourse.csv")
+```
+
+Wir werden in den Sitzungen oft mit dem Working directory und relativen Pfaden arbeiten und versuchen, absolute Pfade und den Home-Ordner zu vermeiden.
+
+### Daten einlesen
+
+Am Anfang jeder Analyse müssen die gesammelten Daten eingeladen werden. Gerade eben hat das mit der Funktion read.csv reibungslos funktioniert und so wird es auch während der Sitzungen sein, dennoch gibt es verschiedene Formate in verschiedenen Regionen oder bei verschiedenen Umfragetools/Arbeitsgruppen/Universitäten etc.
+
+Deshalb wollen wir uns nun 5 verschiedene Formate anschauen, in denen diese Daten gespeichert sein können.
+
+**Deutsche Formatierung**: Standardmäßig wird in R das Komma als Trennzeichen zwischen Werten (**sep**) und der Punkt als Dezimaltrennzeichen (**dec**) verwendet (englischsprachiger Standard). Im Deutschen dient das Komma aber als Dezimaltrennzeichen, sodass als Standard das Semikolon als Wertetrenner verwendet wird. So formatierte Dateien können mit read.csv2 eingelesen werden.
+
+```{r}
+dat_deutsch = read.csv2("motivation_precourse_deutsch.csv")
+```
+
+**Whitespace-Trennung**: Manchmal werden Dateien weder mit ".", noch mit ";", sondern mit einem Leerzeichen oder einem Tabulator getrennt (keine Sorge wenn ihr nicht wisst, was ein Tabulator sein soll, ist nicht weiter wichtig). Unter diesen Umständen können wir zu data.table wechseln. Diese Funktion macht keine Vorannahmen über die Formatierung, deshalb müssen wir ihr auch das Dezimaltrennzeichen mitteilen und einstellen, ob die Datei Spaltennamen enthält oder nicht.
+
+```{r}
+dat_ws = read.table("motivation_precourse_ws.csv", sep=" ", dec=".", header=T)
+```
+
+**Datei ohne Spaltennamen**: Eigentlich sollten in jeder Datei Spaltennamen vorhanden sein, aber leider ist das nicht immer so. In diesem Fall setzen wir "header" auf FALSE oder F.
+
+```{r}
+dat_nohead = read.csv("motivation_precourse_nohead.csv", header=F)
+```
+
+**Fehlende Werte**: Standardmäßig nimmt read.csv an, dass fehlende Werte als "NA" gekennzeichnet sind. Schauen wir uns dazu folgende Daten nach dem Einlesen genauer an.
+
+```{r}
+dat_na = read.csv("motivation_precourse_na.csv")
+```
+
+**Andere Formate für NAs**: Für die Kodierung von NAs gibt es aber viele verschiedene Konventionen. Möglich sind einfach leere Einträge, die Zahl -1, MISSING, oder auch die Zahl 99. Letzteres ist in der nächsten Datei passiert. Glücklicherweise lässt sich über "na" einstellen, welche Formatierung vorliegt.
+
+```{r}
+dat_weird_na = read.csv("motivation_precourse_weird_na.csv", na="99")
+```
+
+Testweise könnt ihr mal ausprobieren, was passiert, wenn wir die Daten einlesen. Richtig eingelesene Daten haben 500 observations, 4 Variablen und NAs werden beim Anschauen des Datensatzes mit einem kursiv gedruckten *NA* angezeigt.
+
+Das war es auch schon für heute. Wir haben gerade im letzten Teil schon ein paar R-spezifische Programmierschreibweisen implizit benutzt, ohne zu sehr darauf einzugehen, wieso die so sind, wie sie sind. Das wollen wir in der nächsten Sitzung nachholen und dann einen Blick auf verschiedene Variablenformate werfen.
+
+## Anhang
+
+Im Anhang findet ihr zu jeder Sitzung Codechunks, die ich für die Erstellung der Sitzung benutzt habe. Vielleicht sind die ja für den einen oder die andere spannend.
+
+### Datenerschaffung (nur für Testzwecke/Simulationen erlaubt)
+
+```{r}
+n = 500
+affected = c(rep(0, 250), rep(1, 250))
+precourse = c(rep(0, 125), rep(1, 125), rep(0, 125), rep(1, 125))
+dat = data.frame(precourse)
+dat$precourse = factor(dat$precourse, labels=c("Ohne", "Mit"))
+dat$mot_pre = pmin(pmax(3 + rnorm(n), 0), 10)
+dat$mot_post = pmin(pmax(3 + precourse * affected * 4 + rnorm(n), 0), 10)
+dat = dat[sample(1:n),]
+dat$subjectNr = 1:n
+write.csv(dat, "motivation_precourse.csv", row.names=F)
+rm(affected, precourse, n)
+```
+
+### Datenformate
+
+```{r}
+write.table(dat, "motivation_precourse_deutsch.csv", sep=";", dec=",", row.names=F)
+write.table(dat, "motivation_precourse_ws.csv", sep=" ", row.names=F)
+write.table(dat, "motivation_precourse_nohead.csv", sep=",", dec=".", col.names=F, row.names=F)
+dat_na = dat
+dat_na$mot_post[sample(dat_na$subjectNr, 50)] = NA
+write.table(dat_na, "motivation_precourse_na.csv", sep=",", dec=".", row.names=F)
+write.table(dat_na, "motivation_precourse_weird_na.csv", sep=",", dec=".", na="99", row.names=F)
+rm(dat_na)
+```
