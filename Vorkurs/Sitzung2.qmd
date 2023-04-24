@@ -1,0 +1,23 @@
+---
+title: "KlinMeth-Vorkurs - Sitzung 2"
+author: "Bente Hinkenhuis"
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+    theme: default
+editor: visual
+---
+
+# KlinMeth-Vorkurs - R-Sprache und Variablentypen
+
+```{r}
+4+5
+```
+
+## Anhang
+
+Im Anhang findet ihr zu jeder Sitzung Codechunks, die ich für die Erstellung der Sitzung benutzt habe. Vielleicht sind die ja für den einen oder die andere spannend.
