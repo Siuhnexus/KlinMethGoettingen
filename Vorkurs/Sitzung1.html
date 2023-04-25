@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.336">
+<meta name="generator" content="quarto-1.3.340">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -82,8 +82,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#klinmeth-vorkurs---installation-und-erste-schritte" id="toc-klinmeth-vorkurs---installation-und-erste-schritte" class="nav-link active" data-scroll-target="#klinmeth-vorkurs---installation-und-erste-schritte">KlinMeth-Vorkurs - Installation und Erste Schritte</a>
+  <li><a href="#klinmeth-vorkurs---willkommen-installation-und-erste-schritte" id="toc-klinmeth-vorkurs---willkommen-installation-und-erste-schritte" class="nav-link active" data-scroll-target="#klinmeth-vorkurs---willkommen-installation-und-erste-schritte">KlinMeth-Vorkurs - Willkommen, Installation und Erste Schritte</a>
   <ul class="collapse">
+  <li><a href="#r-installation" id="toc-r-installation" class="nav-link" data-scroll-target="#r-installation">R-Installation</a></li>
   <li><a href="#was-ist-r" id="toc-was-ist-r" class="nav-link" data-scroll-target="#was-ist-r">Was ist R?</a>
   <ul class="collapse">
   <li><a href="#warum-r" id="toc-warum-r" class="nav-link" data-scroll-target="#warum-r">Warum R?</a></li>
@@ -130,8 +131,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="klinmeth-vorkurs---installation-und-erste-schritte" class="level1">
-<h1>KlinMeth-Vorkurs - Installation und Erste Schritte</h1>
+<section id="klinmeth-vorkurs---willkommen-installation-und-erste-schritte" class="level1">
+<h1>KlinMeth-Vorkurs - Willkommen, Installation und Erste Schritte</h1>
+<p>Herzlich willkommen zum R-Vorkurs des Forschungsmethodenmoduls im klinischen Master an der Georg-August-Universität Göttingen. Zunächst ein paar Worte zu den Zielen dieses Vorkurses.</p>
+<p>Dieser Vorkurs dient dazu:</p>
+<ol type="1">
+<li>R und RStudio mit für den Kurs benötigten Versionen auf euren Geräten zu installieren.</li>
+<li>Sich mit den Grundlagen vertraut zu machen, die ihr fürs empirische Arbeiten in R benötigt.</li>
+<li>Fragen zu R, der Struktur des Moduls etc. zu klären.</li>
+</ol>
+<p>Dieser Kurs dient <strong>NICHT</strong> dazu:</p>
+<ol type="1">
+<li>Euch zu überfordern oder ein unschönes Klima zu erzeugen.</li>
+<li>R mit all seinen Facetten kennenzulernen und euch zur Elite der Analyseprogrammierung zu machen.</li>
+<li>Neue Inhalte (neue Methoden) dieses Moduls zu behandeln.</li>
+</ol>
+<p>Gerade mit Bezug auf den ersten Punkt ist mir wichtig, zu betonen, dass Fragen zu jeder Zeit willkommen sind. Wenn ihr eine Frage habt, haben andere diese Frage vermutlich auch. Gleichzeitig lassen mich eure Fragen erkennen, wo ich noch ausführlicher auf Dinge eingehen muss und ob das Tempo angemessen ist. Nur wenn ihr euch traut, zu fragen, wenn euch etwas unklar ist, ist dieser Vorkurs sinnvoll.</p>
+<section id="r-installation" class="level3">
+<h3 class="anchored" data-anchor-id="r-installation">R-Installation</h3>
 <p>Zunächst wollen wir R installieren. Dazu holt ihr euch das Installationsprogramm für euer jeweiliges Betriebssystem mit den folgenden Links:</p>
 <ul>
 <li>Windows: <a href="https://ftp.gwdg.de/pub/misc/cran/bin/windows/base/old/4.3.0/R-4.3.0-win.exe" class="uri">https://ftp.gwdg.de/pub/misc/cran/bin/windows/base/old/4.3.0/R-4.3.0-win.exe</a></li>
@@ -146,6 +163,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Linux: Sucht <a href="https://posit.co/download/rstudio-desktop/">hier</a> nach eurer Distribution</p></li>
 </ul>
 <p>Wenn ihr alles installiert habt, könnt ihr RStudio starten.</p>
+</section>
 <section id="was-ist-r" class="level2">
 <h2 class="anchored" data-anchor-id="was-ist-r">Was ist R?</h2>
 <ul>
@@ -289,8 +307,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>precourse <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">125</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">125</span>), <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">125</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">125</span>))</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(precourse)</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>precourse <span class="ot">=</span> <span class="fu">factor</span>(dat<span class="sc">$</span>precourse, <span class="at">labels=</span><span class="fu">c</span>(<span class="st">"Ohne"</span>, <span class="st">"Mit"</span>))</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>mot_pre <span class="ot">=</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">3</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n), <span class="dv">0</span>), <span class="dv">10</span>)</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>mot_post <span class="ot">=</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">3</span> <span class="sc">+</span> precourse <span class="sc">*</span> affected <span class="sc">*</span> <span class="dv">4</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n), <span class="dv">0</span>), <span class="dv">10</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>mot_pre <span class="ot">=</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="fu">round</span>(<span class="dv">3</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n), <span class="dv">1</span>), <span class="dv">0</span>), <span class="dv">10</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>mot_post <span class="ot">=</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="fu">round</span>(<span class="dv">3</span> <span class="sc">+</span> precourse <span class="sc">*</span> affected <span class="sc">*</span> <span class="dv">4</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n), <span class="dv">1</span>), <span class="dv">0</span>), <span class="dv">10</span>)</span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> dat[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n),]</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>subjectNr <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span>n</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat, <span class="st">"motivation_precourse.csv"</span>, <span class="at">row.names=</span>F)</span>

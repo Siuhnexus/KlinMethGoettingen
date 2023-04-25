@@ -11,7 +11,25 @@ format:
 editor: visual
 ---
 
-# KlinMeth-Vorkurs - Installation und Erste Schritte
+# KlinMeth-Vorkurs - Willkommen, Installation und Erste Schritte
+
+Herzlich willkommen zum R-Vorkurs des Forschungsmethodenmoduls im klinischen Master an der Georg-August-Universität Göttingen. Zunächst ein paar Worte zu den Zielen dieses Vorkurses.
+
+Dieser Vorkurs dient dazu:
+
+1.  R und RStudio mit für den Kurs benötigten Versionen auf euren Geräten zu installieren.
+2.  Sich mit den Grundlagen vertraut zu machen, die ihr fürs empirische Arbeiten in R benötigt.
+3.  Fragen zu R, der Struktur des Moduls etc. zu klären.
+
+Dieser Kurs dient **NICHT** dazu:
+
+1.  Euch zu überfordern oder ein unschönes Klima zu erzeugen.
+2.  R mit all seinen Facetten kennenzulernen und euch zur Elite der Analyseprogrammierung zu machen.
+3.  Neue Inhalte (neue Methoden) dieses Moduls zu behandeln.
+
+Gerade mit Bezug auf den ersten Punkt ist mir wichtig, zu betonen, dass Fragen zu jeder Zeit willkommen sind. Wenn ihr eine Frage habt, haben andere diese Frage vermutlich auch. Gleichzeitig lassen mich eure Fragen erkennen, wo ich noch ausführlicher auf Dinge eingehen muss und ob das Tempo angemessen ist. Nur wenn ihr euch traut, zu fragen, wenn euch etwas unklar ist, ist dieser Vorkurs sinnvoll.
+
+### R-Installation
 
 Zunächst wollen wir R installieren. Dazu holt ihr euch das Installationsprogramm für euer jeweiliges Betriebssystem mit den folgenden Links:
 
@@ -109,7 +127,15 @@ Diese andere Möglichkeit gibt es auch. Es gibt nämlich auch **relative Pfade**
 
 ### Working directory
 
-Der Befehl von oben gibt aus, was das aktuelle Working directory ist. Im Fall dieses Dokuments ist es der Ordner auf meiner Festplatte, in dem diese Datei liegt. Meist sind Daten auch in diesem Ordner und können mit relativen Pfaden einfach angesteuert werden.
+Der Befehl von oben gibt aus, was das aktuelle Working directory ist. Im Fall dieses Dokuments ist es der Ordner auf meiner Festplatte, in dem diese Datei liegt, weil ich mein Working Directory schon passend gesetzt habe. Ihr müsst es noch setzen. Wenn ihr nicht den R-Code benutzen wollt, den ich euch gleich zeige, habt ihr 3 Möglichkeiten, das zu tun:
+
+1.  Mit **STRG + SHIFT + H** oder **CMD + SHIFT + H** bei Macs lässt sich mit dem Explorer oder dem Finder der gewünschte Ordner auswählen.
+
+2.  Im Files-Tab des Fensters unten rechts gibt es ein blaues Zahnrad mit der Option "Set as Working Directory". Klickt man darauf, wird der aktuell angezeigte Ordner zum Working Directory. Hier lässt sich auch mit "Go to Working Directory" das Working Directory direkt anzeigen.
+
+3.  Unter **Session \> Set Working Directory \> To Source File Location** lässt sich der Ordner, in dem die aktuell offene Datei liegt, zum Working Directory machen.
+
+Wir benutzen heute Möglichkeit 3, weil das am schnellsten geht. Meist sind Daten auch in dem Ordner des Quarto-Dokuments und können mit relativen Pfaden einfach angesteuert werden.
 
 Um das zu demonstrieren, laden wir nun unsere erste Datei ein.
 
@@ -119,9 +145,9 @@ dat = read.csv("motivation_precourse.csv")
 
 Ihr solltet nach dem Ausführen oben rechts im **Environment** sehen, dass ein neuer Eintrag mit dem Namen "dat" und dem Text "500 obs. of 5 variables" erschienen ist (dafür müsst ihr die Daten haben und das Working directory passend gesetzt haben).
 
-Sollte es einen Fehler geben, drückt **STRG + SHIFT + H** oder **CMD + SHIFT + H** bei Macs, navigiert zu dem Ordner, indem die Daten liegen, und drückt auf "Öffnen". Probiert es dann nochmal.
-
 Wir haben hier unseren ersten relativen Pfad geschrieben, in unserem Fall einfach den Dateinamen. Relative Pfade haben keinen Schrägstrich Am Anfang und auch keinen Buchstaben mit Doppelpunkt. So ist klar, dass der Pfad vom aktuellen Ordner ausgeht. Nun möchte ich euch ein paar Kombinationen von verschiedenen Working directorys und den zu unserer Datei führenden relativen Pfaden zeigen.
+
+Dazu nutze ich die Funktion `setwd()`, den Gegenspieler zu `getwd()`.
 
 ```{r}
 setwd("C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen") # Der Überordner von dem Ordner mit der Datei
@@ -131,7 +157,7 @@ setwd("C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoe
 dat3 = read.csv("../Vorkurs/motivation_precourse.csv")
 ```
 
-Wenn man **../** schreibt, bedeutet das "Wechsle in den Überordner des aktuellen Ordners". Wir gelangen hier also aus dem Sitzungen-Ordner in den KlinMethGoettingen-Ordner.
+Wenn man **../** schreibt, bedeutet das "Wechsle in den Überordner des aktuellen Ordners". Ich gelange damit also von dem Sitzungen-Ordner zum KlinMethGoettingen-Ordner.
 
 Mit absoluten und relativen Pfaden kommt man im R-Alltag gut zurecht. Es gibt aber in R noch einen Sonderordner, den sogenannten **Home**-Ordner. Dieser ist in den allermeisten Fällen (bei Windows) der Pfad zum Dokumente-Ordner und wird am Anfang des Pfades mit einer Tilde (**\~/**) dargestellt. Wir wollen diese Schreibweise eigentlich nicht nutzen, aber R gibt sie manchmal automatisch aus, wenn wir das Working directory von R setzen lassen.
 
@@ -155,10 +181,10 @@ Deshalb wollen wir uns nun 5 verschiedene Formate anschauen, in denen diese Date
 dat_deutsch = read.csv2("motivation_precourse_deutsch.csv")
 ```
 
-**Whitespace-Trennung**: Manchmal werden Dateien weder mit ".", noch mit ";", sondern mit einem Leerzeichen oder einem Tabulator getrennt (keine Sorge wenn ihr nicht wisst, was ein Tabulator sein soll, ist nicht weiter wichtig). Unter diesen Umständen können wir zu data.table wechseln. Diese Funktion macht keine Vorannahmen über die Formatierung, deshalb müssen wir ihr auch das Dezimaltrennzeichen mitteilen und einstellen, ob die Datei Spaltennamen enthält oder nicht.
+**Whitespace-Trennung**: Manchmal werden Dateien weder mit ".", noch mit ";", sondern mit einem Leerzeichen oder einem Tabulator getrennt (keine Sorge wenn ihr nicht wisst, was ein Tabulator sein soll, ist nicht weiter wichtig). Unter diesen Umständen können wir zu data.table wechseln. Diese Funktion macht andere Vorannahmen über die Formatierung, deshalb müssen wir ihr auch einstellen, dass die Datei Spaltennamen enthält.
 
 ```{r}
-dat_ws = read.table("motivation_precourse_ws.csv", sep=" ", dec=".", header=T)
+dat_ws = read.table("motivation_precourse_ws.csv", sep=" ", header=T)
 ```
 
 **Datei ohne Spaltennamen**: Eigentlich sollten in jeder Datei Spaltennamen vorhanden sein, aber leider ist das nicht immer so. In diesem Fall setzen wir "header" auf FALSE oder F.
@@ -195,8 +221,8 @@ affected = c(rep(0, 250), rep(1, 250))
 precourse = c(rep(0, 125), rep(1, 125), rep(0, 125), rep(1, 125))
 dat = data.frame(precourse)
 dat$precourse = factor(dat$precourse, labels=c("Ohne", "Mit"))
-dat$mot_pre = pmin(pmax(3 + rnorm(n), 0), 10)
-dat$mot_post = pmin(pmax(3 + precourse * affected * 4 + rnorm(n), 0), 10)
+dat$mot_pre = pmin(pmax(round(3 + rnorm(n), 1), 0), 10)
+dat$mot_post = pmin(pmax(round(3 + precourse * affected * 4 + rnorm(n), 1), 0), 10)
 dat = dat[sample(1:n),]
 dat$subjectNr = 1:n
 write.csv(dat, "motivation_precourse.csv", row.names=F)
