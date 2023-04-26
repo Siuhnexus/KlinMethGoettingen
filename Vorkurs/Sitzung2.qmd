@@ -14,9 +14,9 @@ editor: visual
 
 # KlinMeth-Vorkurs - R-Sprache und Variablentypen
 
-Heute wollen wir R ein bisschen näher kennenlernen. Technisch gesehen ist R zwar eine Programmiersprache, aber für unsere Zwecke müssen wir nicht allzu tief ins Programmieren einsteigen.
+Heute wollen wir R ein bisschen nÃ¤her kennenlernen. Technisch gesehen ist R zwar eine Programmiersprache, aber fÃ¼r unsere Zwecke mÃ¼ssen wir nicht allzu tief ins Programmieren einsteigen.
 
-Erstmal könnt ihr R wie einen Taschenrechner benutzen. Alle Grundrechenarten funktionieren (mal mit dem Sternchen \* und geteilt mit dem Schrägstrich /).
+Erstmal kÃ¶nnt ihr R wie einen Taschenrechner benutzen. Alle Grundrechenarten funktionieren (mal mit dem Sternchen \* und geteilt mit dem SchrÃ¤gstrich /).
 
 ```{r}
 5 + 4
@@ -25,17 +25,17 @@ Erstmal könnt ihr R wie einen Taschenrechner benutzen. Alle Grundrechenarten fun
 5 / 4
 ```
 
-Ergebnisse von Rechnungen lassen sich zu **Variablen zuweisen**, um später damit weiterrechnen zu können.
+Ergebnisse von Rechnungen lassen sich zu **Variablen zuweisen**, um spÃ¤ter damit weiterrechnen zu kÃ¶nnen.
 
 ## Zuweisungen
 
-Diese Zuweisungen sind auf drei Arten möglich. Die erste Möglichkeit ist ein einfaches Gleichheitszeichen:
+Diese Zuweisungen sind auf drei Arten mÃ¶glich. Die erste MÃ¶glichkeit ist ein einfaches Gleichheitszeichen:
 
 ```{r}
 x = 3 * 4
 ```
 
-Das Gleichheitszeichen erfüllt also anders als in der Mathematik nicht den Zweck, zwei Ausdrücke zu **vergleichen**, sondern den Ausdruck rechts der Variable links zuzuweisen.
+Das Gleichheitszeichen erfÃ¼llt also anders als in der Mathematik nicht den Zweck, zwei AusdrÃ¼cke zu **vergleichen**, sondern den Ausdruck rechts der Variable links zuzuweisen.
 
 Alternativ dazu kann auch ein Pfeil geschrieben werden:
 
@@ -43,41 +43,41 @@ Alternativ dazu kann auch ein Pfeil geschrieben werden:
 x2 <- 3 * 4
 ```
 
-Beim Pfeil wird der Ausdruck der Variable zugewiesen, **auf die der Pfeil zeigt**. Folgendes würde also auch funktionieren:
+Beim Pfeil wird der Ausdruck der Variable zugewiesen, **auf die der Pfeil zeigt**. Folgendes wÃ¼rde also auch funktionieren:
 
 ```{r}
 3 * 4 -> x3
 ```
 
-Mit diesen Variablen lässt sich jetzt weiterrechnen.
+Mit diesen Variablen lÃ¤sst sich jetzt weiterrechnen.
 
 ```{r}
 x / 2
 x * x2
 ```
 
-Fürs Rechnen allein brauchen wir R aber natürlich nicht. Die meisten interessanteren Features von R stecken in den vielen verfügbaren **Funktionen**.
+FÃ¼rs Rechnen allein brauchen wir R aber natÃ¼rlich nicht. Die meisten interessanteren Features von R stecken in den vielen verfÃ¼gbaren **Funktionen**.
 
 ## Funktionen
 
-Wir haben in der letzten Sitzung schon 5 R-Funktionen kennengelernt, nämlich `getwd()`, `setwd()`, `read.csv()`, `read.csv2()` und `read.table()`. An der letzten dieser Funktionen möchte ich euch erklären, wie Funktionen funktionieren.
+Wir haben in der letzten Sitzung schon 5 R-Funktionen kennengelernt, nÃ¤mlich `getwd()`, `setwd()`, `read.csv()`, `read.csv2()` und `read.table()`. An der letzten dieser Funktionen mÃ¶chte ich euch erklÃ¤ren, wie Funktionen funktionieren.
 
-Erstmal ruft man eine Funktion auf, indem man den Funktionsnamen, gefolgt von einer öffnenden und einer schließenden Klammer schreibt, also bspw. `getwd()`. Innerhalb der Klammern kann man der Funktion **Parameter** mit Kommata getrennt übergeben, falls welche benötigt werden. Um Parameter zu verstehen, rufen wir jetzt die Hilfe zu `read.table()` auf.
+Erstmal ruft man eine Funktion auf, indem man den Funktionsnamen, gefolgt von einer Ã¶ffnenden und einer schlie?enden Klammer schreibt, also bspw. `getwd()`. Innerhalb der Klammern kann man der Funktion **Parameter** mit Kommata getrennt Ã¼bergeben, falls welche benÃ¶tigt werden. Um Parameter zu verstehen, rufen wir jetzt die Hilfe zu `read.table()` auf.
 
 ```{r}
 ?read.table
 ```
 
-Unter **Usage** ist beschrieben, welche Parameter die Funktion annimmt. Parameter können alles Mögliche sein; Daten, Pfade, Zahlen, Grafiken etc. Die `read.table()` Funktion benötigt einen Parameter namens "file" und nimmt daneben auch noch Parameter wie "header", "sep", "quote", "dec" etc. an. Was die im einzelnen alle bedeuten, ist erstmal nicht so wichtig. Wichtig ist, dass es zwei Möglichkeiten gibt, die Parameter zu setzen:
+Unter **Usage** ist beschrieben, welche Parameter die Funktion annimmt. Parameter kÃ¶nnen alles MÃ¶gliche sein; Daten, Pfade, Zahlen, Grafiken etc. Die `read.table()` Funktion benÃ¶tigt einen Parameter namens "file" und nimmt daneben auch noch Parameter wie "header", "sep", "quote", "dec" etc. an. Was die im einzelnen alle bedeuten, ist erstmal nicht so wichtig. Wichtig ist, dass es zwei MÃ¶glichkeiten gibt, die Parameter zu setzen:
 
-1.  Wenn die Funktion Werte ohne Parameternamen erhält, wird angenommen, dass die Parameter in der **Reihenfolge der Funktion** vergeben werden. `read.table("test.csv", TRUE, ",")` würde also die Datei "test.csv" unter Annahme von Spaltennamen und einem Komma zwischen den Werten eingelesen werden.
-2.  Wenn man ein paar Parameter überspringen möchte, die Reihenfolge der Parameter nicht im Kopf hat oder den eigenen Code verständlicher machen möchte, kann man Parameter auch mit Namen übergeben. `read.table(header=TRUE, sep=",", file="test.csv")` macht also genau dasselbe, nur mit vertauschter Reihenfolge.
+1.  Wenn die Funktion Werte ohne Parameternamen erhÃ¤lt, wird angenommen, dass die Parameter in der **Reihenfolge der Funktion** vergeben werden. `read.table("test.csv", TRUE, ",")` wÃ¼rde also die Datei "test.csv" unter Annahme von Spaltennamen und einem Komma zwischen den Werten eingelesen werden.
+2.  Wenn man ein paar Parameter Ã¼berspringen mÃ¶chte, die Reihenfolge der Parameter nicht im Kopf hat oder den eigenen Code verstÃ¤ndlicher machen mÃ¶chte, kann man Parameter auch mit Namen Ã¼bergeben. `read.table(header=TRUE, sep=",", file="test.csv")` macht also genau dasselbe, nur mit vertauschter Reihenfolge.
 
-Man kann die beiden Methoden auch mischen, sollte dann aber zuerst Parameter ohne Namen übergeben und dann die Parameter mit Namen, wie das in der letzten Sitzung passiert ist.
+Man kann die beiden Methoden auch mischen, sollte dann aber zuerst Parameter ohne Namen Ã¼bergeben und dann die Parameter mit Namen, wie das in der letzten Sitzung passiert ist.
 
-Das klingt zwar erstmal alles sehr theoretisch, wir benutzen das aber bei ziemlich vielen Funktionen, es ist also essentiell. Aber keine Sorge, man gewöhnt sich schnell daran.
+Das klingt zwar erstmal alles sehr theoretisch, wir benutzen das aber bei ziemlich vielen Funktionen, es ist also essentiell. Aber keine Sorge, man gewÃ¶hnt sich schnell daran.
 
-Unter Usage ist übrigens auch angegeben, welche Werte die Funktion für Parameter annimmt, die wir nicht explizit setzen. Bspw. wird für den Dezimaltrenner standardmäßig ein Punkt verwendet.
+Unter Usage ist Ã¼brigens auch angegeben, welche Werte die Funktion fÃ¼r Parameter annimmt, die wir nicht explizit setzen. Bspw. wird fÃ¼r den Dezimaltrenner standardmÃ¤ÃŸig ein Punkt verwendet.
 
 Nun wollen wir die beiden gelernten Aspekte kombinieren, indem wir Daten aus der Datei der letzten Sitzung laden und in einer Variable abspeichern.
 
@@ -91,19 +91,19 @@ Schauen wir uns genauer an, was in unserer Variable `dat` so drinsteckt.
 
 ## Variablentypen
 
-Klickt dazu einmal auf den weißen Pfeil im blauen Kreis neben der Variable im **Environment**-Tab des Fensters oben rechts. So könnt ihr die Namen der einzelnen Spalten/Variablen sehen, die in `dat` vertreten sind.
+Klickt dazu einmal auf den weiÃŸen Pfeil im blauen Kreis neben der Variable im **Environment**-Tab des Fensters oben rechts. So kÃ¶nnt ihr die Namen der einzelnen Spalten/Variablen sehen, die in `dat` vertreten sind.
 
-Jede dieser Variablen ist ein **Vektor** eines bestimmten Typs, enthält also mehrere Einträge dieses Typs. Aber was sind Typen und welche gibt es? Computer speichern Daten auf verschiedene Arten, um die Effizienz von Speicherung und Rechnungen zu erhöhen. Text wird dabei anders gespeichert als Zahlen, und Ganzzahlen nochmal anders als Kommazahlen. Das spiegelt sich auch in den hier vorhandenen Variablen wieder.
+Jede dieser Variablen ist ein **Vektor** eines bestimmten Typs, enthÃ¤lt also mehrere EintrÃ¤ge dieses Typs. Aber was sind Typen und welche gibt es? Computer speichern Daten auf verschiedene Arten, um die Effizienz von Speicherung und Rechnungen zu erhÃ¶hen. Text wird dabei anders gespeichert als Zahlen, und Ganzzahlen nochmal anders als Kommazahlen. Das spiegelt sich auch in den hier vorhandenen Variablen wieder.
 
--   `precourse` ist ein Vektor vom Typ `chr`, was bedeutet, dass er "characters" enthält, was gleichbedeutend mit Text ist.
+-   `precourse` ist ein Vektor vom Typ `chr`, was bedeutet, dass er "characters" enthÃ¤lt, was gleichbedeutend mit Text ist.
 
--   `subjectNr` ist vom Typ `int`, was für "integer" und damit ganze Zahlen steht.
+-   `subjectNr` ist vom Typ `int`, was f?r "integer" und damit ganze Zahlen steht.
 
 -   Die anderen beiden Variablen sind vom Typ `num`, enthalten also Dezimalzahlen.
 
-Bestimmte Analyseergebnisse unterscheiden sich je nach Variablentyp, weshalb es nicht schaden kann, zumindest Text und Zahlen auseinanderhalten zu können.
+Bestimmte Analyseergebnisse unterscheiden sich je nach Variablentyp, weshalb es nicht schaden kann, zumindest Text und Zahlen auseinanderhalten zu kÃ¶nnen.
 
-Für statistische Analysen gibt es noch einen wichtigen Variablentyp, den wir noch nicht kennen. Wenn wir mit diskreten Variablen arbeiten, gibt es eine bestimmte Anzahl (qualitativ) unterschiedlicher Ausprägungen. Dieser Variablentyp heißt Faktor und kann in R aus anderen Variablentypen generiert werden. Dazu greifen wir nun zum ersten Mal auf eine Variable im Datensatz zu. Dazu schreiben wir den Namen des Datensatzes `dat`, gefolgt von einem \$-Zeichen und dem Namen der Variable `precourse`.
+FÃ¼r statistische Analysen gibt es noch einen wichtigen Variablentyp, den wir noch nicht kennen. Wenn wir mit diskreten Variablen arbeiten, gibt es eine bestimmte Anzahl (qualitativ) unterschiedlicher AusprÃ¤gungen. Dieser Variablentyp heiÃŸt Faktor und kann in R aus anderen Variablentypen generiert werden. Dazu greifen wir nun zum ersten Mal auf eine Variable im Datensatz zu. Dazu schreiben wir den Namen des Datensatzes `dat`, gefolgt von einem \$-Zeichen und dem Namen der Variable `precourse`.
 
 ```{r}
 pre_fac = factor(dat$precourse)
@@ -111,32 +111,32 @@ pre_fac = factor(dat$precourse)
 
 Wenn ihr oben rechts auf den Datentyp von `pre_fac` schaut, seht ihr da "Factor w/ 2 levels...". R hat also erkannt, dass in `precourse` nur zwei verschiedene Werte vorkommen und deshalb einen Faktor mit zwei Stufen generiert.
 
-In der Praxis würden wir direkt nach dem Einlesen entscheiden, ob eine Variable ein Faktor ist oder nicht, und folgendes schreiben, wenn wir sie in einen Faktor umwandeln wollen:
+In der Praxis wÃ¼rden wir direkt nach dem Einlesen entscheiden, ob eine Variable ein Faktor ist oder nicht, und folgendes schreiben, wenn wir sie in einen Faktor umwandeln wollen:
 
 ```{r}
 dat$precourse = as.factor(dat$precourse)
 ```
 
-Hier weisen wir der `precourse`-Variable sie selbst als Faktor zu und **überschreiben** sie so.
+Hier weisen wir der `precourse`-Variable sie selbst als Faktor zu und **?berschreiben** sie so.
 
 ## Pakete installieren und laden
 
-R ist eine Programmiersprache, die wie viele andere auch von zusätzlichen Paketen, die von der Community geschrieben und verwaltet werden, lebt. Für die nächste Sitzung brauchen wir ein Paket namens `ggplot`, welches wir nun installieren und laden wollen.
+R ist eine Programmiersprache, die wie viele andere auch von zusÃ¤tzlichen Paketen, die von der Community geschrieben und verwaltet werden, lebt. FÃ¼r die nÃ¤chste Sitzung brauchen wir ein Paket namens `ggplot`, welches wir nun installieren und laden wollen.
 
 ```{r}
 install.packages("ggplot2")
 ```
 
-Wenn ihr die Installation abgeschlossen habt, ist das Paket auf eurem Computer gespeichert und ihr müsst es ab jetzt bei jedem Benutzen von R nur laden.
+Wenn ihr die Installation abgeschlossen habt, ist das Paket auf eurem Computer gespeichert und ihr mÃ¼sst es ab jetzt bei jedem Benutzen von R nur laden.
 
 ```{r}
 library(ggplot2)
 ```
 
-Näheres zu dem Paket in der nächsten Sitzung.
+In diesem Modul werden wir einige nÃ¼tzliche Pakete nutzen. Es ist also wichtig, zu wissen, wie man die installiert.
 
 ## Subsetting
 
 ## Anhang
 
-Im Anhang findet ihr zu jeder Sitzung Codechunks, die ich für die Erstellung der Sitzung benutzt habe. Vielleicht sind die ja für den einen oder die andere spannend.
+Im Anhang findet ihr zu jeder Sitzung Codechunks, die ich fÃ¼r die Erstellung der Sitzung benutzt habe. Vielleicht sind die ja fÃ¼r den einen oder die andere spannend.
