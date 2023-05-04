@@ -10,6 +10,7 @@ format:
       body-width: 1200px
     theme: default
 editor: visual
+---print()
 ---
 
 # KlinMeth-Vorkurs - R-Sprache und Variablentypen
