@@ -10,7 +10,6 @@ format:
       body-width: 1200px
     theme: default
 editor: visual
----print()
 ---
 
 # KlinMeth-Vorkurs - R-Sprache und Variablentypen
@@ -125,7 +124,7 @@ Hier weisen wir der `precourse`-Variable sie selbst als Faktor zu und **?berschr
 R ist eine Programmiersprache, die wie viele andere auch von zusätzlichen Paketen, die von der Community geschrieben und verwaltet werden, lebt. Für die nächste Sitzung brauchen wir ein Paket namens `ggplot`, welches wir nun installieren und laden wollen.
 
 ```{r}
-install.packages("ggplot2")
+#install.packages("ggplot2")
 ```
 
 Wenn ihr die Installation abgeschlossen habt, ist das Paket auf eurem Computer gespeichert und ihr müsst es ab jetzt bei jedem Benutzen von R nur laden.

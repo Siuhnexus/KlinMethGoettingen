@@ -84,6 +84,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#klinmeth-vorkurs---r-sprache-und-variablentypen" id="toc-klinmeth-vorkurs---r-sprache-und-variablentypen" class="nav-link active" data-scroll-target="#klinmeth-vorkurs---r-sprache-und-variablentypen">KlinMeth-Vorkurs - R-Sprache und Variablentypen</a>
   <ul class="collapse">
+  <li><a href="#zuweisungen" id="toc-zuweisungen" class="nav-link" data-scroll-target="#zuweisungen">Zuweisungen</a></li>
+  <li><a href="#funktionen" id="toc-funktionen" class="nav-link" data-scroll-target="#funktionen">Funktionen</a></li>
+  <li><a href="#variablentypen" id="toc-variablentypen" class="nav-link" data-scroll-target="#variablentypen">Variablentypen</a></li>
+  <li><a href="#pakete-installieren-und-laden" id="toc-pakete-installieren-und-laden" class="nav-link" data-scroll-target="#pakete-installieren-und-laden">Pakete installieren und laden</a></li>
+  <li><a href="#subsetting" id="toc-subsetting" class="nav-link" data-scroll-target="#subsetting">Subsetting</a></li>
   <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang">Anhang</a></li>
   </ul></li>
   </ul>
@@ -116,12 +121,116 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="klinmeth-vorkurs---r-sprache-und-variablentypen" class="level1">
 <h1>KlinMeth-Vorkurs - R-Sprache und Variablentypen</h1>
+<p>Heute wollen wir R ein bisschen näher kennenlernen. Technisch gesehen ist R zwar eine Programmiersprache, aber für unsere Zwecke müssen wir nicht allzu tief ins Programmieren einsteigen.</p>
+<p>Erstmal könnt ihr R wie einen Taschenrechner benutzen. Alle Grundrechenarten funktionieren (mal mit dem Sternchen * und geteilt mit dem Schrägstrich /).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span><span class="sc">+</span><span class="dv">5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">+</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 9</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">-</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">*</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">/</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.25</code></pre>
+</div>
+</div>
+<p>Ergebnisse von Rechnungen lassen sich zu <strong>Variablen zuweisen</strong>, um später damit weiterrechnen zu können.</p>
+<section id="zuweisungen" class="level2">
+<h2 class="anchored" data-anchor-id="zuweisungen">Zuweisungen</h2>
+<p>Diese Zuweisungen sind auf drei Arten möglich. Die erste Möglichkeit ist ein einfaches Gleichheitszeichen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="dv">3</span> <span class="sc">*</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Das Gleichheitszeichen erfüllt also anders als in der Mathematik nicht den Zweck, zwei Ausdrücke zu <strong>vergleichen</strong>, sondern den Ausdruck rechts der Variable links zuzuweisen.</p>
+<p>Alternativ dazu kann auch ein Pfeil geschrieben werden:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Beim Pfeil wird der Ausdruck der Variable zugewiesen, <strong>auf die der Pfeil zeigt</strong>. Folgendes würde also auch funktionieren:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span> <span class="sc">*</span> <span class="dv">4</span> <span class="ot">-&gt;</span> x3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Mit diesen Variablen lässt sich jetzt weiterrechnen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">/</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">*</span> x2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 144</code></pre>
+</div>
+</div>
+<p>Fürs Rechnen allein brauchen wir R aber natürlich nicht. Die meisten interessanteren Features von R stecken in den vielen verfügbaren <strong>Funktionen</strong>.</p>
+</section>
+<section id="funktionen" class="level2">
+<h2 class="anchored" data-anchor-id="funktionen">Funktionen</h2>
+<p>Wir haben in der letzten Sitzung schon 5 R-Funktionen kennengelernt, nämlich <code>getwd()</code>, <code>setwd()</code>, <code>read.csv()</code>, <code>read.csv2()</code> und <code>read.table()</code>. An der letzten dieser Funktionen möchte ich euch erklären, wie Funktionen funktionieren.</p>
+<p>Erstmal ruft man eine Funktion auf, indem man den Funktionsnamen, gefolgt von einer öffnenden und einer schlie?enden Klammer schreibt, also bspw. <code>getwd()</code>. Innerhalb der Klammern kann man der Funktion <strong>Parameter</strong> mit Kommata getrennt übergeben, falls welche benötigt werden. Um Parameter zu verstehen, rufen wir jetzt die Hilfe zu <code>read.table()</code> auf.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>?read.table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>starte den http Server für die Hilfe fertig</code></pre>
+</div>
+</div>
+<p>Unter <strong>Usage</strong> ist beschrieben, welche Parameter die Funktion annimmt. Parameter können alles Mögliche sein; Daten, Pfade, Zahlen, Grafiken etc. Die <code>read.table()</code> Funktion benötigt einen Parameter namens “file” und nimmt daneben auch noch Parameter wie “header”, “sep”, “quote”, “dec” etc. an. Was die im einzelnen alle bedeuten, ist erstmal nicht so wichtig. Wichtig ist, dass es zwei Möglichkeiten gibt, die Parameter zu setzen:</p>
+<ol type="1">
+<li>Wenn die Funktion Werte ohne Parameternamen erhält, wird angenommen, dass die Parameter in der <strong>Reihenfolge der Funktion</strong> vergeben werden. <code>read.table("test.csv", TRUE, ",")</code> würde also die Datei “test.csv” unter Annahme von Spaltennamen und einem Komma zwischen den Werten eingelesen werden.</li>
+<li>Wenn man ein paar Parameter überspringen möchte, die Reihenfolge der Parameter nicht im Kopf hat oder den eigenen Code verständlicher machen möchte, kann man Parameter auch mit Namen übergeben. <code>read.table(header=TRUE, sep=",", file="test.csv")</code> macht also genau dasselbe, nur mit vertauschter Reihenfolge.</li>
+</ol>
+<p>Man kann die beiden Methoden auch mischen, sollte dann aber zuerst Parameter ohne Namen übergeben und dann die Parameter mit Namen, wie das in der letzten Sitzung passiert ist.</p>
+<p>Das klingt zwar erstmal alles sehr theoretisch, wir benutzen das aber bei ziemlich vielen Funktionen, es ist also essentiell. Aber keine Sorge, man gewöhnt sich schnell daran.</p>
+<p>Unter Usage ist übrigens auch angegeben, welche Werte die Funktion für Parameter annimmt, die wir nicht explizit setzen. Bspw. wird für den Dezimaltrenner standardmäßig ein Punkt verwendet.</p>
+<p>Nun wollen wir die beiden gelernten Aspekte kombinieren, indem wir Daten aus der Datei der letzten Sitzung laden und in einer Variable abspeichern.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"motivation_precourse.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Das ist zwar Code, den wir schon aus der letzten Sitzung kennen, aber jetzt verstehen wir auch, was da eigentlich passiert.</p>
+<p>Schauen wir uns genauer an, was in unserer Variable <code>dat</code> so drinsteckt.</p>
+</section>
+<section id="variablentypen" class="level2">
+<h2 class="anchored" data-anchor-id="variablentypen">Variablentypen</h2>
+<p>Klickt dazu einmal auf den weißen Pfeil im blauen Kreis neben der Variable im <strong>Environment</strong>-Tab des Fensters oben rechts. So könnt ihr die Namen der einzelnen Spalten/Variablen sehen, die in <code>dat</code> vertreten sind.</p>
+<p>Jede dieser Variablen ist ein <strong>Vektor</strong> eines bestimmten Typs, enthält also mehrere Einträge dieses Typs. Aber was sind Typen und welche gibt es? Computer speichern Daten auf verschiedene Arten, um die Effizienz von Speicherung und Rechnungen zu erhöhen. Text wird dabei anders gespeichert als Zahlen, und Ganzzahlen nochmal anders als Kommazahlen. Das spiegelt sich auch in den hier vorhandenen Variablen wieder.</p>
+<ul>
+<li><p><code>precourse</code> ist ein Vektor vom Typ <code>chr</code>, was bedeutet, dass er “characters” enthält, was gleichbedeutend mit Text ist.</p></li>
+<li><p><code>subjectNr</code> ist vom Typ <code>int</code>, was f?r “integer” und damit ganze Zahlen steht.</p></li>
+<li><p>Die anderen beiden Variablen sind vom Typ <code>num</code>, enthalten also Dezimalzahlen.</p></li>
+</ul>
+<p>Bestimmte Analyseergebnisse unterscheiden sich je nach Variablentyp, weshalb es nicht schaden kann, zumindest Text und Zahlen auseinanderhalten zu können.</p>
+<p>Für statistische Analysen gibt es noch einen wichtigen Variablentyp, den wir noch nicht kennen. Wenn wir mit diskreten Variablen arbeiten, gibt es eine bestimmte Anzahl (qualitativ) unterschiedlicher Ausprägungen. Dieser Variablentyp heißt Faktor und kann in R aus anderen Variablentypen generiert werden. Dazu greifen wir nun zum ersten Mal auf eine Variable im Datensatz zu. Dazu schreiben wir den Namen des Datensatzes <code>dat</code>, gefolgt von einem $-Zeichen und dem Namen der Variable <code>precourse</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pre_fac <span class="ot">=</span> <span class="fu">factor</span>(dat<span class="sc">$</span>precourse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Wenn ihr oben rechts auf den Datentyp von <code>pre_fac</code> schaut, seht ihr da “Factor w/ 2 levels…”. R hat also erkannt, dass in <code>precourse</code> nur zwei verschiedene Werte vorkommen und deshalb einen Faktor mit zwei Stufen generiert.</p>
+<p>In der Praxis würden wir direkt nach dem Einlesen entscheiden, ob eine Variable ein Faktor ist oder nicht, und folgendes schreiben, wenn wir sie in einen Faktor umwandeln wollen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>precourse <span class="ot">=</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>precourse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Hier weisen wir der <code>precourse</code>-Variable sie selbst als Faktor zu und <strong>?berschreiben</strong> sie so.</p>
+</section>
+<section id="pakete-installieren-und-laden" class="level2">
+<h2 class="anchored" data-anchor-id="pakete-installieren-und-laden">Pakete installieren und laden</h2>
+<p>R ist eine Programmiersprache, die wie viele andere auch von zusätzlichen Paketen, die von der Community geschrieben und verwaltet werden, lebt. Für die nächste Sitzung brauchen wir ein Paket namens <code>ggplot</code>, welches wir nun installieren und laden wollen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("ggplot2")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Wenn ihr die Installation abgeschlossen habt, ist das Paket auf eurem Computer gespeichert und ihr müsst es ab jetzt bei jedem Benutzen von R nur laden.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In diesem Modul werden wir einige nützliche Pakete nutzen. Es ist also wichtig, zu wissen, wie man die installiert.</p>
+</section>
+<section id="subsetting" class="level2">
+<h2 class="anchored" data-anchor-id="subsetting">Subsetting</h2>
+</section>
 <section id="anhang" class="level2">
 <h2 class="anchored" data-anchor-id="anhang">Anhang</h2>
 <p>Im Anhang findet ihr zu jeder Sitzung Codechunks, die ich für die Erstellung der Sitzung benutzt habe. Vielleicht sind die ja für den einen oder die andere spannend.</p>
