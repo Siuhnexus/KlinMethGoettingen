@@ -1,0 +1,212 @@
+---
+title: "ggplot2"
+author: "YH"
+date: '2022-05-16'
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Vorbereitung
+### Zusaetzliche ggplot2 packages
+
+```{r}
+#install.packages(c( "colorBlindness", "directlabels", "dplyr", "gameofthrones", "ggforce", "gghighlight", "ggnewscale", "ggplot2", "ggraph", "ggrepel", "ggtext", "ggthemes", "hexbin", "Hmisc", "mapproj", "maps", "munsell", "ozmaps", "paletteer", "patchwork", "rmapshaper", "scico", "seriation", "sf", "stars", "tidygraph", "tidyr", "wesanderson"))
+```
+### Activate ggplot2 package (and other packages)
+```{r}
+library(ggplot2)
+library(psych)
+```
+### set working directory
+```{r}
+setwd("~/Studium/BachelorPsychologie/Semester4/Quanti/Tutorium")
+```
+## Graphiken fuer zwei kontinuierliche Variablen
+
+### Scatterplot
+```{r}
+###########
+# Datensatz mpg aus psych package
+# Daten
+mpg <- mpg
+
+# Faktoren als solche definieren
+mpg$year <- as.factor(mpg$year)
+mpg$cyl <- as.factor(mpg$cyl)
+mpg$drv <- as.factor(mpg$drv)
+mpg$model <- as.factor(mpg$model)
+mpg$trans <- as.factor(mpg$trans)
+mpg$class <- as.factor(mpg$class)
+
+# Einfaches scatterplot zwei kontinuierlichen Variablen
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point()
+
+# Zusaetzlich Faktor "Zylinder" als dritte Variable
+ggplot(mpg, aes(displ, hwy, colour = cyl)) + 
+  geom_point()
+
+# Mit Achsenbezeichnungen und Titel
+ggplot(mpg, aes(displ, hwy, colour = cyl)) + 
+  geom_point() + 
+  labs(x = "miles per gallon highway", y = "Hubraum") +
+  ggtitle("Zusammenhang Hubraum und Spritverbrauch")
+
+# Mit Linie fuer Zusammenhang mit geom_smooth
+## wird automatisch fuer jede Gruppe getrennt gemacht
+ggplot(mpg, aes(displ, hwy, colour = cyl)) + 
+  geom_point() + 
+  labs(x = "miles per gallon highway", y = "Hubraum", color = "Zylinder") +
+  ggtitle("Zusammenhang Hubraum und Spritverbrauch") +
+  geom_smooth()
+
+# Mit Regressionsline fuer linearen Zusammenhang mit geom_smooth
+ggplot(mpg, aes(displ, hwy, colour = cyl)) + 
+  geom_point() + 
+  labs(x = "miles per gallon highway", y = "Hubraum", color = "Zylinder") +
+  ggtitle("Zusammenhang Hubraum und Spritverbrauch")+
+  geom_smooth(method = "lm")
+
+# Aufteilung in verschiedene Graphiken anhand eines dritten Faktors mit facet_wrap
+## Faktor Fahrzeugklasse
+ggplot(mpg, aes(displ, hwy)) + 
+  geom_point() + 
+  facet_wrap(~class)+
+  labs(x = "miles per gallon highway", y = "Hubraum") +
+  ggtitle("Zusammenhang Hubraum und Spritverbrauch")
+
+# Aufteilung in verschiedene Graphiken anhand zweier Faktoren mit facet_grid
+## Faktoren Antrieb = drv und Zylinder = cyl
+ggplot(mpg, aes(displ, hwy)) + 
+  geom_point() + 
+  facet_grid(drv~cyl)+
+  labs(x = "miles per gallon highway", y = "Hubraum") +
+  ggtitle("Zusammenhang Hubraum und Spritverbrauch")
+
+# Einfuegen zusaetzlicher, sekundaerer Achsen um die Facets zu bezeichnen
+ggplot(mpg, aes(displ, hwy)) + 
+  geom_point() + 
+  facet_grid(drv~cyl)+
+  labs(x = "miles per gallon highway", y = "Hubraum") +
+  ggtitle("Zusammenhang Hubraum und Spritverbrauch")+
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = "Antrieb", breaks = NULL, labels = NULL)) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = "Zylinder", breaks = NULL, labels = NULL))
+
+#Speichern der Graphik
+## Graphik wird als eigenes Objekt benannt
+p <- ggplot(mpg, aes(displ, hwy)) + 
+  geom_point() + 
+  facet_grid(drv~cyl)+
+  labs(x = "miles per gallon highway", y = "Hubraum") +
+  ggtitle("Zusammenhang Hubraum und Spritverbrauch")+
+  scale_y_continuous(sec.axis = sec_axis(~ . , name = "Antrieb", breaks = NULL, labels = NULL)) +
+  scale_x_continuous(sec.axis = sec_axis(~ . , name = "Zylinder", breaks = NULL, labels = NULL))
+  
+
+## Graphikobjekt wird mittels ggsave als Graphik in working directory gespeichert
+ggsave("plot.png", p, width = 5, height = 5)
+
+```
+## Histogramme
+
+Histogramme sind gut um die Verteilung einer Variable zu sehen
+```{r}
+# Einfache Histogramme
+ggplot(mpg, aes(hwy)) + geom_histogram() + facet_wrap(~class)
+
+# Histogram mittels geom_bar
+# Wertebereich der y-Achse wird mit ylim gesetzt
+ggplot(mpg, aes(hwy)) + geom_bar() + facet_wrap(~class) + labs(x = "miles per gallon highway", y = "Hubraum") + ggtitle("Spritverbrauch nach Fahrzeugklasse") + ylim(0,25)
+
+```
+
+## Graphiken fuer kategorialen Praediktor und kontinuierliches Kriterium
+### Graphiken fuer Rohdaten
+
+```{r}
+# Rohdaten
+
+# Option 1: nur Rohdaten
+ggplot(mpg, aes(drv, hwy)) + 
+  geom_jitter(width = 0.2, height = 0)
+## jitter verteilt die Daten auf der x-Achse so dass diese besser sichtbar sind
+##height = 0 vermeidet vertikalen jitter
+
+# Mit violin plot um Verteilung der Kriteriumswerte zu veranschaulichen
+ggplot(mpg, aes(drv, hwy)) + geom_violin() + geom_point() + geom_jitter(width = 0.2, height = 0)
+
+# Mit violin plot und Mittelwert mit Fehlerbalken
+ggplot(mpg, aes(drv, hwy)) + geom_violin() + geom_point() +
+  geom_jitter(width = 0.2, height = 0) +
+  geom_point(stat="summary",fun = mean,size=1.5, col = "red") +
+  stat_summary(geom="errorbar", fun.data=mean_se, width=.2, col ="red")+
+  theme_classic()
+```
+
+### Graphiken fuer Mittelwerte in verschiedenen Gruppen
+
+```{r}
+
+# Option1
+## Erst werden die Mittelwerte und ihre Konfidenzintervalle ausgerechnet
+## Aus den Ergebnisse wird eine Datenmatrix gemacht
+## Aus diesen Daten wird die Abbildung erzeugt
+
+#### Mittelwerte und SE ausrechnen
+mpg <- as.data.frame(mpg)
+descriptives <- describeBy(hwy ~ cyl, mat = TRUE, data = mpg)
+#### Name des Faktors einfuegen
+names(descriptives)[names(descriptives) == "group1"] <- "Zylinder"
+#### Konfidenzintervall ausrechnen
+descriptives$ci_95 <- descriptives$se*1.96
+#### Graphik machen
+ggplot(descriptives, aes(x=Zylinder, y=mean)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin=mean-ci_95, ymax=mean+ci_95), width=.1)+
+  ggtitle("Verbrauch nach Motor")+
+  theme_classic()
+
+
+#Option 2 
+## Plot wird direkt aus den Daten erzeugt
+### Balkendiagramm
+ggplot(mpg, aes(cyl, hwy)) + 
+  stat_summary(fun = mean, geom = "bar", fill = "dark blue") +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width=.3)+
+  ggtitle("Verbrauch nach Motor")+
+  theme_classic()
+
+### Balkendiagramm mit 2 Faktoren
+pd <- position_dodge(1) # setzt die Balken nebeneinander
+
+ggplot(mpg, aes(cyl, hwy, fill = drv)) + 
+  stat_summary(fun = mean, geom = "bar", position = pd, preserve = "single") +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width=.3, position = pd, preserve = "single")+
+  ggtitle("Verbrauch nach Motor")+
+  theme_classic()
+
+### Punktdiagramm mit 2 Faktoren
+ggplot(mpg, aes(cyl, hwy, color = drv)) + 
+  stat_summary(fun = mean, geom = "point") +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width=.3)+
+  ggtitle("Verbrauch nach Motor")+
+  theme_classic()
+
+# Noch huebscher, wenn etwas gegeneinander verschoben
+pd <- position_dodge(0.4)
+
+ggplot(mpg, aes(cyl, hwy, colour = drv)) + 
+  stat_summary(fun = mean, geom = "point", position = pd) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width=.3, position = pd)+
+  ggtitle("Verbrauch nach Motor")+
+  theme_classic()
+
+
+```
+
