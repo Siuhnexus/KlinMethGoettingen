@@ -135,8 +135,91 @@ library(ggplot2)
 
 In diesem Modul werden wir einige nützliche Pakete nutzen. Es ist also wichtig, zu wissen, wie man die installiert.
 
-## Subsetting
+## Indexing und Subsetting
 
-## Anhang
+Für einen grundlegenden Umgang mit Daten fehlt uns jetzt nur noch die Möglichkeit, unsere Daten zu filtern. Ungültige Fragebögen, Personen, die bestimmte Performancekriterien nicht erreichen, oder auch Datensätze mit technischen Fehlern müssen vor einer Analyse ausschließen.
 
-Im Anhang findet ihr zu jeder Sitzung Codechunks, die ich für die Erstellung der Sitzung benutzt habe. Vielleicht sind die ja für den einen oder die andere spannend.
+In R funktioniert das dadurch, dass wir einen Teil unseres Datensatzes aufgrund von bestimmten Kriterien auswählen können und mit diesem Teil dann weiterarbeiten. Dazu müssen wir aber zunächst klären, wie wir auf einzelne Zeilen, Spalten oder Zellen in unseren Daten zugreifen.
+
+```{r}
+head(dat$mot_post)
+```
+
+Am häufigsten muss man in R auf bestimmte Variablen (Spalten) in den Daten zugreifen, um sie bspw. in Faktoren umzuwandeln. Wie wir bereits gesehen haben, macht man das mit einem `$` gefolgt von dem Namen der Variable. Mit der `head()`-Funktion geben wir nur die ersten paar Werte aus (es gibt auch eine `tail()`-Funktion für die letzten paar Werte).
+
+```{r}
+dat[1, 4]
+```
+
+Wenn wir auf einzelne Zellen zugreifen wollen, schreiben wir eckige Klammern mit der Zeilennummer, gefolgt von einem Komma und der Spaltennummer. Hier greifen wir also auf die erste Zeile der vierten Spalte (subject_nr) zu, geben uns also die subject-ID der ersten Person im Datensatz zurück. Die erste ID ist erwartungsgemäß 1.
+
+Lassen wir entweder die Zeilennummer oder die Spaltennummer weg, bekommen wir die ganze Zeile bzw. Spalte zurück.
+
+```{r}
+head(dat[, 3])
+```
+
+Diese Zeile macht also genau das gleiche wie die Zeile zwei Chunks weiter oben. Besonders hilfreich ist aber die Möglichkeit, nur bestimmte Zeilen auszuwählen. Um damit unseren Datensatz zu filtern, brauchen wir aber noch eine Grundlage.
+
+### Vergleiche
+
+In R lassen sich wie in vielen anderen Sprachen auch Variablen und Werte vergleichen. Ein Beispiel wäre der Test auf Gleichheit.
+
+```{r}
+2 ^ 3 == 8
+```
+
+Mit dem doppelten Gleichheitszeichen können wir diesen Gleichheitsvergleich ausführen. Zurück bekommen wir einen sogenannten booleschen Wert, auch Wahrheitswert genannt. Dieser hat zwei mögliche Zustände: Entweder der Vergleich ist wahr (TRUE) oder er ist falsch (FALSE). In R kann man auch selbst boolesche Werte mit `TRUE` oder `T` bzw. `FALSE` oder `F` schreiben.
+
+Vergleiche funktionieren auch mit Vektoren und Datensätzen.
+
+```{r}
+2 ^ (1:4) == 8
+head(dat == "Ohne")
+head(dat$precourse == "Ohne")
+```
+
+Der erste Vergleich zeigt uns, dass nur 2 hoch 3 8 ergibt. Im zweiten Vergleich schauen wir, welche Werte im Datensatz "Ohne" sind. Dabei vergleichen wir aber alle Spalten mit "Ohne" was natürlich keinen Sinn ergibt. Deshalb schauen wir uns im letzten Vergleich nur die `precourse`-Spalte an. Der Code in der letzten Zeile ist sehr nützlich zum Filtern von Datensätzen. Ihr könnt schon einmal darüber nachdenken, wie das funktionieren könnte.
+
+Es gibt natürlich auch noch andere Vergleichsmöglichkeiten, gerade wenn man mit Zahlen arbeitet:
+
+-   `!=` gibt `TRUE` zurück, wenn zwei Werte nicht gleich sind (`8 != 9` =\> `TRUE`)
+
+-   `>` gibt `TRUE` zurück, wenn der linke Wert größer als der rechte ist (`9 > 8` =\> `TRUE`)
+
+-   `<` gibt `TRUE` zurück, wenn der linke Wert kleiner als der rechte ist (`8 < 9` =\> `TRUE`)
+
+-   `>=` gibt `TRUE` zurück, wenn der linke Wert größer als oder gleich dem rechten ist (`9 >= 9` =\> `TRUE`)
+
+-   `<=` gibt `TRUE` zurück, wenn der linke Wert kleiner als oder gleich dem rechten ist (`8 <= 8`{style="caret-color: white;"} =\> `TRUE`{style="caret-color: white;"})
+
+Für uns reicht aber meistens ein Vergleich auf Gleichheit. Eine nützliche Sache gibt es noch; Die Anzahl an `TRUE`-Werten lassen sich leicht zählen, sodass wir herausfinden können, wie viele Leute es gibt, die den Vorkurs nicht besucht haben:
+
+```{r}
+sum(dat$precourse == "Ohne")
+```
+
+### Subsetting
+
+Mit unserem neuen Wissen über Vergleiche können wir jetzt die Daten nach Leuten filtern, die den Vorkurs nicht besucht haben.
+
+```{r}
+dat_ohne = dat[dat$precourse == "Ohne", ]
+dat_ohne[dat_ohne$precourse != "Ohne", ]
+```
+
+Wenn wir einen Vektor mit booleschen Werten an die Stelle schreiben, wo sonst die Zeilennummer steht, wählt R einfach alle Spalten aus, wo der boolesche Wert `TRUE` ist. So können wir nur die Zeilen mit Leuten auswählen, wo Leute den Vorkurs nicht besucht haben.
+
+Dieser Code ist zugegebenermaßen ein bisschen unschön. Zum Glück gibt es in R auch eine Funktion, die genau das gleiche macht, aber ein bisschen übersichtlicher ist.
+
+```{r}
+dat_first_100 = subset(dat, dat$subjectNr <= 100)
+```
+
+Mit `subset()` können wir auch nur bestimmte Spalten auswählen.
+
+```{r}
+dat_no_pre = subset(dat, select=c("precourse", "mot_post", "subjectNr"))
+```
+
+Jetzt haben wir alle wichtigen Funktionen zum Umgang mit Daten kennengelernt. In der nächsten Sitzung werden wir uns ggplot anschauen, um schöne Grafiken erstellen zu können.

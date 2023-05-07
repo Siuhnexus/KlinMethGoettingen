@@ -88,8 +88,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#funktionen" id="toc-funktionen" class="nav-link" data-scroll-target="#funktionen">Funktionen</a></li>
   <li><a href="#variablentypen" id="toc-variablentypen" class="nav-link" data-scroll-target="#variablentypen">Variablentypen</a></li>
   <li><a href="#pakete-installieren-und-laden" id="toc-pakete-installieren-und-laden" class="nav-link" data-scroll-target="#pakete-installieren-und-laden">Pakete installieren und laden</a></li>
+  <li><a href="#indexing-und-subsetting" id="toc-indexing-und-subsetting" class="nav-link" data-scroll-target="#indexing-und-subsetting">Indexing und Subsetting</a>
+  <ul class="collapse">
+  <li><a href="#vergleiche" id="toc-vergleiche" class="nav-link" data-scroll-target="#vergleiche">Vergleiche</a></li>
   <li><a href="#subsetting" id="toc-subsetting" class="nav-link" data-scroll-target="#subsetting">Subsetting</a></li>
-  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang">Anhang</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -228,12 +231,102 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>In diesem Modul werden wir einige nützliche Pakete nutzen. Es ist also wichtig, zu wissen, wie man die installiert.</p>
 </section>
-<section id="subsetting" class="level2">
-<h2 class="anchored" data-anchor-id="subsetting">Subsetting</h2>
+<section id="indexing-und-subsetting" class="level2">
+<h2 class="anchored" data-anchor-id="indexing-und-subsetting">Indexing und Subsetting</h2>
+<p>Für einen grundlegenden Umgang mit Daten fehlt uns jetzt nur noch die Möglichkeit, unsere Daten zu filtern. Ungültige Fragebögen, Personen, die bestimmte Performancekriterien nicht erreichen, oder auch Datensätze mit technischen Fehlern müssen vor einer Analyse ausschließen.</p>
+<p>In R funktioniert das dadurch, dass wir einen Teil unseres Datensatzes aufgrund von bestimmten Kriterien auswählen können und mit diesem Teil dann weiterarbeiten. Dazu müssen wir aber zunächst klären, wie wir auf einzelne Zeilen, Spalten oder Zellen in unseren Daten zugreifen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat<span class="sc">$</span>mot_post)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.0 5.4 2.1 2.8 6.8 3.5</code></pre>
+</div>
+</div>
+<p>Am häufigsten muss man in R auf bestimmte Variablen (Spalten) in den Daten zugreifen, um sie bspw. in Faktoren umzuwandeln. Wie wir bereits gesehen haben, macht man das mit einem <code>$</code> gefolgt von dem Namen der Variable. Mit der <code>head()</code>-Funktion geben wir nur die ersten paar Werte aus (es gibt auch eine <code>tail()</code>-Funktion für die letzten paar Werte).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dat[<span class="dv">1</span>, <span class="dv">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+<p>Wenn wir auf einzelne Zellen zugreifen wollen, schreiben wir eckige Klammern mit der Zeilennummer, gefolgt von einem Komma und der Spaltennummer. Hier greifen wir also auf die erste Zeile der vierten Spalte (subject_nr) zu, geben uns also die subject-ID der ersten Person im Datensatz zurück. Die erste ID ist erwartungsgemäß 1.</p>
+<p>Lassen wir entweder die Zeilennummer oder die Spaltennummer weg, bekommen wir die ganze Zeile bzw. Spalte zurück.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat[, <span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.0 5.4 2.1 2.8 6.8 3.5</code></pre>
+</div>
+</div>
+<p>Diese Zeile macht also genau das gleiche wie die Zeile zwei Chunks weiter oben. Besonders hilfreich ist aber die Möglichkeit, nur bestimmte Zeilen auszuwählen. Um damit unseren Datensatz zu filtern, brauchen wir aber noch eine Grundlage.</p>
+<section id="vergleiche" class="level3">
+<h3 class="anchored" data-anchor-id="vergleiche">Vergleiche</h3>
+<p>In R lassen sich wie in vielen anderen Sprachen auch Variablen und Werte vergleichen. Ein Beispiel wäre der Test auf Gleichheit.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">^</span> <span class="dv">3</span> <span class="sc">==</span> <span class="dv">8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Mit dem doppelten Gleichheitszeichen können wir diesen Gleichheitsvergleich ausführen. Zurück bekommen wir einen sogenannten booleschen Wert, auch Wahrheitswert genannt. Dieser hat zwei mögliche Zustände: Entweder der Vergleich ist wahr (TRUE) oder er ist falsch (FALSE). In R kann man auch selbst boolesche Werte mit <code>TRUE</code> oder <code>T</code> bzw. <code>FALSE</code> oder <code>F</code> schreiben.</p>
+<p>Vergleiche funktionieren auch mit Vektoren und Datensätzen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">^</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">==</span> <span class="dv">8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE FALSE  TRUE FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat <span class="sc">==</span> <span class="st">"Ohne"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     precourse mot_pre mot_post subjectNr
+[1,]      TRUE   FALSE    FALSE     FALSE
+[2,]     FALSE   FALSE    FALSE     FALSE
+[3,]     FALSE   FALSE    FALSE     FALSE
+[4,]      TRUE   FALSE    FALSE     FALSE
+[5,]     FALSE   FALSE    FALSE     FALSE
+[6,]     FALSE   FALSE    FALSE     FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat<span class="sc">$</span>precourse <span class="sc">==</span> <span class="st">"Ohne"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  TRUE FALSE FALSE  TRUE FALSE FALSE</code></pre>
+</div>
+</div>
+<p>Der erste Vergleich zeigt uns, dass nur 2 hoch 3 8 ergibt. Im zweiten Vergleich schauen wir, welche Werte im Datensatz “Ohne” sind. Dabei vergleichen wir aber alle Spalten mit “Ohne” was natürlich keinen Sinn ergibt. Deshalb schauen wir uns im letzten Vergleich nur die <code>precourse</code>-Spalte an. Der Code in der letzten Zeile ist sehr nützlich zum Filtern von Datensätzen. Ihr könnt schon einmal darüber nachdenken, wie das funktionieren könnte.</p>
+<p>Es gibt natürlich auch noch andere Vergleichsmöglichkeiten, gerade wenn man mit Zahlen arbeitet:</p>
+<ul>
+<li><p><code>!=</code> gibt <code>TRUE</code> zurück, wenn zwei Werte nicht gleich sind (<code>8 != 9</code> =&gt; <code>TRUE</code>)</p></li>
+<li><p><code>&gt;</code> gibt <code>TRUE</code> zurück, wenn der linke Wert größer als der rechte ist (<code>9 &gt; 8</code> =&gt; <code>TRUE</code>)</p></li>
+<li><p><code>&lt;</code> gibt <code>TRUE</code> zurück, wenn der linke Wert kleiner als der rechte ist (<code>8 &lt; 9</code> =&gt; <code>TRUE</code>)</p></li>
+<li><p><code>&gt;=</code> gibt <code>TRUE</code> zurück, wenn der linke Wert größer als oder gleich dem rechten ist (<code>9 &gt;= 9</code> =&gt; <code>TRUE</code>)</p></li>
+<li><p><code>&lt;=</code> gibt <code>TRUE</code> zurück, wenn der linke Wert kleiner als oder gleich dem rechten ist (<code style="caret-color: white;">8 &lt;= 8</code> =&gt; <code style="caret-color: white;">TRUE</code>)</p></li>
+</ul>
+<p>Für uns reicht aber meistens ein Vergleich auf Gleichheit. Eine nützliche Sache gibt es noch; Die Anzahl an <code>TRUE</code>-Werten lassen sich leicht zählen, sodass wir herausfinden können, wie viele Leute es gibt, die den Vorkurs nicht besucht haben:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(dat<span class="sc">$</span>precourse <span class="sc">==</span> <span class="st">"Ohne"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 250</code></pre>
+</div>
+</div>
 </section>
-<section id="anhang" class="level2">
-<h2 class="anchored" data-anchor-id="anhang">Anhang</h2>
-<p>Im Anhang findet ihr zu jeder Sitzung Codechunks, die ich für die Erstellung der Sitzung benutzt habe. Vielleicht sind die ja für den einen oder die andere spannend.</p>
+<section id="subsetting" class="level3">
+<h3 class="anchored" data-anchor-id="subsetting">Subsetting</h3>
+<p>Mit unserem neuen Wissen über Vergleiche können wir jetzt die Daten nach Leuten filtern, die den Vorkurs nicht besucht haben.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dat_ohne <span class="ot">=</span> dat[dat<span class="sc">$</span>precourse <span class="sc">==</span> <span class="st">"Ohne"</span>, ]</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>dat_ohne[dat_ohne<span class="sc">$</span>precourse <span class="sc">!=</span> <span class="st">"Ohne"</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] precourse mot_pre   mot_post  subjectNr
+&lt;0 Zeilen&gt; (oder row.names mit Länge 0)</code></pre>
+</div>
+</div>
+<p>Wenn wir einen Vektor mit booleschen Werten an die Stelle schreiben, wo sonst die Zeilennummer steht, wählt R einfach alle Spalten aus, wo der boolesche Wert <code>TRUE</code> ist. So können wir nur die Zeilen mit Leuten auswählen, wo Leute den Vorkurs nicht besucht haben.</p>
+<p>Dieser Code ist zugegebenermaßen ein bisschen unschön. Zum Glück gibt es in R auch eine Funktion, die genau das gleiche macht, aber ein bisschen übersichtlicher ist.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>dat_first_100 <span class="ot">=</span> <span class="fu">subset</span>(dat, dat<span class="sc">$</span>subjectNr <span class="sc">&lt;=</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Mit <code>subset()</code> können wir auch nur bestimmte Spalten auswählen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>dat_no_pre <span class="ot">=</span> <span class="fu">subset</span>(dat, <span class="at">select=</span><span class="fu">c</span>(<span class="st">"precourse"</span>, <span class="st">"mot_post"</span>, <span class="st">"subjectNr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Jetzt haben wir alle wichtigen Funktionen zum Umgang mit Daten kennengelernt. In der nächsten Sitzung werden wir uns ggplot anschauen, um schöne Grafiken erstellen zu können.</p>
+</section>
 </section>
 </section>
 
