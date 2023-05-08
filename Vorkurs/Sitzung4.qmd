@@ -1,0 +1,108 @@
+---
+title: "KlinMeth-Vorkurs - Sitzung 4"
+author:
+- York Hagmayer
+- Bente Hinkenhuis
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+    theme: default
+editor: visual
+---
+
+# KlinMeth-Vorkurs - Erste Inferenzstatistiken
+
+Heute, in der letzten wichtigen Sitzung dieses Vorkurses, werden wir erste Schritte mit Inferenzstatistik in R machen. Ziel wird es sein, ein sehr einfaches lineares Modell aufzustellen, dessen Annahmen zu prüfen und das Ergebnis zu interpretieren.
+
+Dazu laden wir zunächst Pakete, setzen dann das working directory, laden die Daten und rekodieren Faktoren.
+
+## Vorbereitung
+
+```{r}
+library(ggplot2)
+library(psych)
+library(car)
+library(rcompanion)
+library(lmtest)
+
+setwd("C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs")
+
+dat = read.csv("motivation_precourse.csv")
+dat$precourse = as.factor(dat$precourse)
+```
+
+## Modellaufstellung
+
+Zu jeder Auswertung gehört es dazu, sich die Daten vor der Analyse einmal anzusehen. An Grafiken lässt sich ableiten, was mögliche Modelle/Analysemethoden angemessen sind und welche Einstellungen vorgenommen werden müssen.
+
+### Deskriptive Grafik
+
+```{r}
+ggplot(dat, aes(precourse, mot_post)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  ylim(0,10) +
+  ylab("Motivation score") + 
+  xlab("Precourse") +
+  ggtitle("Motivation after precourse")
+```
+
+Ist ein allgemeines lineares Modell eurer Meinung nach angemessen? Woran seht ihr das? Für den Rest der Sitzung wollen wir eure Vermutungen überprüfen, indem wir ein Modell aufstellen, seine Annahmen überprüfen und seine Ergebnisse interpretieren.
+
+### Einfaches ALM
+
+```{r}
+model = lm(mot_post ~ precourse, data=dat)
+```
+
+So einfach ist es, in R ein lineares Modell auszurechnen. Die Regression wurde berechnet und die Effekte wurden mit t-Statistik schon ausgerechnet. Bevor wir uns aber darum kümmern, wollen wir überprüfen, ob die Annahmen des ALM erfüllt sind.
+
+## Annahmentestung
+
+### Analyse der Residuen
+
+Das ALM nimmt an, dass die Fehler zufällig und unabhängig von den Prädiktoren sind (Annahme der Varianzhomogenität btw. Homoskedastizität). Wenn dies der Fall ist, dann sollten die Residuen zufällig und normalverteilt um den Wert von Null streuen. Ebenso sollten sich in einer Abbildung der Residuen und vorhergesagten Werte kein Zusammenhang und keine systematische Abweichung von Null zeigen.
+
+```{r}
+## Verteilung der Residuen
+densityPlot(model$residuals)
+plotNormalDensity(model$residuals)
+
+## Verteilung der Residuen in Abhängigkeit von vorhergesagten Werten
+scatterplot(model$residuals ~ model$fitted.values)
+
+## Statistischer Test auf Heteroskedastizität: Breusch-Pagan Test
+bptest(model)
+```
+
+Wir sehen, dass der Test auf Heteroskedastizität signifikant ist. Das bedeutet, dass die Residuen nicht normalverteilt sind und diese Annahme somit verletzt ist. Im Plot sehen wir das daran, dass wie Werte bei Leuten mit Vorkurs von -4 Standardabweichungen bis +4 Standardabweichungen streuen. Normal wäre eine Streuung von -2 bis +2 mit vereinzelt kleineren bzw. größeren Werten.
+
+### Test auf Autokorrelation der Residuen
+
+Das ALM geht davon aus, dass Messwerte unabhängig voneinander sind. Wenn diese abhängig voneinander sein sollten, dann nimmt das ALM an, dass diese Abhängigkeit durch die Prädiktoren im Modell erklärt wird. Um zu untersuchen, ob dies der Fall ist, wird analysiert ob die Residuen miteinander korreliert sind. Dies sollte nicht der Fall sein. Wenn diese korreliert sind, dann müssen wir das Modell so erweitern, dass diese Abhängigkeit durch das erweiterte Modell erklärt wird. (Siehe Multilevel)
+
+```{r}
+durbinWatsonTest(model) # Test für eine Autokorrelation 1.Ordnung
+```
+
+Eine Autokorrelation ist laut dem Test nicht vorhanden.
+
+## Interpretation
+
+Ungeachtet der nicht erfüllten Annahme zu den Residuen des Modells sehen wir uns zur Interpretation erstmal die Ergebnisse an.
+
+Dazu gibt es den `summary()`-Befehl, der für so ziemlich jedes statistische Modell funktioniert und uns die Ergebnisse ausgibt.
+
+```{r}
+summary(model)
+```
+
+Zunächst einmal ist die F-Statistik in der letzten Zeile interessant. Diese sagt uns, dass unser Modell die Daten besser erklärt, als einfach nur einen Mittelwert über alle Bedingungen zu bilden (das nennt man das Nullmodell).
+
+Außerdem sehen wir an dem Estimate für `precourseYes`, dass Menschen, die den Vorkurs besucht haben, danach durchschnittlich um 1,9 Punkte stärker motiviert sind.

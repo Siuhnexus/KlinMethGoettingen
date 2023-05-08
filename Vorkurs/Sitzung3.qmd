@@ -255,6 +255,8 @@ ggplot(dat, aes(home, visited, color = gender)) +
   theme_classic()
 ```
 
+Das wars erstmal für die Grafiken. In der nächsten Sitzung wollen wir uns um erste Inferenzstatistik kümmern.
+
 ## Anhang
 
 Im Anhang findet ihr zu jeder Sitzung Codechunks, die ich für die Erstellung der Sitzung benutzt habe. Vielleicht sind die ja für den einen oder die andere spannend.
