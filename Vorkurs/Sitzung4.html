@@ -97,6 +97,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#test-auf-autokorrelation-der-residuen" id="toc-test-auf-autokorrelation-der-residuen" class="nav-link" data-scroll-target="#test-auf-autokorrelation-der-residuen">Test auf Autokorrelation der Residuen</a></li>
   </ul></li>
   <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation">Interpretation</a></li>
+  <li><a href="#neues-modell" id="toc-neues-modell" class="nav-link" data-scroll-target="#neues-modell">Neues Modell</a>
+  <ul class="collapse">
+  <li><a href="#unabhängigkeit-der-prädiktoren" id="toc-unabhängigkeit-der-prädiktoren" class="nav-link" data-scroll-target="#unabhängigkeit-der-prädiktoren">Unabhängigkeit der Prädiktoren</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -225,6 +229,7 @@ Attaching package: 'zoo'</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">=</span> <span class="fu">lm</span>(mot_post <span class="sc">~</span> precourse, <span class="at">data=</span>dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Der erste Teil im <code>lm()</code>-Befehl ist die Formel. Die Tilde (<code>~</code>) steht dabei für “in Abhängigkeit von”.</p>
 <p>So einfach ist es, in R ein lineares Modell auszurechnen. Die Regression wurde berechnet und die Effekte wurden mit t-Statistik schon ausgerechnet. Bevor wir uns aber darum kümmern, wollen wir überprüfen, ob die Annahmen des ALM erfüllt sind.</p>
 </section>
 </section>
@@ -267,7 +272,7 @@ BP = 151.75, df = 1, p-value &lt; 2.2e-16</code></pre>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">durbinWatsonTest</span>(model) <span class="co"># Test für eine Autokorrelation 1.Ordnung</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> lag Autocorrelation D-W Statistic p-value
-   1     -0.04769933       2.09348   0.286
+   1     -0.04769933       2.09348   0.294
  Alternative hypothesis: rho != 0</code></pre>
 </div>
 </div>
@@ -303,6 +308,38 @@ F-statistic: 172.3 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <p>Zunächst einmal ist die F-Statistik in der letzten Zeile interessant. Diese sagt uns, dass unser Modell die Daten besser erklärt, als einfach nur einen Mittelwert über alle Bedingungen zu bilden (das nennt man das Nullmodell).</p>
 <p>Außerdem sehen wir an dem Estimate für <code>precourseYes</code>, dass Menschen, die den Vorkurs besucht haben, danach durchschnittlich um 1,9 Punkte stärker motiviert sind.</p>
+</section>
+<section id="neues-modell" class="level2">
+<h2 class="anchored" data-anchor-id="neues-modell">Neues Modell</h2>
+<p>Jetzt haben wir schon eine Analyse gemacht und herausgefunden, dass unsere Daten nicht so super zum ALM passen, es aber einen positiven Einfluss vom Vorkurs auf die Motivation zu geben scheint.</p>
+<p>Im nächsten Schritt wollen wir prüfen, ob Leute mit hoher Motivation vor dem Vorkurs auch eher eine hohe Motivation nach dem Vorkurs haben. Dazu schließen wir <code>mot_pre</code> mit ins Modell ein.</p>
+<p>Stellt nun das Modell auf und nennt es model2. Mehrere Prädiktoren werden dabei einfach mit einem <code>+</code> dazwischen hintereinander geschrieben.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modellaufstellung</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Um zu überprüfen, ob wir diesen Prädiktor überhaupt ins Modell einschließen sollten, können wir jetzt auch eine Varianzanalyse rechnen. Nehmt das <code>#</code> vorne weg, damit der Code ausgeführt wird.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#anova(model2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Für die Gültigkeit des Modells müssen wir neben den anderen eine weitere Annahme testen.</p>
+<section id="unabhängigkeit-der-prädiktoren" class="level3">
+<h3 class="anchored" data-anchor-id="unabhängigkeit-der-prädiktoren">Unabhängigkeit der Prädiktoren</h3>
+<p>Wir berechnen die Varianzinflationsfaktoren, um zu überprüfen, ob sich die Prädiktoren auseinanderhalten lassen. Sind sie nämlich zu hoch korreliert, lässt sich nicht sagen, welcher Prädiktor für die Effekte verantwortlich ist. Nehmt auch hier das <code>#</code> vorne weg.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#vif(model2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Varianzinflationsfaktoren sollten nahe an 1 sein, nicht größer als 10 sein und ab einem Wert von 4 sollte überprüft werden, woran das liegen könnte.</p>
+<p>Nun könnt ihr die gleichen Schritte wie zuvor für die restlichen benötigten Analysen ausführen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyse Residuen</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test auf Autokorrelation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ergebnisse und Interpretation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 </section>
 </section>
 

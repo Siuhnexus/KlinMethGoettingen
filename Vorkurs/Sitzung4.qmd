@@ -61,6 +61,8 @@ Ist ein allgemeines lineares Modell eurer Meinung nach angemessen? Woran seht ih
 model = lm(mot_post ~ precourse, data=dat)
 ```
 
+Der erste Teil im `lm()`-Befehl ist die Formel. Die Tilde (`~`) steht dabei für "in Abhängigkeit von".
+
 So einfach ist es, in R ein lineares Modell auszurechnen. Die Regression wurde berechnet und die Effekte wurden mit t-Statistik schon ausgerechnet. Bevor wir uns aber darum kümmern, wollen wir überprüfen, ob die Annahmen des ALM erfüllt sind.
 
 ## Annahmentestung
@@ -106,3 +108,51 @@ summary(model)
 Zunächst einmal ist die F-Statistik in der letzten Zeile interessant. Diese sagt uns, dass unser Modell die Daten besser erklärt, als einfach nur einen Mittelwert über alle Bedingungen zu bilden (das nennt man das Nullmodell).
 
 Außerdem sehen wir an dem Estimate für `precourseYes`, dass Menschen, die den Vorkurs besucht haben, danach durchschnittlich um 1,9 Punkte stärker motiviert sind.
+
+## Neues Modell
+
+Jetzt haben wir schon eine Analyse gemacht und herausgefunden, dass unsere Daten nicht so super zum ALM passen, es aber einen positiven Einfluss vom Vorkurs auf die Motivation zu geben scheint.
+
+Im nächsten Schritt wollen wir prüfen, ob Leute mit hoher Motivation vor dem Vorkurs auch eher eine hohe Motivation nach dem Vorkurs haben. Dazu schließen wir `mot_pre` mit ins Modell ein.
+
+Stellt nun das Modell auf und nennt es model2. Mehrere Prädiktoren werden dabei einfach mit einem `+` dazwischen hintereinander geschrieben.
+
+```{r}
+# Modellaufstellung
+
+```
+
+Um zu überprüfen, ob wir diesen Prädiktor überhaupt ins Modell einschließen sollten, können wir jetzt auch eine Varianzanalyse rechnen. Nehmt das `#` vorne weg, damit der Code ausgeführt wird.
+
+```{r}
+#anova(model2)
+```
+
+Für die Gültigkeit des Modells müssen wir neben den anderen eine weitere Annahme testen.
+
+### Unabhängigkeit der Prädiktoren
+
+Wir berechnen die Varianzinflationsfaktoren, um zu überprüfen, ob sich die Prädiktoren auseinanderhalten lassen. Sind sie nämlich zu hoch korreliert, lässt sich nicht sagen, welcher Prädiktor für die Effekte verantwortlich ist. Nehmt auch hier das `#` vorne weg.
+
+```{r}
+#vif(model2)
+```
+
+Varianzinflationsfaktoren sollten nahe an 1 sein, nicht größer als 10 sein und ab einem Wert von 4 sollte überprüft werden, woran das liegen könnte.
+
+Nun könnt ihr die gleichen Schritte wie zuvor für die restlichen benötigten Analysen ausführen.
+
+```{r}
+# Analyse Residuen
+
+```
+
+```{r}
+# Test auf Autokorrelation
+
+```
+
+```{r}
+# Ergebnisse und Interpretation
+
+```
