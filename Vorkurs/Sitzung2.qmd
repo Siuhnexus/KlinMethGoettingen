@@ -14,9 +14,9 @@ editor: visual
 
 # KlinMeth-Vorkurs - R-Sprache und Variablentypen
 
-Heute wollen wir R ein bisschen näher kennenlernen. Technisch gesehen ist R zwar eine Programmiersprache, aber für unsere Zwecke müssen wir nicht allzu tief ins Programmieren einsteigen.
+Heute wollen wir R ein bisschen näher kennenlernen. Am Ende der Sitzung wollen wir dazu in der Lage sein, einzelne Variablen aus unseren Daten auszuwählen und unsere Daten nach verschiedenen Kriterien zu filtern. Um da hinzukommen, müssen wir aber leider erst ein paar Grundlagen klären.
 
-Erstmal könnt ihr R wie einen Taschenrechner benutzen. Alle Grundrechenarten funktionieren (mal mit dem Sternchen \* und geteilt mit dem Schrägstrich /).
+Technisch gesehen ist R zwar eine Programmiersprache, aber für unsere Zwecke müssen wir nicht allzu tief ins Programmieren einsteigen. Erstmal könnt ihr R wie einen Taschenrechner benutzen. Alle Grundrechenarten funktionieren (mal mit dem Sternchen \* und geteilt mit dem Schrägstrich /).
 
 ```{r}
 5 + 4
@@ -97,7 +97,7 @@ Jede dieser Variablen ist ein **Vektor** eines bestimmten Typs, enthält also me
 
 -   `precourse` ist ein Vektor vom Typ `chr`, was bedeutet, dass er "characters" enthält, was gleichbedeutend mit Text ist.
 
--   `subjectNr` ist vom Typ `int`, was f?r "integer" und damit ganze Zahlen steht.
+-   `subjectNr` ist vom Typ `int`, was für "integer" und damit ganze Zahlen steht.
 
 -   Die anderen beiden Variablen sind vom Typ `num`, enthalten also Dezimalzahlen.
 
@@ -214,6 +214,7 @@ Dieser Code ist zugegebenermaßen ein bisschen unschön. Zum Glück gibt es in R
 
 ```{r}
 dat_first_100 = subset(dat, dat$subjectNr <= 100)
+dat_ohne = subset(dat, dat$precourse == "Ohne")
 ```
 
 Mit `subset()` können wir auch nur bestimmte Spalten auswählen.

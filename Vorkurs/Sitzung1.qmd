@@ -29,6 +29,29 @@ Dieser Kurs dient **NICHT** dazu:
 
 Gerade mit Bezug auf den ersten Punkt ist mir wichtig, zu betonen, dass Fragen zu jeder Zeit willkommen sind. Wenn ihr eine Frage habt, haben andere diese Frage vermutlich auch. Gleichzeitig lassen mich eure Fragen erkennen, wo ich noch ausführlicher auf Dinge eingehen muss und ob das Tempo angemessen ist. Nur wenn ihr euch traut, zu fragen, wenn euch etwas unklar ist, ist dieser Vorkurs sinnvoll.
 
+## Was ist R?
+
+-   Programmiersprache für statistische Auswertung
+-   R kann als Programm zur Verarbeitung von Informationen verstanden werden
+-   Input: Objekte (Datensätze) mit unterschiedlichen Informationen (UVs, AVs, Items)
+-   Processing: Manipulation dieser Objekte/Informationen, zusammenfassen der Informationen, statistische Berechnungen
+-   Output: Tabellen, Plots, statistische Ergebnisse
+
+### Warum R?
+
+-   R ist kostenfrei
+-   R besitzt einen riesigen und stetig wachsenden Funktionsumfang, der flexibel einsetzbar ist
+-   Berechnungen sind durch Skripte gut nachvollziehbar/nachrechenbar
+
+### Wie lerne ich R?
+
+-   Cheat Sheets: https://www.rstudio.com/resources/cheatsheets/
+-   Buch von Andy Field: Discovering statistics using r
+-   Skripte und Datensätze: http://studysites.uk.sagepub.com/dsur/study/default.htm
+-   R-Paket Swirl: http://swirlstats.com/
+-   Google, https://stats.stackexchange.com
+-   Dieser Vorkurs
+
 ### R-Installation
 
 Zunächst wollen wir R installieren. Dazu holt ihr euch das Installationsprogramm für euer jeweiliges Betriebssystem mit den folgenden Links:
@@ -47,29 +70,6 @@ Wenn ihr die Installation erfolgreich abgeschlossen habt, könnt ihr schon Stati
 -   Linux: Sucht [hier](https://posit.co/download/rstudio-desktop/) nach eurer Distribution
 
 Wenn ihr alles installiert habt, könnt ihr RStudio starten.
-
-## Was ist R?
-
--   Programmiersprache für statistische Auswertung
--   R kann **als Programm zur Verarbeitung von Informationen** verstanden werden
-    -   **Input:** **Objekte** (Datensätze) mit unterschiedlichen **Informationen** (UVs, AVs, Items)
-    -   **Processing:** Manipulation dieser Objekte/Informationen, zusammenfassen der Informationen, statistische Berechnungen
-    -   **Output:** Tabellen, Plots, statistische Ergebnisse
-
-### Warum R?
-
--   R ist kostenfrei
--   R besitzt einen riesigen und stetig wachsenden Funktionsumfang, der flexibel einsetzbar ist
--   Berechnungen sind durch Skripte gut nachvollziehbar/nachrechenbar
-
-### Wie lerne ich R?
-
--   **Cheat Sheets**: https://www.rstudio.com/resources/cheatsheets/
--   Buch von Andy Field: **Discovering statistics using r**
-    -   Skripte und Datensätze: <http://studysites.uk.sagepub.com/dsur/study/default.htm>
--   R-Paket **Swirl**: http://swirlstats.com/
--   Google, https://stats.stackexchange.com
--   Dieser Vorkurs
 
 ## Aufbau von RStudio
 
@@ -207,7 +207,19 @@ dat_weird_na = read.csv("motivation_precourse_weird_na.csv", na="99")
 
 Testweise könnt ihr mal ausprobieren, was passiert, wenn wir die Daten mit der falschen Funktion/falschen Angaben einlesen. Richtig eingelesene Daten haben 500 observations, 4 Variablen und NAs werden beim Anschauen des Datensatzes mit einem kursiv gedruckten *NA* angezeigt.
 
-Das war es auch schon für heute. Wir haben gerade im letzten Teil schon ein paar R-spezifische Programmierschreibweisen implizit benutzt, ohne zu sehr darauf einzugehen, wieso die so sind, wie sie sind. Das wollen wir in der nächsten Sitzung nachholen und dann einen Blick auf verschiedene Variablenformate werfen.
+Die Variable `dat` (und alle anderen, die mit `dat` anfangen) ist ein sogenanntes Dataframe. Wir werden in diesem Semester vor allem mit diesem Format arbeiten. Wenn ihr also Dozierende von Dataframes reden hört, meinen sie damit genau diese Variablen, die durch das Einlesen von Daten entstanden sind.
+
+### Erster Plot
+
+Zum Schluss wollen wir noch unseren ersten Plot machen. Dazu nutzen wir die `plot()`-Funktion und übergeben ihr einfach unsere Daten.
+
+```{r}
+plot(dat)
+```
+
+Wenn wir R nichts weiter sagen, macht R alle möglichen Plots für die Beziehungen zwischen zwei Variablen mit allen möglichen Kombinationen von Variable und Achse. Dabei steht der Name der jeweiligen Variable in der Diagonalen. In jedem Plot in der ersten Spalte ist also die `precourse`-Variable auf der x-Achse zu sehen, in der zweiten die Motivation vor dem Vorkurs usw. Nicht alle dieser Plots sind aussagekräftig; der Zusammenhang zwischen Versuchspersonennummer und Teilnahme am Vorkurs ist beispielsweise nicht sehr informativ. Deshalb werden wir uns in der nächsten Sitzung damit beschäftigen, wie sich einzelne Variablen aus dem Dataframe auswählen lassen, um mit diesen in der dritten Sitzung schöne Grafiken zu erstellen.
+
+Das war es auch schon für heute. Wir haben gerade im letzten Teil schon ein paar R-spezifische Programmierschreibweisen implizit benutzt, ohne zu sehr darauf einzugehen, wieso die so sind, wie sie sind. Das wollen wir in der nächsten Sitzung nachholen und dann neben der Auswahl von Variablen einen Blick auf verschiedene Variablenformate werfen.
 
 ## Anhang
 

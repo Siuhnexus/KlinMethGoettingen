@@ -255,7 +255,7 @@ ggplot(dat, aes(home, visited, color = gender)) +
   theme_classic()
 ```
 
-Das wars erstmal für die Grafiken. In der nächsten Sitzung wollen wir uns um erste Inferenzstatistik kümmern.
+Das wars erstmal für die Grafiken. In der nächsten Sitzung wollen wir uns um deskriptive Statistik kümmern.
 
 ## Anhang
 

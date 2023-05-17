@@ -9,7 +9,7 @@
 <meta name="author" content="York Hagmayer">
 <meta name="author" content="Bente Hinkenhuis">
 
-<title>KlinMeth-Vorkurs - Sitzung 4</title>
+<title>KlinMeth-Vorkurs - Sitzung 5</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -59,16 +59,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="Sitzung4_files/libs/clipboard/clipboard.min.js"></script>
-<script src="Sitzung4_files/libs/quarto-html/quarto.js"></script>
-<script src="Sitzung4_files/libs/quarto-html/popper.min.js"></script>
-<script src="Sitzung4_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="Sitzung4_files/libs/quarto-html/anchor.min.js"></script>
-<link href="Sitzung4_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="Sitzung4_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="Sitzung4_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="Sitzung4_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="Sitzung4_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="Sitzung5_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Sitzung5_files/libs/quarto-html/quarto.js"></script>
+<script src="Sitzung5_files/libs/quarto-html/popper.min.js"></script>
+<script src="Sitzung5_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Sitzung5_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Sitzung5_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Sitzung5_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Sitzung5_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Sitzung5_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Sitzung5_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <style>html{ scroll-behavior: smooth; }</style>
 
 
@@ -91,16 +91,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#deskriptive-grafik" id="toc-deskriptive-grafik" class="nav-link" data-scroll-target="#deskriptive-grafik">Deskriptive Grafik</a></li>
   <li><a href="#einfaches-alm" id="toc-einfaches-alm" class="nav-link" data-scroll-target="#einfaches-alm">Einfaches ALM</a></li>
   </ul></li>
-  <li><a href="#annahmentestung" id="toc-annahmentestung" class="nav-link" data-scroll-target="#annahmentestung">Annahmentestung</a>
-  <ul class="collapse">
-  <li><a href="#analyse-der-residuen" id="toc-analyse-der-residuen" class="nav-link" data-scroll-target="#analyse-der-residuen">Analyse der Residuen</a></li>
-  <li><a href="#test-auf-autokorrelation-der-residuen" id="toc-test-auf-autokorrelation-der-residuen" class="nav-link" data-scroll-target="#test-auf-autokorrelation-der-residuen">Test auf Autokorrelation der Residuen</a></li>
-  </ul></li>
   <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation">Interpretation</a></li>
-  <li><a href="#neues-modell" id="toc-neues-modell" class="nav-link" data-scroll-target="#neues-modell">Neues Modell</a>
-  <ul class="collapse">
-  <li><a href="#unabhängigkeit-der-prädiktoren" id="toc-unabhängigkeit-der-prädiktoren" class="nav-link" data-scroll-target="#unabhängigkeit-der-prädiktoren">Unabhängigkeit der Prädiktoren</a></li>
-  </ul></li>
+  <li><a href="#neues-modell" id="toc-neues-modell" class="nav-link" data-scroll-target="#neues-modell">Neues Modell</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -109,7 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">KlinMeth-Vorkurs - Sitzung 4</h1>
+<h1 class="title">KlinMeth-Vorkurs - Sitzung 5</h1>
 </div>
 
 
@@ -133,7 +125,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="klinmeth-vorkurs---erste-inferenzstatistiken" class="level1">
 <h1>KlinMeth-Vorkurs - Erste Inferenzstatistiken</h1>
-<p>Heute, in der letzten wichtigen Sitzung dieses Vorkurses, werden wir erste Schritte mit Inferenzstatistik in R machen. Ziel wird es sein, ein sehr einfaches lineares Modell aufzustellen, dessen Annahmen zu prüfen und das Ergebnis zu interpretieren.</p>
+<p>Heute, in der letzten Sitzung dieses Vorkurses, werden wir erste Schritte mit Inferenzstatistik in R machen. Ziel wird es sein, ein sehr einfaches lineares Modell aufzustellen, dessen Annahmen zu prüfen und das Ergebnis zu interpretieren.</p>
 <p>Dazu laden wir zunächst Pakete, setzen dann das working directory, laden die Daten und rekodieren Faktoren.</p>
 <section id="vorbereitung" class="level2">
 <h2 class="anchored" data-anchor-id="vorbereitung">Vorbereitung</h2>
@@ -219,7 +211,7 @@ Attaching package: 'zoo'</code></pre>
 <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Precourse"</span>) <span class="sc">+</span></span>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Motivation after precourse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Sitzung4_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="Sitzung5_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Ist ein allgemeines lineares Modell eurer Meinung nach angemessen? Woran seht ihr das? Für den Rest der Sitzung wollen wir eure Vermutungen überprüfen, indem wir ein Modell aufstellen, seine Annahmen überprüfen und seine Ergebnisse interpretieren.</p>
@@ -233,58 +225,12 @@ Attaching package: 'zoo'</code></pre>
 <p>So einfach ist es, in R ein lineares Modell auszurechnen. Die Regression wurde berechnet und die Effekte wurden mit t-Statistik schon ausgerechnet. Bevor wir uns aber darum kümmern, wollen wir überprüfen, ob die Annahmen des ALM erfüllt sind.</p>
 </section>
 </section>
-<section id="annahmentestung" class="level2">
-<h2 class="anchored" data-anchor-id="annahmentestung">Annahmentestung</h2>
-<section id="analyse-der-residuen" class="level3">
-<h3 class="anchored" data-anchor-id="analyse-der-residuen">Analyse der Residuen</h3>
-<p>Das ALM nimmt an, dass die Fehler zufällig und unabhängig von den Prädiktoren sind (Annahme der Varianzhomogenität btw. Homoskedastizität). Wenn dies der Fall ist, dann sollten die Residuen zufällig und normalverteilt um den Wert von Null streuen. Ebenso sollten sich in einer Abbildung der Residuen und vorhergesagten Werte kein Zusammenhang und keine systematische Abweichung von Null zeigen.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Verteilung der Residuen</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">densityPlot</span>(model<span class="sc">$</span>residuals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="Sitzung4_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotNormalDensity</span>(model<span class="sc">$</span>residuals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="Sitzung4_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Verteilung der Residuen in Abhängigkeit von vorhergesagten Werten</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">scatterplot</span>(model<span class="sc">$</span>residuals <span class="sc">~</span> model<span class="sc">$</span>fitted.values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="Sitzung4_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid" width="672"></p>
-</div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Statistischer Test auf Heteroskedastizität: Breusch-Pagan Test</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    studentized Breusch-Pagan test
-
-data:  model
-BP = 151.75, df = 1, p-value &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<p>Wir sehen, dass der Test auf Heteroskedastizität signifikant ist. Das bedeutet, dass die Residuen nicht normalverteilt sind und diese Annahme somit verletzt ist. Im Plot sehen wir das daran, dass wie Werte bei Leuten mit Vorkurs von -4 Standardabweichungen bis +4 Standardabweichungen streuen. Normal wäre eine Streuung von -2 bis +2 mit vereinzelt kleineren bzw. größeren Werten.</p>
-</section>
-<section id="test-auf-autokorrelation-der-residuen" class="level3">
-<h3 class="anchored" data-anchor-id="test-auf-autokorrelation-der-residuen">Test auf Autokorrelation der Residuen</h3>
-<p>Das ALM geht davon aus, dass Messwerte unabhängig voneinander sind. Wenn diese abhängig voneinander sein sollten, dann nimmt das ALM an, dass diese Abhängigkeit durch die Prädiktoren im Modell erklärt wird. Um zu untersuchen, ob dies der Fall ist, wird analysiert ob die Residuen miteinander korreliert sind. Dies sollte nicht der Fall sein. Wenn diese korreliert sind, dann müssen wir das Modell so erweitern, dass diese Abhängigkeit durch das erweiterte Modell erklärt wird. (Siehe Multilevel)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">durbinWatsonTest</span>(model) <span class="co"># Test für eine Autokorrelation 1.Ordnung</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> lag Autocorrelation D-W Statistic p-value
-   1     -0.04769933       2.09348   0.294
- Alternative hypothesis: rho != 0</code></pre>
-</div>
-</div>
-<p>Eine Autokorrelation ist laut dem Test nicht vorhanden.</p>
-</section>
-</section>
 <section id="interpretation" class="level2">
 <h2 class="anchored" data-anchor-id="interpretation">Interpretation</h2>
 <p>Ungeachtet der nicht erfüllten Annahme zu den Residuen des Modells sehen wir uns zur Interpretation erstmal die Ergebnisse an.</p>
 <p>Dazu gibt es den <code>summary()</code>-Befehl, der für so ziemlich jedes statistische Modell funktioniert und uns die Ergebnisse ausgibt.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -315,31 +261,18 @@ F-statistic: 172.3 on 1 and 498 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Im nächsten Schritt wollen wir prüfen, ob Leute mit hoher Motivation vor dem Vorkurs auch eher eine hohe Motivation nach dem Vorkurs haben. Dazu schließen wir <code>mot_pre</code> mit ins Modell ein.</p>
 <p>Stellt nun das Modell auf und nennt es model2. Mehrere Prädiktoren werden dabei einfach mit einem <code>+</code> dazwischen hintereinander geschrieben.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modellaufstellung</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modellaufstellung</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Um zu überprüfen, ob wir diesen Prädiktor überhaupt ins Modell einschließen sollten, können wir jetzt auch eine Varianzanalyse rechnen. Nehmt das <code>#</code> vorne weg, damit der Code ausgeführt wird.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#anova(model2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#anova(model2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Für die Gültigkeit des Modells müssen wir neben den anderen eine weitere Annahme testen.</p>
-<section id="unabhängigkeit-der-prädiktoren" class="level3">
-<h3 class="anchored" data-anchor-id="unabhängigkeit-der-prädiktoren">Unabhängigkeit der Prädiktoren</h3>
-<p>Wir berechnen die Varianzinflationsfaktoren, um zu überprüfen, ob sich die Prädiktoren auseinanderhalten lassen. Sind sie nämlich zu hoch korreliert, lässt sich nicht sagen, welcher Prädiktor für die Effekte verantwortlich ist. Nehmt auch hier das <code>#</code> vorne weg.</p>
+<p>Schaut euch nun die Ergebnisse des neuen Modells an und versucht, es zu interpretieren.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#vif(model2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ergebnisse und Interpretation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Varianzinflationsfaktoren sollten nahe an 1 sein, nicht größer als 10 sein und ab einem Wert von 4 sollte überprüft werden, woran das liegen könnte.</p>
-<p>Nun könnt ihr die gleichen Schritte wie zuvor für die restlichen benötigten Analysen ausführen.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyse Residuen</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test auf Autokorrelation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ergebnisse und Interpretation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
+<p>Das wars für diesen Vorkurs. Ich hoffe, ihr habt etwas gelernt und seid vielleicht nicht komplett von R abgeschreckt.</p>
+<p>Viel Spaß mit den Inhalten im Semester :-)</p>
 </section>
 </section>
 
@@ -582,5 +515,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<script src="Sitzung4_files/libs/quarto-html/zenscroll-min.js"></script>
+<script src="Sitzung5_files/libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
