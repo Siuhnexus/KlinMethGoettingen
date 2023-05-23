@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="York Hagmayer">
+<meta name="author" content="Bente Hinkenhuis">
+
+<title>KlinMeth-Vorkurs - Sitzung 4</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Sitzung4_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Sitzung4_files/libs/quarto-html/quarto.js"></script>
+<script src="Sitzung4_files/libs/quarto-html/popper.min.js"></script>
+<script src="Sitzung4_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Sitzung4_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Sitzung4_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Sitzung4_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Sitzung4_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Sitzung4_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Sitzung4_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#klinmeth-vorkurs---deskriptive-statistik" id="toc-klinmeth-vorkurs---deskriptive-statistik" class="nav-link active" data-scroll-target="#klinmeth-vorkurs---deskriptive-statistik">KlinMeth-Vorkurs - Deskriptive Statistik</a>
+  <ul class="collapse">
+  <li><a href="#datenformatierung" id="toc-datenformatierung" class="nav-link" data-scroll-target="#datenformatierung">Datenformatierung</a></li>
+  <li><a href="#rekodieren" id="toc-rekodieren" class="nav-link" data-scroll-target="#rekodieren">Rekodieren</a></li>
+  <li><a href="#deskriptive-statistik" id="toc-deskriptive-statistik" class="nav-link" data-scroll-target="#deskriptive-statistik">Deskriptive Statistik</a></li>
+  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang">Anhang</a>
+  <ul class="collapse">
+  <li><a href="#datenerschaffung-nur-für-testzweckesimulationen-erlaubt" id="toc-datenerschaffung-nur-für-testzweckesimulationen-erlaubt" class="nav-link" data-scroll-target="#datenerschaffung-nur-für-testzweckesimulationen-erlaubt">Datenerschaffung (nur für Testzwecke/Simulationen erlaubt)</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">KlinMeth-Vorkurs - Sitzung 4</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>York Hagmayer </p>
+             <p>Bente Hinkenhuis </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="klinmeth-vorkurs---deskriptive-statistik" class="level1">
+<h1>KlinMeth-Vorkurs - Deskriptive Statistik</h1>
+<p>Heute wollen wir uns neben deskriptiver Statistik um häufig nötige Schritte der Datenaufbereitung kümmern. Dazu gehören bspw. das Rekodieren von Fragebogenitems oder auch die Umformatierung von Daten zwischen long- und wide-Format.</p>
+<p>Dafür laden wir die Daten für heute.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"laune.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="datenformatierung" class="level2">
+<h2 class="anchored" data-anchor-id="datenformatierung">Datenformatierung</h2>
+<p>Diese Daten liegen im sogenannten wide-Format vor. Das bedeutet, dass es mehrere Spalten für das Outcome gibt je nach Ausprägung einer anderen Variable (hier der Zeitpunkt). Meist lassen sich Analysen aber einfacher mit dem Long-Format schreiben, wo es eine Spalte für die andere Variable und eine für das Outcome gibt. Daten im long-Format haben für jede Versuchsperson zwei Zeilen (für Präwert und Postwert), während Daten im wide-Format nur eine Zeile pro Person haben, daher die Namensgebung.</p>
+<p>In R gibt es für diese Umformatierung die einfache Funktion <code>pivot_longer()</code> aus dem <code>tidyr</code>-Paket. Wir laden (und installieren) deshalb nun dieses Paket. Später werden wir auch eine Funktion aus dem <code>psych</code>-Paket benutzen, weshalb wir auch dieses nun laden.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("tidyr")</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidyr' was built under R version 4.0.5</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Nun erstellen wir eine Version unserer Daten im long-Format.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat_l <span class="ot">=</span> <span class="fu">pivot_longer</span>(dat, <span class="at">cols=</span><span class="fu">c</span>(<span class="st">"pre"</span>, <span class="st">"post"</span>), <span class="at">names_to=</span><span class="st">"time"</span>, <span class="at">values_to=</span><span class="st">"mood"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="rekodieren" class="level2">
+<h2 class="anchored" data-anchor-id="rekodieren">Rekodieren</h2>
+<p>Unsere Daten stammen von einem Fragebogen, der vor und nach einem Vorkurs für ein Methodenmodul für klinische Psychologie durchgeführt wurde. Dieser Fragebogen enthielt genau ein Item: “Mir geht es gerade schlecht.” Dabei gab es als Antwortmöglichkeit eine Likertskala von “1 = stimme nicht zu” bis “5 = stimme zu”. Dieses Item ist leider negativ formuliert, sodass wir es rekodieren müssen.</p>
+<p>Dabei soll die Antwort 1 zu Antwort 5 werden und die Antwort 4 zu Antwort 2 usw. Dies lässt sich ganz einfach in der Rechnung <code>neu = 6 - alt</code> ausdrücken. Generell gilt für das Rekodieren von Likertskalen mit n Antwortmöglichkeiten (beginnend bei 1!): <code>neu = (n + 1) - alt</code>. Dies können wir in R ganz ähnlich schreiben:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat_l<span class="sc">$</span>mood_r <span class="ot">=</span> <span class="dv">6</span> <span class="sc">-</span> dat_l<span class="sc">$</span>mood</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Dadurch, dass wir hier schon das long-Format benutzen, müssen wir nicht zwei Zeilen jeweils für Prä- und Postspalte schreiben, was ein weiterer Vorteil der Umformatierung ist.</p>
+</section>
+<section id="deskriptive-statistik" class="level2">
+<h2 class="anchored" data-anchor-id="deskriptive-statistik">Deskriptive Statistik</h2>
+<p>Zum Schluss der heutigen Sitzung schauen wir uns noch an, wie wir deskriptive Statistiken für unsere Daten ermitteln können. Dazu gibt es den nützlichen <code>describeBy()</code>-Befehl aus dem <code>psych</code>-Paket.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describeBy</span>(dat_l)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in describeBy(dat_l): no grouping variable requested</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          vars    n   mean     sd median trimmed    mad min max range  skew
+subjectNr    1 1000 250.50 144.41  250.5  250.50 185.32   1 500   499  0.00
+time*        2 1000   1.50   0.50    1.5    1.50   0.74   1   2     1  0.00
+mood         3 1000   2.49   1.02    2.0    2.45   1.48   1   5     4  0.33
+mood_r       4 1000   3.51   1.02    4.0    3.55   1.48   1   5     4 -0.33
+          kurtosis   se
+subjectNr    -1.20 4.57
+time*        -2.00 0.02
+mood         -0.42 0.03
+mood_r       -0.42 0.03</code></pre>
+</div>
+</div>
+<p>Ohne weitere Informationen gibt uns R deskriptive Statistiken für alle Variablen in unseren Daten zurück, was zwar praktisch, aber hier nicht unbedingt sinnvoll ist. Eigentlich wollen wir nämlich nur deskriptive Statistiken für unser Outcome, getrennt nach Zeitpunkt, haben. Dazu müssen wir im ersten Argument die Variable spezifizieren und als zweites Argument die Gruppierungsvariable übergeben.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describeBy</span>(dat_l<span class="sc">$</span>mood_r, dat_l<span class="sc">$</span>time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Descriptive statistics by group 
+group: post
+   vars   n mean   sd median trimmed  mad min max range  skew kurtosis   se
+X1    1 500 3.97 0.86      4    4.03 1.48   1   5     4 -0.46    -0.42 0.04
+------------------------------------------------------------ 
+group: pre
+   vars   n mean   sd median trimmed  mad min max range  skew kurtosis   se
+X1    1 500 3.05 0.96      3    3.08 1.48   1   5     4 -0.18    -0.38 0.04</code></pre>
+</div>
+</div>
+<p>So bekommen wir deskriptive Statistiken für die beiden Zeitpunkte getrennt zurück. Nun schauen wir uns diese Statistiken mal genauer an und beantworten gemeinsam einige Fragen:</p>
+<ol type="1">
+<li>Gibt es rein deskriptiv einen Anstieg in der Laune von Prä zu Post?</li>
+<li>Sind die Antworten normalverteilt?</li>
+<li>Was bedeuten <code>median</code> und <code>range</code>?</li>
+<li>Welche Schlüsse können wir aus diesen Ergebnissen ziehen? Welche können wir nicht ziehen?</li>
+</ol>
+<p>Mit deskriptiven Statistiken kann man zwar schon einiges machen, aber einige für uns zentrale Fragenlassen sich nur mit deskriptiver Statistik nicht klären. Deshalb schauen wir uns in der nächsten Sitzung an, wie wir einfache Inferenzstatistik in R umsetzen können.</p>
+</section>
+<section id="anhang" class="level2">
+<h2 class="anchored" data-anchor-id="anhang">Anhang</h2>
+<p>Im Anhang findet ihr zu jeder Sitzung Codechunks, die ich für die Erstellung der Sitzung benutzt habe. Vielleicht sind die ja für den einen oder die andere spannend.</p>
+<section id="datenerschaffung-nur-für-testzweckesimulationen-erlaubt" class="level3">
+<h3 class="anchored" data-anchor-id="datenerschaffung-nur-für-testzweckesimulationen-erlaubt">Datenerschaffung (nur für Testzwecke/Simulationen erlaubt)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pre <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">500</span>, <span class="dv">4</span>, <span class="fl">0.5</span>) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>post <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">500</span>, <span class="dv">4</span>, <span class="fl">0.25</span>) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>subjectNr <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(pre, post, subjectNr)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat, <span class="st">"C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs/laune.csv"</span>, <span class="at">row.names=</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+<script src="Sitzung4_files/libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

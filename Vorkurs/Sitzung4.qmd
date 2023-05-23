@@ -21,7 +21,7 @@ Heute wollen wir uns neben deskriptiver Statistik um häufig nötige Schritte de
 Dafür laden wir die Daten für heute.
 
 ```{r}
-setwd("Vorkurs")
+setwd("C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs")
 dat = read.csv("laune.csv")
 ```
 
@@ -89,5 +89,5 @@ pre = rbinom(500, 4, 0.5) + 1
 post = rbinom(500, 4, 0.25) + 1
 subjectNr = 1:500
 dat = data.frame(pre, post, subjectNr)
-write.csv(dat, "Vorkurs/laune.csv", row.names=F)
+write.csv(dat, "C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs/laune.csv", row.names=F)
 ```
