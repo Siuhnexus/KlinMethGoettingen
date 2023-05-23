@@ -25,9 +25,58 @@ setwd("Vorkurs")
 dat = read.csv("laune.csv")
 ```
 
+## Datenformatierung
+
+Diese Daten liegen im sogenannten wide-Format vor. Das bedeutet, dass es mehrere Spalten für das Outcome gibt je nach Ausprägung einer anderen Variable (hier der Zeitpunkt). Meist lassen sich Analysen aber einfacher mit dem Long-Format schreiben, wo es eine Spalte für die andere Variable und eine für das Outcome gibt. Daten im long-Format haben für jede Versuchsperson zwei Zeilen (für Präwert und Postwert), während Daten im wide-Format nur eine Zeile pro Person haben, daher die Namensgebung.
+
+In R gibt es für diese Umformatierung die einfache Funktion `pivot_longer()` aus dem `tidyr`-Paket. Wir laden (und installieren) deshalb nun dieses Paket. Später werden wir auch eine Funktion aus dem `psych`-Paket benutzen, weshalb wir auch dieses nun laden.
+
+```{r}
+#install.packages("tidyr")
+library(tidyr)
+library(psych)
+```
+
+Nun erstellen wir eine Version unserer Daten im long-Format.
+
+```{r}
+dat_l = pivot_longer(dat, cols=c("pre", "post"), names_to="time", values_to="mood")
+```
+
 ## Rekodieren
 
-Diese Daten stammen von einem Fragebogen, der vor und nach einem Vorkurs für ein Methodenmodul für klinische Psychologie durchgeführt wurde. Dieser Fragebogen enthielt genau ein Item: "Mir geht es gerade schlecht." Dabei gab es als Antwortmöglichkeit eine Likertskala von "1 = stimme nicht zu" bis "5 = stimme zu". Dieses Item ist leider negativ formuliert, sodass wir es rekodieren müssen.
+Unsere Daten stammen von einem Fragebogen, der vor und nach einem Vorkurs für ein Methodenmodul für klinische Psychologie durchgeführt wurde. Dieser Fragebogen enthielt genau ein Item: "Mir geht es gerade schlecht." Dabei gab es als Antwortmöglichkeit eine Likertskala von "1 = stimme nicht zu" bis "5 = stimme zu". Dieses Item ist leider negativ formuliert, sodass wir es rekodieren müssen.
+
+Dabei soll die Antwort 1 zu Antwort 5 werden und die Antwort 4 zu Antwort 2 usw. Dies lässt sich ganz einfach in der Rechnung `neu = 6 - alt` ausdrücken. Generell gilt für das Rekodieren von Likertskalen mit n Antwortmöglichkeiten (beginnend bei 1!): `neu = (n + 1) - alt`. Dies können wir in R ganz ähnlich schreiben:
+
+```{r}
+dat_l$mood_r = 6 - dat_l$mood
+```
+
+Dadurch, dass wir hier schon das long-Format benutzen, müssen wir nicht zwei Zeilen jeweils für Prä- und Postspalte schreiben, was ein weiterer Vorteil der Umformatierung ist.
+
+## Deskriptive Statistik
+
+Zum Schluss der heutigen Sitzung schauen wir uns noch an, wie wir deskriptive Statistiken für unsere Daten ermitteln können. Dazu gibt es den nützlichen `describeBy()`-Befehl aus dem `psych`-Paket.
+
+```{r}
+describeBy(dat_l)
+```
+
+Ohne weitere Informationen gibt uns R deskriptive Statistiken für alle Variablen in unseren Daten zurück, was zwar praktisch, aber hier nicht unbedingt sinnvoll ist. Eigentlich wollen wir nämlich nur deskriptive Statistiken für unser Outcome, getrennt nach Zeitpunkt, haben. Dazu müssen wir im ersten Argument die Variable spezifizieren und als zweites Argument die Gruppierungsvariable übergeben.
+
+```{r}
+describeBy(dat_l$mood_r, dat_l$time)
+```
+
+So bekommen wir deskriptive Statistiken für die beiden Zeitpunkte getrennt zurück. Nun schauen wir uns diese Statistiken mal genauer an und beantworten gemeinsam einige Fragen:
+
+1.  Gibt es rein deskriptiv einen Anstieg in der Laune von Prä zu Post?
+2.  Sind die Antworten normalverteilt?
+3.  Was bedeuten `median` und `range`?
+4.  Welche Schlüsse können wir aus diesen Ergebnissen ziehen? Welche können wir nicht ziehen?
+
+Mit deskriptiven Statistiken kann man zwar schon einiges machen, aber einige für uns zentrale Fragenlassen sich nur mit deskriptiver Statistik nicht klären. Deshalb schauen wir uns in der nächsten Sitzung an, wie wir einfache Inferenzstatistik in R umsetzen können.
 
 ## Anhang
 
