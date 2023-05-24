@@ -1,0 +1,205 @@
+---
+title: "Loesung_Meta_Raudenbush"
+author: "IK & YH"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## Paket metafor
+Wir werden für die Metaanalysen heute das Paket metafor benutzen.
+
+```{r}
+# install.packages("metafor")
+library(metafor)
+```
+
+## Datensatz
+### Description
+
+Results from 19 studies examining how teachers’ expectations about their pupils can influence actual IQ levels.
+
+### Format Daten
+
+The data frame contains the following columns:
+
+* study --> numeric study number
+* author --> character study author(s)
+* year--> numeric publication year
+* weeks--> numeric weeks of contact prior to expectancy induction
+* setting--> character whether tests were group or individually administered
+* tester--> character whether test administrator was aware or blind
+* n1i --> numeric sample size of experimental group
+* n2i-->  numeric sample size of control group
+* yi --> numeric standardized mean difference
+* vi --> numeric corresponding sampling variance
+
+### Details zur Forschung
+
+In the so-called ‘Pygmalion study’ (Rosenthal & Jacobson, 1968), “all of the predominantly poor children in the so-called Oak elementary school were administered a test pretentiously labeled the ‘Harvard Test of Inflected Acquisition.’ After explaining that this newly designed instrument had identified those children most likely to show dramatic intellectual growth during the coming year, the experimenters gave the names of these ‘bloomers’ to the teachers. In truth, the test was a traditional IQ test and the ‘bloomers’ were a randomly selected 20% of the student population. 
+
+After retesting the children 8 months later, the experimenters reported that those predicted to bloom had in fact gained significantly more in total IQ (nearly 4 points) and reasoning IQ (7 points) than the control group children. Further, at the end of the study, the teachers rated the experimental children as intellectually more curious, happier, better adjusted, and less in need of approval than their control group peers” (Raudenbush, 1984).
+
+In the following years, a series of studies were conducted attempting to replicate this rather controversial finding. However, the great majority of those studies were unable to demonstrate a statistically significant difference between the two experimental groups in terms of IQ scores. Raudenbush (1984) conducted a meta-analysis based on 19 such studies to further examine the evidence for the existence of the ‘Pygmalion effect’. The dataset includes the results from these studies.
+
+The effect size measure used for the meta-analysis was the standardized mean difference (yi), with positive values indicating that the supposed ‘bloomers’ had, on average, higher IQ scores than those in the control group. The weeks variable indicates the number of weeks of prior contact between teachers and students before the expectancy induction. Testing was done either in a group setting or individually, which is indicated by the setting variable. Finally, the tester variable indicates whether the test administrators were either aware or blind to the researcher-provided designations of the children’s intellectual potential.
+
+The data in this dataset were obtained from Raudenbush and Bryk (1985) with information on the setting and tester variables extracted from Raudenbush (1984).
+
+
+### Daten laden
+Ladet jetzt den Datensatz dat.raudenbush1985.
+```{r}
+# Daten laden
+dat1 <- dat.raudenbush1985
+```
+
+### Daten anschauen
+Wenn man einen neuen Datensatz geladen hat ist es immer sinnig einmal einen Blick drauf zu werfen und zu prüfen, ob die Variablen richtig als numerisch oder kategorial definiert sind.
+
+### Faktoren als solche definieren
+Einige Variablen in dem Datensatz müssen noch in factoren geändert werden. 
+```{r}
+dat1$setting <- as.factor(dat1$setting)
+dat1$tester <- as.factor(dat1$tester)
+```
+
+## Metanalysen
+
+### Fixed effects model
+Mit diesem Datensatz wollen wir jetzt einmal ein fixed effects model rechnen. dafür benutzen wir den Befehl rma.uni(). 
+Hinweis: In älteren Versionen hies der Befehl nur rma, falls ihr das mal seht.
+```{r}
+### meta-analysis using a fixed-effects model
+resf <- rma.uni(yi, vi, method= "FE", data=dat1)
+resf
+```
+
+### Random Effects Model 
+```{r}
+### random-effects model
+resr <- rma.uni(yi, vi, data=dat1)
+resr
+```
+
+
+## Forest Plot 
+Nun wollen wir auch noch einen forest plot zu dieser Analyse erstellen. Der Befehl hierfür ist forest()oder forest.rma().
+
+Mehr Informationen hierzu unter:
+https://wviechtb.github.io/metafor/reference/forest.rma.html
+
+
+```{r}
+### Zeichne forest plot fuer fixed effect model
+forest(resf, main = "Pygmalion effect - fixed effect model", slab = dat1$author, showweights = TRUE, header=TRUE)
+
+# Mit mehr Optionen
+forest(resf, main = "Pygmalion effect - fixed effect model", xlim=c(-12,10), ilab=cbind(dat1$setting, dat1$tester), ilab.xpos=c(-6,-4), slab = dat1$author, showweights = FALSE, header=TRUE)
+
+### Zeichne forest plot fuer random effects model
+forest(resr, slab = dat1$author, header="Study/Source", cex = 0.8, showweights = TRUE)
+```
+
+## Moderatoranalyse
+
+### Potentielle Moderatoren bei Raudenbush (1985)
+    weeks: Dauer bis zur IQ-Testung (kontinuierlich)
+    setting: Testung IQ in der Gruppe oder individuell (dichotom)
+    tester: Verblindung des Testers (dichotom)
+
+
+## Random Effects Metaanalyse durch, in der die drei Moderatorvariablen berücksichtigt werden
+
+```{r}
+####### with moderators
+random_mods1 <- rma(yi, vi, mods = ~ weeks + setting + tester, data=dat1, method = "ML")
+random_mods1
+
+random_mods1b <- rma(yi, vi, mods = ~ setting + tester, data=dat1, method ="ML")
+random_mods1b
+
+random_mods1c <- rma(yi, vi, mods = ~ weeks, data=dat1, method ="ML")
+random_mods1c
+
+anova.rma(random_mods1, random_mods1b) 
+anova.rma(random_mods1, random_mods1c)
+```
+
+### Erwartete Effektstärken
+
+Berechnen Sie die erwarteten Effekte für  verschiedene Kombinationen der Moderatorvariablen  mit Hilfe von predict.rma()
+```{r}
+#### Vorhersage mittlere Effektstaerken
+predict.rma(random_mods1, newmods = cbind(weeks = c(0,2,4,6), setting = 0, tester = 1), addx = TRUE)
+
+predict.rma(random_mods1, newmods = cbind(weeks = c(0,0,0,0,10,10,10,10), setting = c(0,0,1,1,0,0,1,1), tester = c(0,1,0,1,0,1,0,1)), addx = TRUE)
+```
+
+## Nur dichotomisierter Moderator weeks 
+
+Dichotomisieren Sie die kontinuierliche Variable weeks in <3Wochen bis zur Testung und >=3 Wochen bis zur Testung. Schätzen Sie das Modell.
+
+```{r}
+
+### Berechnung Modell
+
+
+### Vorhersage Effektstärken
+
+
+```
+
+## Zusatz: Annahmen testen
+Überprüfen Sie ihr random effects model mit allen drei Moderatoren, in dem weeks ein kontinuierlicher Prädiktor ist auf  
+(1) Mulitikolliniarität (vif), 
+(2) Residuen (plot(residuals.rma(MODELL))) und 
+(3) Einfluss (influence)
+
+Überlegen Sie, was die Ergebnisse für die Analyse bedeuten 
+```{r}
+########## Multikollinearity
+
+
+######### Residuals
+
+
+######### Influence
+
+```
+
+## Zusatz: Publication and small group bias
+
+### Funnel Plots erstellen
+Machen Sie ein klassisches und ein contour enhanced funnel plot für das random effects model der Studien von Raudenbush (1985)
+```{r}
+
+```
+
+## Test auf asymmetry
+Egger´s regression Test mit Standardfehler als Prädiktor
+```{r}
+####### Egger's regression test for funnel plot asymmetry
+
+
+```
+
+## Trim & Fill
+
+```{r}
+####### trim and fill
+
+```
+
+Forest und ein Funnel plot für die ergänzten Daten
+```{r}
+
+
+
+```
+
+Egger´s Test ob jetzt Symmetrie vorliegt
+```{r}
+
+```
+

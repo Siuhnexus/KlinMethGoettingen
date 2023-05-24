@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.340">
+<meta name="generator" content="quarto-1.3.336">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -87,6 +87,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#datenformatierung" id="toc-datenformatierung" class="nav-link" data-scroll-target="#datenformatierung">Datenformatierung</a></li>
   <li><a href="#rekodieren" id="toc-rekodieren" class="nav-link" data-scroll-target="#rekodieren">Rekodieren</a></li>
+  <li><a href="#visualisieren" id="toc-visualisieren" class="nav-link" data-scroll-target="#visualisieren">Visualisieren</a></li>
   <li><a href="#deskriptive-statistik" id="toc-deskriptive-statistik" class="nav-link" data-scroll-target="#deskriptive-statistik">Deskriptive Statistik</a></li>
   <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang">Anhang</a>
   <ul class="collapse">
@@ -127,20 +128,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Heute wollen wir uns neben deskriptiver Statistik um häufig nötige Schritte der Datenaufbereitung kümmern. Dazu gehören bspw. das Rekodieren von Fragebogenitems oder auch die Umformatierung von Daten zwischen long- und wide-Format.</p>
 <p>Dafür laden wir die Daten für heute.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs"</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#setwd("Vorkurs")</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"laune.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="datenformatierung" class="level2">
 <h2 class="anchored" data-anchor-id="datenformatierung">Datenformatierung</h2>
 <p>Diese Daten liegen im sogenannten wide-Format vor. Das bedeutet, dass es mehrere Spalten für das Outcome gibt je nach Ausprägung einer anderen Variable (hier der Zeitpunkt). Meist lassen sich Analysen aber einfacher mit dem Long-Format schreiben, wo es eine Spalte für die andere Variable und eine für das Outcome gibt. Daten im long-Format haben für jede Versuchsperson zwei Zeilen (für Präwert und Postwert), während Daten im wide-Format nur eine Zeile pro Person haben, daher die Namensgebung.</p>
-<p>In R gibt es für diese Umformatierung die einfache Funktion <code>pivot_longer()</code> aus dem <code>tidyr</code>-Paket. Wir laden (und installieren) deshalb nun dieses Paket. Später werden wir auch eine Funktion aus dem <code>psych</code>-Paket benutzen, weshalb wir auch dieses nun laden.</p>
+<p>In R gibt es für diese Umformatierung die einfache Funktion <code>pivot_longer()</code> aus dem <code>tidyr</code>-Paket. Wir laden (und installieren) deshalb nun dieses Paket. Später werden wir auch eine Funktion aus dem <code>psych</code>-Paket benutzen und mit <code>ggplot</code> eine Grafik erstellen, weshalb wir auch diese Pakete nun laden.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("tidyr")</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'tidyr' was built under R version 4.0.5</code></pre>
+<pre><code>
+Attache Paket: 'ggplot2'</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Die folgenden Objekte sind maskiert von 'package:psych':
+
+    %+%, alpha</code></pre>
+</div>
 </div>
 <p>Nun erstellen wir eine Version unserer Daten im long-Format.</p>
 <div class="cell">
@@ -156,11 +164,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Dadurch, dass wir hier schon das long-Format benutzen, müssen wir nicht zwei Zeilen jeweils für Prä- und Postspalte schreiben, was ein weiterer Vorteil der Umformatierung ist.</p>
 </section>
+<section id="visualisieren" class="level2">
+<h2 class="anchored" data-anchor-id="visualisieren">Visualisieren</h2>
+<p>Mit den nun aufbereiteten Daten können wir unsere Ergebnisse erstmal veranschaulichen, was bei jeder Analyse nützlich ist.</p>
+<p>Hier gäbe es viele Möglichkeiten für Plots. Ich habe mich hier für zwei nebeneinanderstehende Histogramme für Prä- und Postverteilung entschieden.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_l, <span class="fu">aes</span>(mood_r)) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>time) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Mood-Score"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">title=</span><span class="st">"Counts of Mood-Scores"</span>) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">500</span>) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Sitzung4_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>An dieser Grafik lassen sich schon mehrere Beobachtungen machen. Erstens scheint sich die Laune der Personen tatsächlich zu erhöhen. Dies müsste natürlich noch inferenzstatistisch bestätigt werden. Es zeigt sich aber auch, dass es hier einen Deckeneffekt in der Post-Messung geben könnte.</p>
+</section>
 <section id="deskriptive-statistik" class="level2">
 <h2 class="anchored" data-anchor-id="deskriptive-statistik">Deskriptive Statistik</h2>
 <p>Zum Schluss der heutigen Sitzung schauen wir uns noch an, wie wir deskriptive Statistiken für unsere Daten ermitteln können. Dazu gibt es den nützlichen <code>describeBy()</code>-Befehl aus dem <code>psych</code>-Paket.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describeBy</span>(dat_l)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describeBy</span>(dat_l)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in describeBy(dat_l): no grouping variable requested</code></pre>
 </div>
@@ -168,28 +193,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>          vars    n   mean     sd median trimmed    mad min max range  skew
 subjectNr    1 1000 250.50 144.41  250.5  250.50 185.32   1 500   499  0.00
 time*        2 1000   1.50   0.50    1.5    1.50   0.74   1   2     1  0.00
-mood         3 1000   2.49   1.02    2.0    2.45   1.48   1   5     4  0.33
-mood_r       4 1000   3.51   1.02    4.0    3.55   1.48   1   5     4 -0.33
+mood         3 1000   2.51   1.08    2.0    2.48   1.48   1   5     4  0.31
+mood_r       4 1000   3.49   1.08    4.0    3.52   1.48   1   5     4 -0.31
           kurtosis   se
 subjectNr    -1.20 4.57
 time*        -2.00 0.02
-mood         -0.42 0.03
-mood_r       -0.42 0.03</code></pre>
+mood         -0.69 0.03
+mood_r       -0.69 0.03</code></pre>
 </div>
 </div>
 <p>Ohne weitere Informationen gibt uns R deskriptive Statistiken für alle Variablen in unseren Daten zurück, was zwar praktisch, aber hier nicht unbedingt sinnvoll ist. Eigentlich wollen wir nämlich nur deskriptive Statistiken für unser Outcome, getrennt nach Zeitpunkt, haben. Dazu müssen wir im ersten Argument die Variable spezifizieren und als zweites Argument die Gruppierungsvariable übergeben.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describeBy</span>(dat_l<span class="sc">$</span>mood_r, dat_l<span class="sc">$</span>time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describeBy</span>(dat_l<span class="sc">$</span>mood_r, dat_l<span class="sc">$</span>time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  Descriptive statistics by group 
 group: post
-   vars   n mean   sd median trimmed  mad min max range  skew kurtosis   se
-X1    1 500 3.97 0.86      4    4.03 1.48   1   5     4 -0.46    -0.42 0.04
+   vars   n mean  sd median trimmed  mad min max range  skew kurtosis   se
+X1    1 500 3.99 0.9      4    4.08 1.48   1   5     4 -0.75     0.31 0.04
 ------------------------------------------------------------ 
 group: pre
-   vars   n mean   sd median trimmed  mad min max range  skew kurtosis   se
-X1    1 500 3.05 0.96      3    3.08 1.48   1   5     4 -0.18    -0.38 0.04</code></pre>
+   vars   n mean sd median trimmed  mad min max range skew kurtosis   se
+X1    1 500 2.98  1      3    2.97 1.48   1   5     4 0.08    -0.57 0.04</code></pre>
 </div>
 </div>
 <p>So bekommen wir deskriptive Statistiken für die beiden Zeitpunkte getrennt zurück. Nun schauen wir uns diese Statistiken mal genauer an und beantworten gemeinsam einige Fragen:</p>
@@ -207,11 +232,11 @@ X1    1 500 3.05 0.96      3    3.08 1.48   1   5     4 -0.18    -0.38 0.04</cod
 <section id="datenerschaffung-nur-für-testzweckesimulationen-erlaubt" class="level3">
 <h3 class="anchored" data-anchor-id="datenerschaffung-nur-für-testzweckesimulationen-erlaubt">Datenerschaffung (nur für Testzwecke/Simulationen erlaubt)</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pre <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">500</span>, <span class="dv">4</span>, <span class="fl">0.5</span>) <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>post <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">500</span>, <span class="dv">4</span>, <span class="fl">0.25</span>) <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>subjectNr <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(pre, post, subjectNr)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat, <span class="st">"C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs/laune.csv"</span>, <span class="at">row.names=</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pre <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">500</span>, <span class="dv">4</span>, <span class="fl">0.5</span>) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>post <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">500</span>, <span class="dv">4</span>, <span class="fl">0.25</span>) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>subjectNr <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(pre, post, subjectNr)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat, <span class="st">"laune.csv"</span>, <span class="at">row.names=</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>

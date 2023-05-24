@@ -1,0 +1,155 @@
+---
+title: "Logistische Regression Multilevel"
+author: "YH"
+date: "11 2022"
+output:
+  word_document: default
+  html_document: default
+---
+## Packages
+
+```{r}
+library(car)
+library(readr)
+library(lmtest)
+library(rcompanion)
+library(questionr)
+library(glmm)
+library(ggplot2)
+library(ggmosaic)
+library(psych)
+library(Hmisc)
+library(tidyr)
+library(tables)
+library(MASS)
+library(lme4)
+```
+
+## Working directory und Datei oeffnen
+
+```{r}
+setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg")
+dat_log1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg/BDI_2_LR_ML.csv", header = TRUE, sep = ",", dec = ".")
+dat_log1$ID <- as.factor(dat_log1$ID)
+dat_log1$Therapie <- as.factor(dat_log1$Therapie)
+dat_log1$Rezidiv <- as.factor(dat_log1$Rezidiv)
+dat_log1$Rezidiv <- factor(dat_log1$Rezidiv, levels = c("Kein", "Ein", "Zwei_und_mehr"))
+dat_log1$Study <- as.factor(dat_log1$Study)
+```
+
+## Visuelle Analyse
+
+```{r}
+# Daten ins long format nur wegen der Abbildung
+dat_log1_long <- as.data.frame(pivot_longer(dat_log1, cols = c(Pre, Post), names_to = "Zeitpunkt",
+values_to = "BDI", values_drop_na = FALSE))
+dat_log1_long$Zeitpunkt <- as.factor(dat_log1_long$Zeitpunkt)
+dat_log1_long$Zeitpunkt <- factor(dat_log1_long$Zeitpunkt, levels = c("Pre", "Post")) 
+dat_log1_long$ID <- as.factor(dat_log1_long$ID)
+
+ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) + 
+  facet_grid(Therapie ~ Study)+
+  geom_line(aes(color= ID), show.legend = FALSE) +
+  geom_hline(yintercept=19.5, color = "red") +
+  annotate("text", x = 0.6, y = 19.5, label = "Depression", vjust = -0.5, color = "red", size =2) +
+  geom_hline(yintercept=12.5, color = "darkgreen") +
+  annotate("text", x = 0.6, y = 12.5, label = "Normal", vjust = -0.5, color = "darkgreen", size =2) +
+  ylab("Score BDI 2") + 
+  xlab("Zeitpunkt") +
+  ggtitle("Depression in Abhängigkeit von Therapieform und Studie")
+
+ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) + 
+  facet_grid(Therapie ~ Rezidiv)+
+  geom_line(aes(color= ID), show.legend = FALSE) +
+  geom_hline(yintercept=19.5, color = "red") +
+  annotate("text", x = 0.6, y = 19.5, label = "Depression", vjust = -0.5, color = "red", size =2) +
+  geom_hline(yintercept=12.5, color = "darkgreen") +
+  annotate("text", x = 0.6, y = 12.5, label = "Normal", vjust = -0.5, color = "darkgreen", size =2) +
+  ylab("Score BDI 2") + 
+  xlab("Zeitpunkt") +
+  ggtitle("Depression in Abhängigkeit von Therapieform und Anzahl Rezidive")
+```
+
+## Berechnung von Indikatoren für klinisch relevante Veränderung
+Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind.
+1. Reduktion der Symptomatik um 30% zum Postzeitpunkt
+2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich
+3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8
+4. Clinically significant change: Normalbereich BDI Score <=12
+```{r}
+# Reduktion der Symptomatik
+## Berechnung 70% Symptomatik des Prä-Werts = -30%
+dat_log1$Third_Pre <- dat_log1$Pre*0.7
+## Bestimmung, ob Kriterium erreicht ist
+dat_log1$Krit_1_3 <- ifelse(dat_log1$Post <= dat_log1$Third_Pre, 1, 0)
+dat_log1$Krit_1_3 <- as.factor(dat_log1$Krit_1_3)
+dat_log1$Krit_1_3 <- factor(dat_log1$Krit_1_3, labels = c("No_30%_Red", "30%_Reduction"))
+## Tabelle zur Veranschaulichung
+table_krit_1_3 <- tabulr(Krit_1_3 ~ Therapie * Rezidiv, data = dat_log1)
+table_krit_1_3
+
+
+# Absinken in den Normalbereich
+dat_log1$Sink_Norm = ifelse(dat_log1$Pre >= 13 & dat_log1$Post < 13, 1, 0)
+dat_log1$Sink_Norm <- as.factor(dat_log1$Sink_Norm)
+dat_log1$Sink_Norm <- factor(dat_log1$Sink_Norm, labels = c("No_Sink", "Sink"))
+table_sink <- tabulr(Sink_Norm ~ Therapie * Rezidiv, data = dat_log1)
+table_sink
+
+# Reliable Change Index
+dat_log1$RCI = (dat_log1$Post - dat_log1$Pre) / (sd(dat_log1$Pre) * sqrt(2*(1-0.8)))
+dat_log1$Signif_RCI = ifelse(dat_log1$RCI < -1.96, 1, 0)
+dat_log1$Signif_RCI <- as.factor(dat_log1$Signif_RCI)
+dat_log1$Signif_RCI <- factor(dat_log1$Signif_RCI, labels = c("No_RCI", "RCI"))
+table_RCI <- tabulr(Signif_RCI ~ Therapie * Rezidiv, data = dat_log1)
+table_RCI
+
+# Clinically significant change vs. no clinically significant change
+dat_log1$CSC = ifelse(dat_log1$Sink_Norm == "Sink" & dat_log1$Signif_RCI == "RCI", 1, 0)
+dat_log1$CSC = as.factor(dat_log1$CSC)
+dat_log1$CSC <- factor(dat_log1$CSC, labels = c("No_CSC", "CSC"))
+table_CSC <- tabulr(CSC ~ Therapie * Rezidiv, data = dat_log1)
+table_CSC
+
+# Graphik für 30% Reduktion
+g = ggplot(dat_log1) +
+  geom_mosaic(aes(x=product(Therapie, Rezidiv), fill=Krit_1_3))
+g = g + ggtitle("Anteil Reduktion 30% Symptomatik in den Therapiebedingungen")
+g 
+```
+# Multilevel logistische Regression
+```{r}
+# Single level model
+SL.Modell <- glm(Krit_1_3 ~ Therapie, family = binomial, data = dat_log1)
+summary(SL.Modell)
+# Multilevel model mit random intercept für Rezidiv
+ML.Modell.ri <- glmer(Krit_1_3 ~ Therapie + (1|Rezidiv), family = binomial, data = dat_log1, control = glmerControl(optimizer = "bobyqa"))
+summary(ML.Modell.ri)
+# Multilevel model mit random intercept für Rezidiv und random slope für Therapie
+ML.Modell.rs <- glmer(Krit_1_3 ~ Therapie + (Therapie|Rezidiv), family = binomial, data = dat_log1, control = glmerControl(optimizer = "bobyqa"))
+summary(ML.Modell.rs)
+## Modell lässt sich nicht richtig schätzen <= issingular Warnung
+# => ein wir brauchen kein random intercept 
+
+# Modellvergleich
+lrtest(SL.Modell, ML.Modell.ri, ML.Modell.rs)
+
+# Best fitting model = random intercept
+summary(ML.Modell.ri)
+# Koeffizienten der fixed effects
+ML.Modell.ri@beta
+#Odds ratios fur fixed effects
+exp(ML.Modell.ri@beta)
+
+# Konfidenzintervalle grob geschaetzt
+se <- sqrt(diag(vcov(ML.Modell.ri)))
+# table of estimates with 95% CI
+(tab <- cbind(Est = fixef(ML.Modell.ri), LL = fixef(ML.Modell.ri) - 1.96 * se, UL = fixef(ML.Modell.ri) + 1.96 *
+    se))
+#Odds ratios fur fixed effects
+exp(tab)
+
+```
+
+
+

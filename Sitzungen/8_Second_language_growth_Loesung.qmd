@@ -1,0 +1,188 @@
+---
+title: "Lineare Growth-Modelle 2"
+author: "York Hagmayer"
+date: "11 12 2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r warning=FALSE, message=FALSE, results='hide'}
+library(ggplot2)
+library(nlme)
+library(lmtest)
+library(rcompanion)
+library(tidyr)
+library(car)
+library(psych)
+```
+
+## Working directory setzen
+```{r}
+setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche8_growth2")
+```
+
+## Daten einlesen und ins long format transformieren
+
+Bei der Transformation ins long format ist zu beachten, dass nun zwei Variablen transformiert werden müssen: der Language Score und der Field Trip. Dazu ist es am einfachsten, die Daten zu teilen, dann jeweils ins long format zu transfomieren und dann wieder zusammenzufügen.
+
+```{r}
+data <- read.csv("Second_language2.csv")
+
+# ID als Faktor
+data$ID <- as.factor(data$ID)
+data$school <- as.factor(data$school)
+data$Field_trip <- as.factor(data$Field_trip)
+
+# Daten teilen
+Teil1 <- subset(data, select = c(ID, school, LangScore1, LangScore2, LangScore3, LangScore4, LangScore5, LangScore6, Grammar_first_lang, Field_trip))
+Teil2 <- subset(data, select = c(ID, Ft1, Ft2, Ft3, Ft4, Ft5, Ft6))
+
+# ins long format
+Teil1_long <- pivot_longer(Teil1, cols = c(LangScore1, LangScore2, LangScore3, LangScore4, LangScore5, LangScore6), names_to = "time", values_to = "LangScore")
+Teil2_long <- pivot_longer(Teil2, cols = c(Ft1, Ft2, Ft3, Ft4, Ft5, Ft6), names_to = "trip", values_to = "trip_value")
+data_long <- cbind(Teil1_long, Teil2_long[,-1])
+
+
+# Time als numerische Variable definieren
+data_long$time_int <- ifelse(data_long$time == "LangScore1", 1, ifelse(data_long$time == "LangScore2", 2, ifelse(data_long$time =="LangScore3", 3, ifelse(data_long$time == "LangScore4", 4, ifelse(data_long$time == "LangScore5", 5, 6)))))
+
+# Time als Faktor definieren
+data_long$time <- as.factor(data_long$time)
+
+# Wert field trip zu den sechs Messzeitpunkten als Faktor definieren
+data_long$trip_value <- as.factor(data_long$trip_value)
+
+```
+
+## Plot der Daten
+```{r}
+## Die Schulen unterscheiden sich darin, ob sie während des Schuljahrs einen zweiwöchigen Auslangsaufenthalt zum Erlernen der Zweitsprache machen (Variable Field_trip). Diese Daten sollten getrennt voneinander dargestellt werden.
+## Daher zwei subsets gemacht
+data_long_FT_no <- subset(data_long, Field_trip == "no")
+data_long_FT_yes <- subset(data_long, Field_trip == "yes")
+
+## Ohne Fieldtrip
+
+ggplot(data_long_FT_no, aes(x=time_int, y=LangScore)) +
+  geom_point() +
+  geom_line(aes(color = ID), show.legend =FALSE) +
+  ylim(100, 300) +
+  labs(title = "Language Training without Field Trip", x = "Measurement", y = "Language Score", color = "ID")
+
+## Mit Fieldtrip
+
+ggplot(data_long_FT_yes, aes(x=time_int, y=LangScore)) +
+  geom_point() +
+  geom_line(aes(color = ID), show.legend =FALSE) +
+  ylim(100, 300) +
+  labs(title = "Language Training with Field Trip", x = "Measurement", y = "Language Score", color = "ID")
+```
+## Deskriptive Analyse
+```{r}
+desmat <- describeBy(data_long$LangScore, group = list(data_long$time, data_long$Field_trip), mat = TRUE)
+desmat
+```
+## Modellsuche
+
+Hier werden immer komplexere Modelle definiert und mit den weniger komplexen verglichen.
+
+```{r}
+# Nullmodell
+NM = gls(LangScore ~ 1, data = data_long, method = "ML")
+
+# Nullmodell mit random intercept = unterschiedliche intercepts pro Person
+RI = lme(data = data_long, fixed = LangScore ~ 1, random = ~ 1 | ID, method = "ML")
+lrtest(NM, RI)
+
+# Modell mit Zeit als kontinuierliche Variable und linearer Trend
+FS = lme(data = data_long, fixed = LangScore ~ time_int, random = ~ 1 | ID, method = "ML")
+lrtest(RI, FS)
+
+# Modell mit Zeit als kontinuierliche Variable, linearer und quadratischer Trend
+## Zentrierung ist notwendig sonst Multikollinearität
+data_long$time_c <- scale(data_long$time_int, center =TRUE, scale =FALSE)
+data_long$time_c_sqr <- data_long$time_c^2
+FS2 = lme(data = data_long, fixed = LangScore ~ time_c + time_c_sqr, random = ~ 1 | ID, method = "ML")
+lrtest(FS, FS2)
+
+## Interindividuelle Unterschiede in der Wirkung der Zeit
+RS = lme(data_long, fixed = LangScore ~ time_c + time_c_sqr, random = ~ time_c | ID, method = "ML")
+lrtest(FS2, RS)
+
+# Vergleich der AIC
+AIC(FS)
+AIC(FS2)
+AIC(RS)
+
+## Einbeziehen des Grammar Scores und des Field Trips als time-varying variable
+RS.plus = lme(data_long, fixed = LangScore ~ time_c + time_c_sqr + Grammar_first_lang + trip_value, random = ~ time_c | ID)
+lrtest(RS, RS.plus)
+# AICs
+AIC(RS)
+AIC(RS.plus)
+# Zusammenfassung Modell
+summary(RS.plus)
+# Ueberpruefung Multikollinearitaet
+vif(RS.plus)
+
+### Alternative
+## Anderer Verlauf bei Fieldtrip mit Fieldtrip als kategorialer Prädiktor, der nicht über die Zeit variiert
+## Die Interaktion wird hinzugenommen, weil der Anstieg bei einem Fieldtrip hoeher zu sein scheint als ohne Fieldtrip
+RS.plus2 = lme(data_long, fixed = LangScore ~ time_c + time_c:Field_trip + time_c_sqr + Grammar_first_lang + Field_trip, random = ~ time_c | ID)
+lrtest(RS, RS.plus2)
+AIC(RS.plus2)
+summary(RS.plus2)
+vif(RS.plus2)
+
+```
+
+## Analyse der Residuen
+Diese Analyse fokussiert auf das Modell ohne Interaktion.
+
+```{r}
+data_long$residualsRS.plus <- residuals(RS.plus, type = "normalized")
+
+
+## Verteilung der Residuen zu den Messzeitpunkten
+plot(data_long$time_int, data_long$residualsRS.plus)
+abline(h=0)
+
+ggplot(data_long, aes(x = time, y = residualsRS.plus)) +
+  geom_point() +
+  geom_jitter(width = 0.3, height = 0) + 
+   geom_violin() +
+    ylim(-10, 10) +
+  labs(title = "Residuen", x = "Messung", y = "Std. Residuen")
+
+
+## Autokorrelationsfunktion
+ACF(RS.plus, maxLag = 5, resType = "normalized")
+plot(ACF(RS.plus, maxLag = 5, resType = "normalized"), alpha = 0.01)
+```
+Das Muster der Autokorrelationen ist sehr ungewöhnlich, da diese z.T. negativ sind. Das macht kaum Sinn. Da immer die Sprachfaehigkeit gemessen wird, sollte die Korrelation wenn ueberhaupt positiv sein. Eine negative Korrelation bedeutet, dass die Ueberdurchschnittlichen, dann beim naechsten Mal eher unterdurchschnittlich sind. Hier muesste man inhaltlich mal schauen, was da bei den einzelnen Messungen wirklich gemessen wurde und ob es methodische Unterschiede gab.
+
+## Erweiterung des Modells um eine Autokorrelation 1. Ordnung der Residuen
+Diese Analyse macht keinen Sinn, da eine Autokorrelation 1. Ordnung das komische Autokorrelationsmuster dadurch mit Sicherheit nicht erklaert werden kann. 
+
+```{r}
+
+```
+
+## Vorhergesagte Verläufe
+```{r}
+# Fitted values aus dem Random Slope Modell
+data_long$fittedRS.plus = fitted(RS.plus)
+
+# Wir erstellen zu dem Modell eine Grafik, die die Schätzungen zeigt
+ggplot(data_long, aes(time_int, fittedRS.plus)) +
+  geom_point() +
+  geom_line(aes(color = ID), show.legend = FALSE) +
+  facet_wrap(~Field_trip) +
+  ylim(100, 300) +
+  labs(title = "Vorhergesagter Verlauf Spracherwerb", x = "Messung", y = "Language Score", color = "ID")
+
+
+```
+
+

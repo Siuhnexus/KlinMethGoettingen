@@ -21,7 +21,7 @@ Heute wollen wir uns neben deskriptiver Statistik um häufig nötige Schritte de
 Dafür laden wir die Daten für heute.
 
 ```{r}
-setwd("C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs")
+#setwd("Vorkurs")
 dat = read.csv("laune.csv")
 ```
 
@@ -29,12 +29,13 @@ dat = read.csv("laune.csv")
 
 Diese Daten liegen im sogenannten wide-Format vor. Das bedeutet, dass es mehrere Spalten für das Outcome gibt je nach Ausprägung einer anderen Variable (hier der Zeitpunkt). Meist lassen sich Analysen aber einfacher mit dem Long-Format schreiben, wo es eine Spalte für die andere Variable und eine für das Outcome gibt. Daten im long-Format haben für jede Versuchsperson zwei Zeilen (für Präwert und Postwert), während Daten im wide-Format nur eine Zeile pro Person haben, daher die Namensgebung.
 
-In R gibt es für diese Umformatierung die einfache Funktion `pivot_longer()` aus dem `tidyr`-Paket. Wir laden (und installieren) deshalb nun dieses Paket. Später werden wir auch eine Funktion aus dem `psych`-Paket benutzen, weshalb wir auch dieses nun laden.
+In R gibt es für diese Umformatierung die einfache Funktion `pivot_longer()` aus dem `tidyr`-Paket. Wir laden (und installieren) deshalb nun dieses Paket. Später werden wir auch eine Funktion aus dem `psych`-Paket benutzen und mit `ggplot` eine Grafik erstellen, weshalb wir auch diese Pakete nun laden.
 
 ```{r}
 #install.packages("tidyr")
 library(tidyr)
 library(psych)
+library(ggplot2)
 ```
 
 Nun erstellen wir eine Version unserer Daten im long-Format.
@@ -54,6 +55,23 @@ dat_l$mood_r = 6 - dat_l$mood
 ```
 
 Dadurch, dass wir hier schon das long-Format benutzen, müssen wir nicht zwei Zeilen jeweils für Prä- und Postspalte schreiben, was ein weiterer Vorteil der Umformatierung ist.
+
+## Visualisieren
+
+Mit den nun aufbereiteten Daten können wir unsere Ergebnisse erstmal veranschaulichen, was bei jeder Analyse nützlich ist.
+
+Hier gäbe es viele Möglichkeiten für Plots. Ich habe mich hier für zwei nebeneinanderstehende Histogramme für Prä- und Postverteilung entschieden.
+
+```{r}
+ggplot(dat_l, aes(mood_r)) +
+  geom_bar() +
+  facet_wrap(~time) +
+  labs(x = "Mood-Score", y = "Count", title="Counts of Mood-Scores") +
+  ylim(0, 500) +
+  theme_classic()
+```
+
+An dieser Grafik lassen sich schon mehrere Beobachtungen machen. Erstens scheint sich die Laune der Personen tatsächlich zu erhöhen. Dies müsste natürlich noch inferenzstatistisch bestätigt werden. Es zeigt sich aber auch, dass es hier einen Deckeneffekt in der Post-Messung geben könnte.
 
 ## Deskriptive Statistik
 
@@ -89,5 +107,5 @@ pre = rbinom(500, 4, 0.5) + 1
 post = rbinom(500, 4, 0.25) + 1
 subjectNr = 1:500
 dat = data.frame(pre, post, subjectNr)
-write.csv(dat, "C:/Users/bente/Documents/Studium/BachelorPsychologie/Projekte/KlinMethGoettingen/Vorkurs/laune.csv", row.names=F)
+write.csv(dat, "laune.csv", row.names=F)
 ```

@@ -1,0 +1,103 @@
+---
+title: "Netzwerkmetaanalyse1"
+author: "YH"
+date: "4 6 2021"
+output: html_document
+---
+
+## Packages
+```{r}
+library(netmeta)
+library(meta)
+```
+
+## Datensatz smokingcessation
+
+Daten oeffnen und ansehen
+
+```{r}
+setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche12_Metaanalyse")
+
+data(smokingcessation)
+View(smokingcessation)
+
+# add Studylabel
+smokingcessation$studlab <- seq(from=1, to=24, by=1)
+smokingcessation$studlab <- as.factor(smokingcessation$studlab)
+```
+
+## Berechnung paarweiser Effekstaerken
+
+Das geht mit dem Befehl pairwise. Siehe Hilfe fuer Details.
+
+```{r}
+sc.pairwise <- pairwise(treat = list(treat1, treat2, treat3),
+               event = list(event1, event2, event3),
+               n = list(n1, n2, n3),
+               data = smokingcessation,
+               sm = "RR")
+```
+
+## Netzwerkmetaanalyse machen
+
+Hierfuer wird der Befehl netmeta() verwendet.
+```{r}
+# Fixed and random effects model with reference group
+m1 <- netmeta(TE, seTE, treat1, treat2, studlab, data = sc.pairwise, sm ="RR", random =TRUE, reference.group = "A")
+m1
+
+# Fixed effect model without reference group
+m2 <- netmeta(TE, seTE, treat1, treat2, studlab, data = sc.pairwise, sm ="RR",all.treatments = TRUE)
+m2
+```
+
+## Plot des Netzwerks
+
+```{r}
+plot.m1 <- netgraph(m1, plastic = FALSE, thickness = TRUE, number.of.studies = TRUE, col.number.of.studies ="red", bg.number.of.studies = "white", pos.number.of.studies = 0.3, multiarm = TRUE, col.multiarm = "purple")
+
+```
+
+## Forest plot
+```{r}
+forest(m2, labels = c("control", "self-help", "individual counseling", "group counseling"))
+```
+## Forestplot of original studies
+
+```{r}
+detach("package:netmeta", unload = TRUE)
+library(meta)
+
+sc.pairwise$design <- paste(sc.pairwise$treat1, sc.pairwise$treat2)
+sc.pairwise$studlab <- paste(sc.pairwise$studlab, sc.pairwise$design)
+m3 <- metabin(event.e = event1, n.e = n1, studlab = studlab, event.c = event2, n.c = n2, data = sc.pairwise, sm = "RR")
+forest(m3, sortvar = design, studlab = studlab, test.overall = FALSE, header.line = "below", hetstat = FALSE, common = FALSE, random = FALSE)
+```
+
+## Weitergehende Analyse Heterogenitaet
+```{r}
+library(netmeta)
+decomp.design(m2)
+```
+
+## Analyse direkte vs.  indirekte Evidenz
+
+mit netmeasures(MODELLNAME)
+proportion = direct evidence proportion of each network estimate
+meanpath = mean path length of each network estimate, should be low, ideally below two
+H.tilde = Flow of evidence from one design to another. Shows which designs have strong influence on total network. 
+
+```{r}
+netmeasures(m2)
+```
+## Funnel plot
+Auch für die Netzwerkmetaanalyse lassen sich funnelplots erstellen. Bei diesen werden die Daten getrennt für die einzelnen Vergleiche dargestellt. 
+linreg und rank stehen für Signifikanztests für die Asymmetrie. 
+Bitte in die Hilfe für genauere Informationen schauen.
+
+```{r}
+
+funnel(m2, order = m2$trts, col = c("red","blue", "green", "darkblue", "orange", "darkgreen"),linreg = TRUE, rank = TRUE)
+```
+
+

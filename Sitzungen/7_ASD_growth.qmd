@@ -1,0 +1,136 @@
+---
+title: "Lineare Growth-Modelle"
+author: "Bente Hinkenhuis & York Hagmayer"
+date: "6 12 2022"
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r warning=FALSE, message=FALSE, results='hide'}
+library(ggplot2)
+library(nlme)
+library(lmtest)
+library(rcompanion)
+library(tidyr)
+```
+
+## Working directory setzen
+```{r}
+setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche7_growth")
+```
+
+## Daten einlesen
+```{r}
+data <- read.csv("ASD.csv")
+
+# Für einen übersichtlichen Plot werden die ersten 10 VP herausgefiltert
+firstTen = subset(data, id <= 10)
+
+# ID's sollten nicht wie eine kontinuierliche Variable, sondern wie ein Faktor behandelt werden
+data$id = as.factor(data$id)
+firstTen$id = as.factor(firstTen$id)
+```
+
+## Plot der Daten
+```{r}
+ggplot(firstTen, aes(time, Interaction)) +
+  geom_point() +
+  geom_line(aes(color = id)) +
+  ylim(0, 30) +
+  labs(title = "Wirkung Skillstraining ASD", x = "Behandlungswoche", y = "Dauer Interaktionen", color = "ID")
+```
+
+## Inferenzstatistik (explorative Modellsuche)
+```{r}
+# Nullmodell
+NM = glm(Interaction ~ 1, data = data)
+
+# Nullmodell mit random intercept = unterschiedliche intercepts pro Person
+RI = lme(data = data, fixed = Interaction ~ 1, random = ~ 1 | id)
+lrtest(NM, RI)
+
+# Hier schließen wir zum ersten Mal die Zeit als Prädiktor ins Modell ein
+FS = lme(data = data, fixed = Interaction ~ time, random = ~ 1 | id)
+lrtest(RI, FS)
+
+## Hier spezifizieren wir, dass die Zeit je nach Person das Outcome unterschiedlich linear beeinflusst
+RS = lme(data = data, fixed = Interaction ~ time, random = ~ time | id)
+lrtest(FS, RS)
+
+summary(RS)
+```
+
+## Plots der Schätzungen
+```{r}
+# Wir extrahieren die geschätzten Werte für die ersten 10 Personen aus den Modellen
+data$fittedFS = fitted(FS)
+data$fittedRS = fitted(RS)
+
+# Wir erstellen zu jedem Modell eine Grafik, die die Schätzungen zeigt
+ggplot(data, aes(time, fittedFS)) +
+  geom_point() +
+  geom_line(aes(color = id)) +
+  ylim(0, 30) +
+  labs(title = "Interaktionsdauer beim Freispielen (Fixed slope)", x = "Behandlungswoche", y = "Dauer Interaktionen", color = "ID")
+
+ggplot(data, aes(time, fittedRS)) +
+  geom_point() +
+  geom_line(aes(color = id)) +
+  ylim(0, 30) +
+  labs(title = "Interaktionsdauer beim Freispielen (Random slope)", x = "Behandlungswoche", y = "Dauer Interaktionen", color = "ID")
+```
+
+## Autokorrelation
+```{r}
+## Am besten erstmal getrennt nach ein paar der Personen
+dat1 <- subset(data, id == "1")
+acf(dat1$Interaction)
+acf(dat1$Interaction, type = "partial")
+
+dat2 <- subset(data, id == "2")
+acf(dat2$Interaction)
+acf(dat2$Interaction, type = "partial")
+
+dat3 <- subset(data, id == "3")
+acf(dat3$Interaction)
+acf(dat3$Interaction, type = "partial")
+
+## Überprüfung, ob das auch bei den Residuen der Modelle der Fall ist
+data$residualsFS <- FS$residuals
+data$residualsRS <- RS$residuals
+## Achtung: Es gibt zwei Residuen: Für das Modell nur mit den fixed effects und pro Person unter Berücksichtigung der random effects 
+## fixed effects => erste Spalte [,1]
+## mit random effects => zweite Spalte [,2]
+
+## Autokorrelation der Residuen
+dat1 <- subset(data, id == "1")
+plot(dat1$time, dat1$residualsFS[,1])
+plot(dat1$time, dat1$residualsFS[,2])
+abline(h = 0)
+acf(dat1$residualsFS[,1])
+acf(dat1$residualsFS[,2])
+acf(dat1$residualsFS[,1], type = "partial")
+acf(dat1$residualsFS[,2], type = "partial")
+## macht keinen Unterschied hier
+
+
+```
+## Einbeziehen der Autokorrelation in das Modell
+
+```{r}
+RSplus <- lme(data = data, fixed = Interaction ~ time, random = ~ time | id, correlation = corAR1(form = ~ time|id))
+lrtest(RS, RSplus)
+
+## Residuen anschauen
+head(RSplus$residuals)
+data$residualsRSplus <- residuals(RSplus, type = "normalized")
+
+## Autokorrelation
+dat1 <- subset(data, id == "1")
+acf(dat1$residualsRSplus)
+acf(dat1$residualsRSplus, type = "partial")
+### ist verschwunden
+
+```
+

@@ -1,0 +1,176 @@
+---
+title: "Visuelle Datenanalyse mit ggplot2"
+author: "YH"
+date: '2022-05-16'
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Vorbereitung
+### Zusaetzliche ggplot2 packages
+
+```{r}
+#install.packages(c( "colorBlindness", "directlabels", "dplyr", "gameofthrones", "ggforce", "gghighlight", "ggnewscale", "ggplot2", "ggraph", "ggrepel", "ggtext", "ggthemes", "hexbin", "Hmisc", "mapproj", "maps", "munsell", "ozmaps", "paletteer", "patchwork", "rmapshaper", "scico", "seriation", "sf", "stars", "tidygraph", "tidyr", "wesanderson"))
+```
+### Activate ggplot2 package (and other packages)
+```{r}
+library(ggplot2)
+library(psych)
+library(Hmisc)
+```
+### set working directory
+```{r}
+setwd("~/Teaching/Master/Methoden Klinische 2022/Datenbeispiele/1_4")
+```
+
+### Daten einlesen
+```{r}
+dat_1 <- read.csv(file = "~/Teaching/Master/Methoden Klinische 2022/Datenbeispiele/1_4/Dat_VR_Anxiety_1.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
+
+# Characterstrings als Faktoren definieren
+dat_1$Gruppe <- as.factor(dat_1$Gruppe) 
+
+```
+
+## Verteilungen der Outcome-Variable Vor Treatment und nach treatment
+```{r}
+# Schritt 1 Veranschaulichung der Werte des Outcomes in den Bedingungen
+## Prä-Messung
+ggplot(dat_1, aes(Gruppe, Pre)) + 
+  geom_jitter(width = 0.3, height = 0) +
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung vor Behandlung") 
+### jitter verteilt die Daten auf der x-Achse so dass diese besser sichtbar sind, height = 0 vermeidet vertikalen jitter
+
+## Post-Messung
+ggplot(dat_1, aes(Gruppe, Post)) + 
+  geom_jitter(width = 0.3, height = 0) +
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung nach Behandlung")
+
+# Schritt 2: Mit violin plot um Verteilung der Kriteriumswerte zu veranschaulichen
+## Prä-Messung
+ggplot(dat_1, aes(Gruppe, Pre)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0) +
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung vor Behandlung")
+
+## Post-Messung
+ggplot(dat_1, aes(Gruppe, Post)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0) +
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung nach Behandlung")
+
+# Schritt 3: Hinzufügen von Mittelwerten mit Standardfehler als Fehlerbalken
+## Prä-Messung
+ggplot(dat_1, aes(Gruppe, Pre)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey") +
+  stat_summary(fun = mean, geom = "point", size = 3, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_se, width=.1, col ="red")+
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung vor Behandlung")
+
+## Post-Messung
+ggplot(dat_1, aes(Gruppe, Post)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey") +
+  stat_summary(fun = mean, geom = "point", size = 3, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_se, width=.1, col ="red")+
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung vor Behandlung")
+
+# Schritt 3: Hinzufügen von Mittelwerten mit Konfidenzinterall als Fehlerbalken
+## Prä-Messung
+ggplot(dat_1, aes(Gruppe, Pre)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung vor Behandlung")
+
+## Post-Messung
+ggplot(dat_1, aes(Gruppe, Post)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung vor Behandlung")
+```
+
+## Verteilungen der Veraenderungen
+
+Es gibt zwei berechnete Veraenderungen des Outcomes
+Absolute Veraenderung
+Change = Post - Pre # einfache Differenz der Messung
+
+Relative Veraenderung
+Change_2 = Post/Pre - 1 # Prozent Veraenderung im Score  = Absinken, positiv = Ansteigen
+
+```{r}
+
+## Absolute Veraenderung
+ggplot(dat_1, aes(Gruppe, Change)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  ylim(-30,+10) +
+  ylab("Absolute Change Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Veränderung Belastung Prä zu Post")
+
+## Relative Veraenderung
+ggplot(dat_1, aes(Gruppe, Change_2)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  ylim(-1,1) +
+  ylab("Prozent Change Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Relative Veränderung Belastung Prä zu Post")
+```
+
+## Zusammenhang von Prä und Post
+
+Da die gleichen Personen in den Bedingungen mehrfach untersucht werden, sollte es einen Zusammenhang zwischen den Prä- und Postwerten im Kriterium geben
+
+```{r}
+ggplot(dat_1, aes(Pre, Post)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(~Gruppe)+
+  ylab("Post-Werte") + 
+  xlab("Prä-Werte")+
+  ggtitle("Zusammenhang Prä und Post pro Gruppe")
+```
+
+
+

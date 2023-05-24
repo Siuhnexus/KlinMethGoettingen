@@ -1,0 +1,111 @@
+---
+title: "Deskriptive Datenanalyse mit ggplot2"
+author: "YH"
+date: '2022-05-16'
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Vorbereitung
+### Zusaetzliche ggplot2 packages
+
+```{r}
+#install.packages(c( "colorBlindness", "directlabels", "dplyr", "gameofthrones", "ggforce", "gghighlight", "ggnewscale", "ggplot2", "ggraph", "ggrepel", "ggtext", "ggthemes", "hexbin", "Hmisc", "mapproj", "maps", "munsell", "ozmaps", "paletteer", "patchwork", "rmapshaper", "scico", "seriation", "sf", "stars", "tidygraph", "tidyr", "wesanderson"))
+```
+### Aktiviere packages)
+```{r}
+library(ggplot2)
+library(psych)
+library(Hmisc)
+library(tidyr)
+```
+### set working directory
+```{r}
+setwd("~/Teaching/Master/Methoden Klinische 2022/Datenbeispiele/1_4")
+```
+
+### Daten einlesen
+```{r}
+dat_1 <- read.csv(file = "~/Teaching/Master/Methoden Klinische 2022/Datenbeispiele/1_4/Dat_VR_Anxiety_1.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
+
+# Characterstrings als Faktoren definieren
+dat_1$Gruppe <- as.factor(dat_1$Gruppe) 
+
+```
+
+## Berechnung deskriptive Statistiken getrennt nach Messzeitpunkten
+
+```{r}
+descriptives_pre <- describeBy(Pre ~ Gruppe, mat = TRUE, data = dat_1)
+descriptives_pre
+
+descriptives_post <- describeBy(Post ~ Gruppe, mat = TRUE, data = dat_1)
+descriptives_post
+
+# Verbinden
+descriptives1 <- rbind(descriptives_pre, descriptives_post)
+descriptives1
+```
+
+## Berechnung nach Transformation der Daten in long Format
+
+wide == Daten jeder Person stehen in einer Zeile
+long == Daten der einzelnen Messzeitpunkte stehen in einer Zeile, d.h. jede Person hat mehrere Zeilen
+
+```{r}
+dat_1_long <- as.data.frame(pivot_longer(dat_1, cols = c(Pre, Post), names_to = "Messung",
+values_to = "score", values_drop_na = FALSE))
+
+descriptives2 <- describeBy(score ~ Gruppe + Messung, mat = TRUE, data = dat_1_long)
+descriptives2
+```
+
+### Graphiken fuer Mittelwerte in verschiedenen Gruppen
+
+```{r}
+
+#### Namen der Faktoren in Ergebnimatrix einfuegen
+names(descriptives2)[names(descriptives2) == "group1"] <- "Bedingung"
+names(descriptives2)[names(descriptives2) == "group2"] <- "Messzeitpunkt"
+#### Konfidenzintervall ausrechnen
+descriptives2$ci_95 <- descriptives2$se*1.96
+
+descriptives2$Messzeitpunkt <- factor(descriptives2$Messzeitpunkt, levels = c("Pre", "Post"))
+
+#### Graphik machen
+pd <- position_dodge(0.3) # zum Versetzen der Punkte
+
+ggplot(descriptives2, aes(x=Messzeitpunkt, y=mean, group = Bedingung)) + 
+   geom_errorbar(width=.2, aes(ymin=mean-ci_95, ymax=mean+ci_95), position = pd) +
+  geom_point(aes(color = Bedingung), size=2, position = pd) +
+    geom_line(aes(linetype=Bedingung, color = Bedingung), position = pd) +
+    ggtitle("Mittelwerte plus/minus 95% Konfidenzintervall")+
+    theme_classic()
+```
+## Berechnung Effektstärken
+
+```{r}
+# Score Post
+## In sensu vs. Warteliste
+dat_1_WL_in_sensu <- subset(dat_1, Gruppe == "Warteliste" | Gruppe == "in_sensu")
+d1 <- cohen.d(Post ~ Gruppe, data = dat_1_WL_in_sensu)
+d1
+## In virtuo vs. Warteliste
+dat_1_WL_in_virtuo <- subset(dat_1, Gruppe == "Warteliste" | Gruppe == "in_virtuo")
+d2 <- cohen.d(Post ~ Gruppe, data = dat_1_WL_in_virtuo)
+d2
+
+# Change
+## In sensu vs. Warteliste
+d3 <- cohen.d(Change ~ Gruppe, data = dat_1_WL_in_sensu)
+d3
+## In virtuo vs. Warteliste
+d4 <- cohen.d(Change ~ Gruppe, data = dat_1_WL_in_virtuo)
+d4
+```

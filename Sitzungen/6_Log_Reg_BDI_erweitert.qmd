@@ -1,0 +1,219 @@
+---
+title: "Logistische Regression"
+author: "YH"
+date: "11 2022"
+output:
+  word_document: default
+  html_document: default
+---
+## Packages
+
+```{r}
+library(car)
+library(readr)
+library(lmtest)
+library(rcompanion)
+library(questionr)
+library(glmm)
+library(ggplot2)
+library(ggmosaic)
+library(psych)
+library(Hmisc)
+library(tidyr)
+library(tables)
+library(MASS)
+```
+
+## Working directory und Datei oeffnen
+
+```{r}
+setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg")
+dat_log1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg/BDI_2_LR.csv", header = TRUE, sep = ",", dec = ".")
+dat_log1$ID <- as.factor(dat_log1$ID)
+dat_log1$Therapie <- as.factor(dat_log1$Therapie)
+```
+
+## Visuelle Analyse
+
+```{r}
+# Daten ins long format nur wegen der Abbildung
+dat_log1_long <- as.data.frame(pivot_longer(dat_log1, cols = c(Pre, Post), names_to = "Zeitpunkt",
+values_to = "BDI", values_drop_na = FALSE))
+dat_log1_long$Zeitpunkt <- as.factor(dat_log1_long$Zeitpunkt)
+dat_log1_long$Zeitpunkt <- factor(dat_log1_long$Zeitpunkt, levels = c("Pre", "Post")) 
+dat_log1_long$ID <- as.factor(dat_log1_long$ID)
+
+ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) + 
+  facet_wrap(~Therapie)+
+  geom_line(aes(color= ID), show.legend = FALSE) +
+  geom_hline(yintercept=19.5, color = "red") +
+  annotate("text", x = 0.6, y = 19.5, label = "Depression", vjust = -0.5, color = "red", size =2) +
+  geom_hline(yintercept=12.5, color = "darkgreen") +
+  annotate("text", x = 0.6, y = 12.5, label = "Normal", vjust = -0.5, color = "darkgreen", size =2) +
+  ylab("Score BDI 2") + 
+  xlab("Zeitpunkt") +
+  ggtitle("Depression in Abhängigkeit von Therapieform und Zeitpunkt")
+```
+
+## Berechnung von Indikatoren für klinisch relevante Veränderung
+Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind.
+1. Reduktion der Symptomatik um 50% zum Postzeitpunkt
+2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich
+3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8
+4. Clinically significant change: Normalbereich BDI Score <=12
+```{r}
+# Reduktion der Symptomatik
+## Berechnung 50% Symptomatik des Prä-Werts
+dat_log1$Half_Pre <- dat_log1$Pre*0.5
+## Bestimmung, ob Kriterium erreicht ist
+dat_log1$Krit_Half <- ifelse(dat_log1$Post <= dat_log1$Half_Pre, 1, 0)
+dat_log1$Krit_Half <- as.factor(dat_log1$Krit_Half)
+dat_log1$Krit_Half <- factor(dat_log1$Krit_Half, labels = c("No_50%_Red", "50%_Reduction"))
+## Tabelle zur Veranschaulichung
+table_krit_half <- tabulr(Therapie ~ Krit_Half, data = dat_log1)
+table_krit_half
+
+
+# Absinken in den Normalbereich
+dat_log1$Sink_Norm = ifelse(dat_log1$Pre >= 13 & dat_log1$Post < 13, 1, 0)
+dat_log1$Sink_Norm <- as.factor(dat_log1$Sink_Norm)
+dat_log1$Sink_Norm <- factor(dat_log1$Sink_Norm, labels = c("No_Sink", "Sink"))
+table_sink <- tabulr(Therapie ~ Sink_Norm, data = dat_log1)
+table_sink
+
+# Reliable Change Index
+dat_log1$RCI = (dat_log1$Post - dat_log1$Pre) / (sd(dat_log1$Pre) * sqrt(2*(1-0.8)))
+dat_log1$Signif_RCI = ifelse(dat_log1$RCI < -1.96, 1, 0)
+dat_log1$Signif_RCI <- as.factor(dat_log1$Signif_RCI)
+dat_log1$Signif_RCI <- factor(dat_log1$Signif_RCI, labels = c("No_RCI", "RCI"))
+table_RCI <- tabulr(Therapie ~ Signif_RCI, data = dat_log1)
+table_RCI
+
+# Clinically significant change vs. no clinically significant change
+dat_log1$CSC = ifelse(dat_log1$Sink_Norm == "Sink" & dat_log1$Signif_RCI == "RCI", 1, 0)
+dat_log1$CSC = as.factor(dat_log1$CSC)
+dat_log1$CSC <- factor(dat_log1$CSC, labels = c("No_CSC", "CSC"))
+table_CSC <- tabulr(Therapie ~ CSC, data = dat_log1)
+table_CSC
+
+# Graphik für Clinically significant change
+g = ggplot(dat_log1) +
+  geom_mosaic(aes(x=product(CSC, Therapie), fill=CSC), divider=c("vspine", "hspine"))
+g = g + ggtitle("Anteil klinisch signifikanter Veränderung in den Therapiebedingungen")
+g = g + geom_text(data=as.data.frame(ggplot_build(g)$data),
+              aes(x = (xmin + xmax) * 0.5, y = (ymin + ymax) * 0.5, label = .n / sum(.n)))
+g 
+```
+## Einfache Logistische Regression
+Es wird ein Modell definiert. Dazu nutzen wir die den Befehl glm() und spezifizieren die Verteilung der Kriteriumsvariable ueber family = binomial. Die Bernoulli-Verteilung des Kriteriums ist ein Spezialfall der Binomialverteilung.
+
+```{r}
+# Kriterium Clinically Significant Change CSC
+Log.Model1 <- glm(dat_log1$CSC ~ dat_log1$Therapie, family = binomial(), data = dat_log1)
+summary.glm(Log.Model1)
+# Odds ratio per Hand
+odds_ratios1 <- exp(Log.Model1$coefficients)
+odds_ratios1
+# Odds ratios mit Konfidenzintervall
+odds_ratios <- odds.ratio(Log.Model1, level = 0.95)
+odds_ratios
+
+```
+## Testung des Modells auf Signifikanz
+
+Zuerst definieren wir ein Nullmodell. Mittels eines likelihood ratio tests ueberpruefen wir, ob das Modell die dichotome Kriteriumsvariable vorhersagt. Da es hier nur einen Praediktor gibt, wird durch den Vergleich auch der Praediktor auf Signifikanz getestet.
+
+```{r}
+Nullmodell <- glm(dat_log1$CSC ~ 1, family = binomial(), data = dat_log1)
+summary(Nullmodell)
+lrtest(Nullmodell, Log.Model1)
+AIC(Nullmodell)
+AIC(Log.Model1)
+```
+## Effektstaerke Modell
+
+Normale R^2 lassen sich bei einer logistischen Regression nicht berechnen. Stattdessen gibt es sogenannte Pseudo-R^2, welche die gleiche Bedeutung haben (aber auf den Likelihoods beruhen).
+
+```{r}
+nagelkerke(Log.Model1)
+```
+## Erweiterung der Modells um die Prä-Werte und dann um die Interaktion
+
+```{r}
+## Zentrierung der Prä-Werte
+dat_log1$Pre_c <- scale(dat_log1$Pre, center = TRUE)
+
+## Schätzung der Modelle
+Log.Model2 <- glm(dat_log1$CSC ~ Therapie + Pre_c, family = binomial(), data = dat_log1)
+Log.Model3 <- glm(dat_log1$CSC ~ Therapie * Pre_c, family = binomial(), data = dat_log1)
+lrtest(Log.Model1, Log.Model2, Log.Model3)
+## Log.Model2 ist das beste Modell
+summary.glm(Log.Model2)
+# Odds ratios mit Konfidenzintervall
+odds_ratios <- odds.ratio(Log.Model2, level = 0.95)
+odds_ratios
+# Pseudo R Quadrat
+nagelkerke(Log.Model2)
+
+```
+# Ordinale Regression
+
+Nach dem Modell von Nelson und Hiller sollte als klinisch relevantes Outcome vier unterschiedeliche Kategorien unterschieden werden:
+1. Reliable Verschlechterung
+2. Non Responder
+3. Responder (Reliable Verbesserung aber nicht Unterschreiten eines Cut-offs für klinische Relevanz)
+4. Clinical significant Change (Reliable Verbesserung und Unterschreiten des Cut-offs)
+
+```{r}
+# Definition der vier Kategorien
+# Reliable Change Index
+#dat_log1$RCI = (dat_log1$Post - dat_log1$Pre) / (9.5 * sqrt(2*(1-0.8)))
+
+# 4 Kategorien
+dat_log1$CSC2 = ifelse(dat_log1$RCI > 1.96, 1, ifelse(dat_log1$RCI >= -1.96 & dat_log1$RCI <= 1.96, 2, ifelse(dat_log1$RCI < -1.96 & dat_log1$Post >=13, 3, 4)))
+dat_log1$CSC2 = as.factor(dat_log1$CSC2)
+
+## Es gibt keine Verschlechterung daher nur 3 Ausprägungen
+dat_log1$CSC2 <- factor(dat_log1$CSC2, labels = c("Non_Responder", "Responder", "CSC"))
+table_CSC2 <- tabulr(Therapie ~ CSC2, data = dat_log1)
+table_CSC2
+
+# Ordinale Regression
+Modell_ordinal <- polr(CSC2 ~ Therapie + Pre_c, method = "logistic", data = dat_log1, Hess = TRUE)
+summary(Modell_ordinal)
+
+
+# Berechnung p-Werte
+ctable <- coef(summary(Modell_ordinal))
+# p Werte mittels t Verteilung , df = N - k - 1
+p <- pt(abs(ctable[,"t value"]), df = 98, lower.tail = FALSE)*2
+# p Werte mittels z-Verteilung (Standardnormalverteilung)
+#p2 <- pnorm(abs(ctable[,"t value"]), lower.tail = FALSE)*2
+ctable <- cbind(ctable, "p value" = p)
+ctable
+
+# Berechnung Odds ratios und Konfidenzintervall
+OR <- exp(coef(Modell_ordinal))
+CI <- exp(confint(Modell_ordinal))
+OR
+CI
+
+# Prüfung ob Annahme, dass die Odds ratios proportional sind (d.h. der Anstieg für alle Stufen gleich ist) angemessen ist
+poTest(Modell_ordinal)
+## der Test sollte nicht signifikant sein
+
+## Überprüfung per Hand was beim Prädiktor Pre der Fall ist
+### Vergleich Non-Responder vs. Responder + CSC
+dat_log1$CSC3 = ifelse(dat_log1$RCI >= -1.96, "Non_Responder", "Responder + CSC")
+dat_log1$CSC3 = as.factor(dat_log1$CSC3)
+Modell_ordinal_2 <- glm(CSC3 ~ Therapie + Pre, family = binomial(), data = dat_log1)
+
+### Vergleich Non-Responder + Responder vs. CSC
+# schon berechnet ist der Factor CSC
+Modell_ordinal_3 <- glm(CSC ~ Therapie + Pre, family = binomial(), data = dat_log1)
+
+summary.glm(Modell_ordinal_2)
+summary.glm(Modell_ordinal_3)
+```
+
+

@@ -1,0 +1,119 @@
+---
+title: "Lineare Growth-Modelle 2"
+author: "York Hagmayer"
+date: "11 12 2022"
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+## Notwendige Pakete laden und aktivieren
+```{r warning=FALSE, message=FALSE, results='hide'}
+library(ggplot2)
+library(nlme)
+library(lmtest)
+library(rcompanion)
+library(tidyr)
+library(car)
+```
+
+## Working directory setzen
+```{r}
+setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche8_growth2")
+```
+
+## Daten einlesen und ins long format transformieren
+Bei der Transformation ins long format ist zu beachten, dass nun zwei Variablen transformiert werden müssen: der Language Score und die sechs Variablen, die den Field trip erfassen. Dazu ist es am einfachsten, die Daten zu teilen, dann jeweils ins long format zu transfomieren und dann wieder zusammenzufügen.
+
+```{r}
+data <- read.csv("Second_language2.csv")
+
+# ID als Faktor
+data$ID <- as.factor(data$ID)
+data$school <- as.factor(data$school)
+data$Field_trip <- as.factor(data$Field_trip)
+
+# Daten teilen
+Teil1 <- subset(data, select = c(ID, school, LangScore1, LangScore2, LangScore3, LangScore4, LangScore5, LangScore6, Grammar_first_lang, Field_trip))
+Teil2 <- subset(data, select = c(ID, Ft1, Ft2, Ft3, Ft4, Ft5, Ft6))
+
+# ins long format
+Teil1_long <- pivot_longer(Teil1, cols = c(LangScore1, LangScore2, LangScore3, LangScore4, LangScore5, LangScore6), names_to = "time", values_to = "LangScore")
+Teil2_long <- pivot_longer(Teil2, cols = c(Ft1, Ft2, Ft3, Ft4, Ft5, Ft6), names_to = "trip", values_to = "trip_value")
+data_long <- cbind(Teil1_long, Teil2_long, by = "ID")
+
+# Time als numerische Variable definieren
+data_long$time_int <- ifelse(data_long$time == "LangScore1", 1, ifelse(data_long$time == "LangScore2", 2, ifelse(data_long$time =="LangScore3", 3, ifelse(data_long$time == "LangScore4", 4, ifelse(data_long$time == "LangScore5", 5, 6)))))
+
+# Time als Faktor definieren
+data_long$time <- as.factor(data_long$time)
+
+# Wert field trip zu den Messals Faktor definieren
+data_long$trip_value <- as.factor(data_long$trip_value)
+
+```
+
+## Plot der Daten
+
+Machen Sie eine oder zwei Abbildungen, in denen Sie den Verlauf des Sprachlernens über die sechs Messzeitpunkte zeigen. 
+```{r}
+# Die Schulen unterscheiden sich darin, ob sie während des Schuljahrs einen zweiwöchigen Auslangsaufenthalt zum Erlernen der Zweitsprache machen (Variable Field_trip). Diese Daten sollten getrennt voneinander dargestellt werden.
+# Daher werden hier einfach zwei Teildatensätze gemacht.
+data_long_FT_no <- subset(data_long, Field_trip == "no")
+data_long_FT_yes <- subset(data_long, Field_trip == "yes")
+
+## Ohne Fieldtrip
+ggplot(data_long_FT_no, aes(x=time_int, y=LangScore)) +
+  geom_point() +
+  geom_line(aes(color = ID), show.legend =FALSE) +
+  ylim(100, 300) +
+  labs(title = "Language Training", x = "Messung", y = "Language Score", color = "ID")
+
+## Mit Fieldtrip
+ggplot(data_long_FT_yes, aes(x=time_int, y=LangScore)) +
+  geom_point() +
+  geom_line(aes(color = ID), show.legend =FALSE) +
+  ylim(100, 300) +
+  labs(title = "Language Training with Field Trip", x = "Messung", y = "Language Score", color = "ID")
+```
+
+## Modellsuche
+
+Modellieren Sie Daten. Erstellen Sie dazu immer komplexere Modelle und vergleichen Sie diese. Beginnen Sie mit einem Nullmodell. Nutzen Sie auch den AIC. Ermitteln Sie mit Hilfe der Varianzinflationsfaktoren, ob es zu einem Multikollinearitätsproblem kommt.
+
+```{r}
+
+```
+
+## Analyse der Residuen
+
+Analysieren Sie die Residuen ihres besten Modells. Machen Sie sich hierzu eine Abbildung. Berechnen Sie auch die Autokorrelationsfunktion für das Modell und stellen Sie die Autokorrelationen graphisch dar.
+```{r}
+data_long$residualsRS <- residuals(RS.plus3, type = "normalized")
+
+## Verteilung der Residuen zu den Messzeitpunkten
+ggplot(data_long, aes(time, residualsRS)) +
+  geom_point() +
+  geom_jitter(width = 0.3, height = 0) + 
+   geom_violin() +
+    ylim(-10, 10) +
+  labs(title = "Residuen", x = "Messung", y = "Std. Residuen")
+
+
+## Autokorrelationsfunktion
+ACF(RS.plus3, maxLag = 3, resType = "normalized")
+plot(ACF(RS.plus3, maxLag = 3, resType = "normalized"), alpha = 0.01)
+```
+
+## Vorhergesagte Verläufe
+
+Nutzen Sie ihr Modell umd die Daten der Schüler*innen vorherzusagen. Stellen Sie die Vorhersagen graphisch dar.
+```{r}
+# Fitted values 
+
+# Graphik
+
+
+
+```

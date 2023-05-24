@@ -1,0 +1,63 @@
+---
+title: "Missingdata"
+author: "IK & YH"
+date: "2023-01-06"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## Notwendige Pakete laden und aktivieren
+```{r warning=FALSE, message=FALSE, results='hide'}
+library(mice)
+library(psych)
+library(ggplot2)
+```
+
+
+## Setze Working directory und öffne Daten
+```{r}
+# Bitte anpassen
+setwd("C:/Users/yhagmay/Documents/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche10_missing_values")
+
+# Bitte anpassen
+dat_1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche10_missing_values/Dat_VR_Anxiety_Uebung.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
+
+dat_1$ID <- as.factor(dat_1$ID)
+dat_1$Gruppe <- as.factor(dat_1$Gruppe)
+dat_1$Gruppe <- factor(dat_1$Gruppe, levels = c("Warteliste", "in_sensu", "in_virtuo"))
+dat_1$Pre <- as.vector(scale(dat_1$Pre, center = TRUE, scale = FALSE))
+
+# Lösche ID damit diese nicht in Imputation eingeht (ist multikollinear mit Gruppe)
+dat_1_imputation <- dat_1[,-1]
+```
+
+## Muster Missings
+```{r}
+
+```
+
+## Imputation
+
+Imputiere 25/150 = 17 Datensätze
+```{r}
+# predictive mean matching
+# lineares Modell mit Normalverteilung
+
+```
+
+## Analysieren der Daten / Modelldefinition und -schaetzung
+```{r}
+
+```
+
+## Poole Ergebnisse ueber Datensaetze hinweg
+```{r}
+
+```
+
+## R2 pooled
+```{r}
+
+```
+

@@ -1,0 +1,171 @@
+---
+title: "Missingdata"
+author: "IK & YH"
+date: "2023-01-06"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## Notwendige Pakete laden und aktivieren
+```{r warning=FALSE, message=FALSE, results='hide'}
+library(mice)
+```
+
+
+# Beispiel 1:nhanes - NHANES example - all variables numerical
+*Description
+A small data set with non-monotone missing values.
+
+*Format
+A data frame with 25 observations on the following 4 variables.
+
+age - Age group (1=20-39, 2=40-59, 3=60+)
+bmi - Body mass index (kg/m**2)
+hyp - Hypertensive (1=no,2=yes)
+chl - Total serum cholesterol (mg/dL)
+
+*Details
+A small data set with all numerical variables. The data set nhanes2 is the same data set, but with
+age and hyp treated as factors.
+
+*Source
+Schafer, J.L. (1997). Analysis of Incomplete Multivariate Data. London: Chapman & Hall.
+
+## Daten laden
+```{r}
+nhanes <- (nhanes)
+nhanes2 <- nhanes2
+```
+
+## Muster Missing
+```{r}
+md.pattern(nhanes)
+```
+
+### Incomplete cases
+```{r}
+ic(nhanes) # get the 12 rows with incomplete cases
+ic(nhanes[1:10,]) # incomplete cases within the first ten rows
+ic(nhanes[,2:3]) # restrict extraction to variables bmi and hyp
+```
+
+## Imputation
+```{r}
+# do default multiple imputation on a numeric matrixm m=10 imputations
+imp <- mice(nhanes, m=10, method = "pmm")
+# pmm = predictive mean matching = default
+
+## Zeige Predictormatrix
+imp
+
+# list the actual imputations for BMI
+imp$imp$bmi
+
+# show first completed data matrix
+complete(imp)
+
+# imputation on mixed data with a different method per column
+imp2 <- mice(nhanes2, meth=c('sample','pmm','logreg','norm'))
+```
+
+## Analysieren der Daten / Modelldefinition und -schaetzung
+```{r}
+# Definiere Modell für alle Datensätze
+fit1 <- with(data=imp,exp=lm(chl~age + bmi + hyp))
+# Definiere alternatives Modell für alle Datens
+fit2 <- with(data=imp,exp=lm(chl~age + hyp))
+
+# Ergebnisse der Modellschätzungen in den einzelnen Datensätzen
+summary(fit1)
+summary(fit2)
+```
+
+## Poole Ergebnisse ueber Datensaetze hinweg
+```{r}
+fit1.pooled <- pool(fit1)
+fit2.pooled <-pool(fit2)
+
+# Modellzusammenfassungen
+summary(fit1.pooled)
+summary(fit2.pooled)
+```
+
+## Modellvergleiche bei imputierten Daten
+```{r}
+# Wald t-Test
+summary(D1(fit1, fit2))
+# Hinweis: riv = relative increase in variance
+
+# likelihood ratio Test
+summary(D3(fit1, fit2))
+```
+
+## R2 pooled
+```{r}
+pool.r.squared(fit1)
+pool.r.squared(fit1,adjusted=TRUE) # adjustiert
+# Hinweis: fmi = fraction of missing information
+
+pool.r.squared(fit2)
+pool.r.squared(fit2,adjusted=TRUE) # adjustiert
+```
+
+# Beispiel 2: boys - Growth of Dutch boys
+Dieses Beispiel ist für graphische Darstellungen.
+Es zeigt auch, dass berechnete Variablen wie BMI beim imputieren Probleme verursachen können. 
+
+*Description
+Height, weight, head circumference and puberty of 748 Dutch boys.
+
+*Format
+A data frame with 748 rows on the following 9 variables:
+
+age - Decimal age (0-21 years)
+hgt - Height (cm)
+wgt - Weight (kg)
+bmi - Body mass index
+hc - Head circumference (cm)
+gen - Genital Tanner stage (G1-G5)
+phb - Pubic hair (Tanner P1-P6)
+tv - Testicular volume (ml)
+reg - Region (north, east, west, south, city)
+
+*Details
+Random sample of 10% from the cross-sectional data used to construct the Dutch growth references
+1997. Variables gen and phb are ordered factors. reg is a factor.
+
+## Daten laden
+```{r}
+boys <- (boys)
+```
+## Missing data pattern
+```{r}
+md.pattern(boys)
+```
+
+## Impute data
+```{r}
+# create two imputed data sets
+imp.boys <- mice(boys, m=2)
+# erster imputierter Datensatz
+z <- complete(imp.boys, 1)
+
+# create imputations for age <8yrs
+plot(z$age, z$gen, col=mdc(1:2)[1+is.na(boys$gen)],
+xlab = "Age (years)", ylab = "Tanner Stage Genital")
+```
+
+```{r}
+# figure to show that the default imputation method does not impute BMI consistently
+plot(z$bmi,z$wgt/(z$hgt/100)^2, col=mdc(1:2)[1+is.na(boys$bmi)],
+xlab = "Imputed BMI", ylab="Calculated BMI")
+```
+
+## Aufgabe 
+1. Schließe BMI aus dem Datensatz aus und imputiere Daten erneut
+2. Berechne BMI aus Gewicht und Größe
+
+```{r}
+
+```

@@ -1,0 +1,292 @@
+---
+title: "Datenanalyse Missing values"
+author: "YH"
+date: '2023-01-02'
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Activate packages
+```{r}
+library(ggplot2)
+library(psych)
+library(Hmisc)
+library(car)
+library(lmtest)
+library(mice)
+library(rcompanion)
+library(nlme)
+```
+### set working directory
+
+```{r}
+setwd("C:/Users/yhagmay/Documents/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche10_missing_values")
+```
+
+### Daten einlesen
+
+```{r}
+dat_1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche10_missing_values/Dat_VR_Anxiety_complete.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
+
+# Characterstrings als Faktoren definieren
+dat_1$Gruppe <- as.factor(dat_1$Gruppe) 
+dat_1$Gruppe <- factor(dat_1$Gruppe, levels = c("Warteliste", "in_sensu", "in_virtuo")) 
+
+```
+
+## Missing values Post zufällig
+
+```{r}
+# setze Wahrscheinlichkeit für missing
+p = 0.4
+
+# Zufallszahlen
+random.y <- as.vector(rbinom(nrow(dat_1), 1, p))
+
+# Zu Daten hinzufügen
+dat_missing_MCAR<- cbind(dat_1, random.y)
+
+# NA setzen
+dat_missing_MCAR$Post_mis<- ifelse(dat_missing_MCAR$random.y == 1, NA, dat_missing_MCAR$Post)
+
+```
+
+## Missing values je nach Bedingung unterschiedlich
+In diesem Fall sind die missings systematisch, da von der Bedingungen abhängig. 
+
+```{r}
+# setze Wahrscheinlichkeiten für missing in den Gruppen
+p.wl = 0.6
+p.is = 0.4
+p.iv = 0.2
+
+# Zufallszahlen
+random.y.mar.Gruppe <- c(rbinom(50, 1, p.wl), rbinom(50, 1, p.is), rbinom(50, 1, p.iv))
+
+# Zu Daten hinzufügen
+dat_missing_MAR_Gruppe<- cbind(dat_1, random.y.mar.Gruppe)
+
+# NA setzen
+dat_missing_MAR_Gruppe$Post_mis<- ifelse(dat_missing_MAR_Gruppe$random.y.mar.Gruppe == 1, NA, dat_missing_MAR_Gruppe$Post)
+
+```
+
+## Missing values je nach Prä-Wert unterschiedlich 
+In diesem Fall sind die missings systematisch, da vom Wert vor der Behandlung abhängig. 
+
+```{r}
+# Berechne Median für Aufteilung in hohe und niedrige Prä-Werte
+median(dat_1$Pre) # median = 20
+
+# setze Wahrscheinlichkeiten für missing
+p.low = 0.2
+p.high = 0.6
+
+# Zufallszahlen
+random.y.mar.low <- rbinom(150, 1, p.low)
+random.y.mar.high <- rbinom(150, 1, p.high)
+
+# Zu Daten hinzufügen
+dat_missing_MAR_Pre <- cbind(dat_1, random.y.mar.low, random.y.mar.high)
+
+# Nur eine Missing Variable 
+dat_missing_MAR_Pre$random.y<- ifelse(dat_missing_MAR_Pre$Pre > 20 &  dat_missing_MAR_Pre$random.y.mar.high == 1, 1, ifelse(dat_missing_MAR_Pre$Pre > 20 & dat_missing_MAR_Pre$random.y.mar.high == 0, 0, ifelse(dat_missing_MAR_Pre$Pre <= 20 &  dat_missing_MAR_Pre$random.y.mar.low == 1, 1, 0)))
+
+# NA setzen
+dat_missing_MAR_Pre$Post_mis<- ifelse(dat_missing_MAR_Pre$random.y == 1, NA, dat_missing_MAR_Pre$Post)
+
+```
+
+## Missing values je nach Post-Wert unterschiedlich
+In diesem Fall sind die missings systematisch, da vom Wert vom Post-Wert abhängig (Missing not at random). 
+
+```{r}
+# setze Wahrscheinlichkeiten für missing
+p.extreme = 0.8
+
+# Zufallszahlen
+random.y.MNAR <- rbinom(150, 1, p.extreme)
+
+# Zu Daten hinzufügen
+dat_missing_MNAR <- cbind(dat_1, random.y.MNAR)
+
+# Missing nur für extreme Fälle
+dat_missing_MNAR$random.y<- ifelse(dat_missing_MNAR$Post > 20 & dat_missing_MNAR$random.y.MNAR == 1, 1, 0)
+
+# NA setzen
+dat_missing_MNAR$Post_mis<- ifelse(dat_missing_MNAR$random.y == 1, NA, dat_missing_MNAR$Post)
+
+```
+
+## Visuelle Analyse 
+```{r}
+
+## Post-Messung komplett
+ggplot(dat_1, aes(Gruppe, Post)) + 
+  geom_jitter(width = 0.2, height = 0, col = "black", size = 1.2) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung nach Behandlung - Vollständig")
+
+## Post-Messung MCAR
+ggplot(dat_missing_MCAR, aes(Gruppe, Post)) + 
+  geom_jitter(width = 0.2, height = 0, col = "black", size = 1.2) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  facet_wrap(~as.factor(random.y)) + 
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung nach Behandlung - MCAR")
+
+
+## Post-Messung MAR Gruppe
+ggplot(dat_missing_MAR_Gruppe, aes(Gruppe, Post)) + 
+  geom_jitter(width = 0.2, height = 0, col = "black", size = 1.2) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+    facet_wrap(~as.factor(random.y.mar.Gruppe)) + 
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung nach Behandlung - MAR Gruppe")
+
+## Post-Messung MAR Prä
+ggplot(dat_missing_MAR_Pre, aes(Gruppe, Post)) + 
+  geom_jitter(width = 0.2, height = 0, col = "black", size = 1.2) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "purple")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="purple")+
+    facet_wrap(~as.factor(random.y)) + 
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung nach Behandlung - abhängig von Prä-Wert")
+
+## Post-Messung MNAR Post-Wert
+ggplot(dat_missing_MNAR, aes(Gruppe, Post)) + 
+  geom_jitter(width = 0.2, height = 0, col = "black", size = 1.2) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "darkblue")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="darkblue")+
+   facet_wrap(~as.factor(random.y)) + 
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung nach Behandlung - abhängig vom Post-Wert")
+
+
+```
+
+# Analyse Complete
+```{r}
+# deskriptive Analyse
+des.complete <- describeBy(data = dat_1, Post ~ Gruppe, mat = TRUE)
+des.complete$data <- rep("complete", 3)
+des.complete
+
+# Modell mit allen Prädiktoren
+# Zentrierung des kontinuierlichen Praediktors Pre-Wert
+dat_1$Pre_c <- scale(dat_1$Pre, center = TRUE, scale = FALSE) 
+
+M.complete <- lm(data = dat_1, Post ~ Pre_c + Gruppe)
+Anova(M.complete)
+summary(M.complete)
+
+# Multikollinearität
+vif(M.complete)
+
+# Analyse der Residuen
+## Verteilung der Residuen
+plotNormalDensity(M.complete$residuals)
+
+## Verteilung der Residuen in Abhängigkeit von vorhergesagten Werten
+scatterplot(rstandard(M.complete)~fitted(M.complete))
+
+## Statistischer Test auf Homoskedastizität: Breusch-Pagan Test
+bptest(M.complete)
+```
+
+# Analyse MAR Gruppe
+```{r}
+# deskriptive Analyse
+des.MAR.Gruppe <- describeBy(data = dat_missing_MAR_Gruppe, Post ~ Gruppe, mat = TRUE)
+des.MAR.Gruppe$data <- rep("MAR.Gruppe", 3)
+des.MAR.Gruppe
+
+# Zusammenhang missings mit anderen Prädiktoren
+desc.missing.MAR.Gruppe <- describeBy(data = na.omit(dat_missing_MAR_Gruppe), Pre ~ random.y.mar.Gruppe + Gruppe, mat = TRUE)
+M1.MAR.Gruppe <- lm(data = dat_missing_MAR_Gruppe, Pre ~ random.y.mar.Gruppe + Gruppe)
+Anova(M1.MAR.Gruppe)
+## kein Zusammenhang
+
+# Modell mit allen Prädiktoren
+# Zentrierung des kontinuierlichen Praediktors Pre-Wert
+dat_missing_MAR_Gruppe$Pre_c <- scale(dat_missing_MAR_Gruppe$Pre, center = TRUE, scale = FALSE) 
+
+M.MAR.Gruppe <- lm(data = na.omit(dat_missing_MAR_Gruppe), Post ~ Pre_c + Gruppe)
+Anova(M.MAR.Gruppe)
+summary(M.MAR.Gruppe)
+
+M.MAR.Gruppe2 <- gls(data = dat_missing_MAR_Gruppe, Post ~ Pre_c + Gruppe, method = "ML")
+Anova(M.MAR.Gruppe2)
+summary(M.MAR.Gruppe2)
+
+# Multikollinearität
+vif(M.MAR.Gruppe)
+
+# Analyse der Residuen
+## Verteilung der Residuen
+plotNormalDensity(M.MAR.Gruppe$residuals)
+
+## Verteilung der Residuen in Abhängigkeit von vorhergesagten Werten
+scatterplot(rstandard(M.MAR.Gruppe)~fitted(M.MAR.Gruppe))
+
+## Statistischer Test auf Homoskedastizität: Breusch-Pagan Test
+bptest(M.MAR.Gruppe)
+```
+
+# Analyse MNAR Gruppe
+```{r}
+# deskriptive Analyse
+des.MNAR <- describeBy(data = dat_missing_MNAR, Post ~ Gruppe, mat = TRUE)
+des.MNAR$data <- rep("NMAR", 3)
+des.MNAR
+
+# Zusammenhang missings mit anderen Prädiktoren
+dat_missing_MNAR$missing <- as.factor(dat_missing_MNAR$random.y)
+desc.missing.MNAR <- describeBy(data = dat_missing_MNAR, Pre ~ missing + Gruppe, mat = TRUE)
+M1.MNAR <- lm(data = dat_missing_MNAR$missing, Pre ~ missing + Gruppe)
+Anova(M1.MNAR)
+## deutlicher Zusammenhang
+
+# Modell mit allen Prädiktoren
+# Zentrierung des kontinuierlichen Praediktors Pre-Wert
+dat_missing_MNAR$Pre_c <- scale(dat_missing_MNAR$Pre, center = TRUE, scale = FALSE) 
+
+M.MNAR <- lm(data = na.omit(dat_missing_MNAR), Post ~ Pre_c + Gruppe)
+Anova(M.MNAR)
+summary(M.MNAR)
+
+#Multikollinearität
+vif(M.MNAR)
+
+# Analyse der Residuen
+## Verteilung der Residuen
+plotNormalDensity(M.MNAR$residuals)
+
+## Verteilung der Residuen in Abhängigkeit von vorhergesagten Werten
+scatterplot(rstandard(M.MNAR)~fitted(M.MNAR))
+
+## Statistischer Test auf Homoskedastizität: Breusch-Pagan Test
+bptest(M.MNAR)
+```

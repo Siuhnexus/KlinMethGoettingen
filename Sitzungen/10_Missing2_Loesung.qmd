@@ -1,0 +1,164 @@
+---
+title: "Missingdata"
+author: "IK & YH"
+date: "2023-01-06"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## Notwendige Pakete laden und aktivieren
+```{r warning=FALSE, message=FALSE, results='hide'}
+library(mice)
+library(psych)
+library(ggplot2)
+```
+
+
+## Setze Working directory und öffne Daten
+```{r}
+setwd("C:/Users/yhagmay/Documents/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche10_missing_values")
+
+dat_1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche10_missing_values/Dat_VR_Anxiety_Uebung.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
+
+dat_1$ID <- as.factor(dat_1$ID)
+dat_1$Gruppe <- as.factor(dat_1$Gruppe)
+dat_1$Gruppe <- factor(dat_1$Gruppe, levels = c("Warteliste", "in_sensu", "in_virtuo"))
+dat_1$Pre <- as.vector(scale(dat_1$Pre, center = TRUE, scale = FALSE))
+
+# Lösche ID damit diese nicht in Imputation eingeht (ist multikollinear mit Gruppe)
+dat_1_imputation <- dat_1[,-1]
+```
+
+## Muster Missings
+```{r}
+md.pattern(dat_1_imputation)
+```
+
+## Imputation
+
+Imputiere 25/150 = 17 Datensätze
+```{r}
+# predictive mean matching
+imp.pmm <- mice(dat_1_imputation, m=17, method = "pmm")
+# lineares Modell mit Normalverteilung
+imp.norm <- mice(dat_1_imputation, m= 17, method = "norm.boot")
+```
+
+## Analysieren der Daten / Modelldefinition und -schaetzung
+```{r}
+# Definiere Modell für alle Datensätze pmm
+fit.pmm <- with(data=imp.pmm,exp=lm(Post_mis ~ Gruppe + Pre))
+# Definiere für alle Datensätze lineares Modell mit Normalverteilung
+fit.norm <- with(data=imp.norm,exp=lm(Post_mis ~ Gruppe + Pre))
+
+# Ergebnisse der Modellschätzungen in den einzelnen Datensätzen
+## Vorständige Anzeige
+sum.fit.pmm <- summary(fit.pmm)
+print(sum.fit.pmm, n = 68)
+# Unvollständige Anzeige
+summary(fit.norm)
+```
+
+## Poole Ergebnisse ueber Datensaetze hinweg
+```{r}
+fit.pmm.pooled <- pool(fit.pmm)
+fit.norm.pooled <- pool(fit.norm)
+
+# Modellzusammenfassungen
+summary(fit.pmm.pooled)
+summary(fit.norm.pooled)
+```
+
+## R2 pooled
+```{r}
+pool.r.squared(fit.pmm)
+# Hinweis: fmi = fraction of missing information
+pool.r.squared(fit.norm)
+```
+
+# Weiterführende Analysen
+
+## Complete cases analysis
+Berechnen Sie ein lineares Modell nur mit den vollständigen Fällen (na.action = na.omit)
+```{r}
+fit.miss <- lm(Post_mis ~ Gruppe + Pre, data = dat_1, na.action = na.omit)
+summary(fit.miss)
+```
+
+## Data without missing analysis
+```{r}
+dat_no_miss <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche10_missing_values/Dat_VR_Anxiety_complete.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
+
+dat_no_miss$ID <- as.factor(dat_no_miss$ID)
+dat_no_miss$Gruppe <- as.factor(dat_no_miss$Gruppe)
+dat_no_miss$Gruppe <- factor(dat_no_miss$Gruppe, levels = c("Warteliste", "in_sensu", "in_virtuo"))
+dat_no_miss$Pre <- as.vector(scale(dat_no_miss$Pre, center = TRUE, scale = FALSE))
+
+fit.no.miss <- lm(Post ~ Gruppe + Pre, data = dat_no_miss)
+summary(fit.no.miss)
+```
+Ergebnis: Auch bei Imputation werden die Effekte unterschaetzt
+
+## Analyse woher der Unterschied kommt 
+Wichtig: Die Analyse beruht nur auf den beobachteten Daten
+```{r}
+## Missing als Faktor einfügen
+dat_1$mis_fac <- ifelse(dat_1$Post_mis == "NA", 1, 0)
+dat_1$mis_fac[is.na(dat_1$mis_fac)] <- 1
+dat_1$mis_fac <- as.factor(dat_1$mis_fac)
+dat_1$mis_fac <- factor(dat_1$mis_fac, labels = c("observed", "missing"))
+
+## Prä-Messung bei missing
+ggplot(dat_1, aes(Gruppe, Pre, col = mis_fac)) + 
+  geom_jitter(width = 0.2, height = 0, size = 1) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  ylim(-10,10) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung vor Behandlung")
+
+ggplot(dat_1, aes(Gruppe, Pre)) + 
+  geom_jitter(width = 0.2, height = 0, size = 1) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  facet_grid(~mis_fac) + 
+  ylim(-10,10) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung vor Behandlung")
+
+## Zusammenhang Pre-Werte und Post-Werte
+ggplot(dat_1, aes(Pre, Post_mis, col = mis_fac)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(~Gruppe)+
+  ylab("Post-Werte") + 
+  xlab("Prä-Werte")+
+  ggtitle("Zusammenhang Prä und Post pro Gruppe")
+## Die Prä-Werte der Missings werden nicht dargestellt
+
+## Einfügen fiktiver Post-Werte für Missings zur Veranschaulichung
+dat_1$post_mis2 <- dat_1$Post_mis
+dat_1$post_mis2[is.na(dat_1$post_mis2)] <- 5
+
+## Zusammenhang Pre-Werte und Post-Werte
+ggplot(dat_1, aes(Pre, post_mis2, col = mis_fac)) + 
+  geom_point() + 
+  facet_wrap(~Gruppe)+
+  ylab("Post-Werte") + 
+  xlab("Prä-Werte")+
+  ggtitle("Zusammenhang Prä und Post pro Gruppe und Verteilung der missings")
+
+## Zusammenhang Pre-Werte und Post-Werte
+dat_no_miss <- cbind(dat_no_miss, dat_1$mis_fac)
+ggplot(dat_no_miss, aes(Pre, Post, col = dat_1$mis_fac)) + 
+  geom_point() + 
+  facet_wrap(~Gruppe)+
+  ylab("Post-Werte") + 
+  xlab("Prä-Werte")+
+  ggtitle("Zusammenhang Prä und Post pro Gruppe und Verteilung der missings")
+
+```
+Fazit: Es gibt einen Zusammenhang zwischen den missings und Prä-Werten der unterschiedlich zwischen den Gruppen ist. Dies ist ein erster Hinweis, dass es ein Problem geben könnte. Das eigentliche Problem ist aber statistisch nicht zu erkennen.

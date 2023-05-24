@@ -1,0 +1,214 @@
+---
+title: "Lineare Growth-Modelle 3"
+author: "York Hagmayer"
+date: "11 12 2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r warning=FALSE, message=FALSE, results='hide'}
+library(ggplot2)
+library(nlme)
+library(lmtest)
+library(rcompanion)
+library(tidyr)
+library(car)
+```
+
+## Working directory setzen
+```{r}
+setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche8_growth2")
+```
+
+## Daten einlesen und Teilung in personenspezifischen Mittelwert und Abweichung vom personenspezifischen Mittelwert
+
+```{r}
+data <- read.csv("Mental_Wellbeing_Schlaf.csv")
+
+# ID als Faktor
+data$id <- as.factor(data$id)
+
+# Berechnen personenspezifischer Mittelwerte und Abweichungen vom personenspezifischen Mittelwert
+data$schlaf_mean <- rowMeans(subset(data, select = Schlaf_Tag1:Schlaf_Tag14))
+
+# Abweichung vom personenspezifischen Mittelwert Schlaf
+data$schlaf_abw_Tag1 <-data$Schlaf_Tag1 - data$schlaf_mean
+data$schlaf_abw_Tag2 <-data$Schlaf_Tag2 - data$schlaf_mean
+data$schlaf_abw_Tag3 <-data$Schlaf_Tag3 - data$schlaf_mean
+data$schlaf_abw_Tag4 <-data$Schlaf_Tag4 - data$schlaf_mean
+data$schlaf_abw_Tag5 <-data$Schlaf_Tag5 - data$schlaf_mean
+data$schlaf_abw_Tag6 <-data$Schlaf_Tag6 - data$schlaf_mean
+data$schlaf_abw_Tag7 <-data$Schlaf_Tag7 - data$schlaf_mean
+data$schlaf_abw_Tag8 <-data$Schlaf_Tag8 - data$schlaf_mean
+data$schlaf_abw_Tag9 <-data$Schlaf_Tag9 - data$schlaf_mean
+data$schlaf_abw_Tag10 <-data$Schlaf_Tag10 - data$schlaf_mean
+data$schlaf_abw_Tag11 <-data$Schlaf_Tag11 - data$schlaf_mean
+data$schlaf_abw_Tag12 <-data$Schlaf_Tag12 - data$schlaf_mean
+data$schlaf_abw_Tag13 <-data$Schlaf_Tag13 - data$schlaf_mean
+data$schlaf_abw_Tag14 <-data$Schlaf_Tag14 - data$schlaf_mean
+
+```
+
+## Transformation ins Long format
+
+```{r}
+# Daten teilen
+Teil_schlaf <- subset(data, select = c(id, schlaf_mean, schlaf_abw_Tag1:schlaf_abw_Tag14))
+Teil_MWB <- subset(data, select = c(id, MWB_Tag1:MWB_Tag14))
+Teil_schlaf2 <- subset(data, select = c(id, Schlaf_Tag1:Schlaf_Tag14))
+
+# ins long format
+Teil_schlaf_long <- pivot_longer(Teil_schlaf, cols = c(schlaf_abw_Tag1:schlaf_abw_Tag14), names_to = "Tag", values_to = "Schlaf_abw")
+Teil_MWB_long <- pivot_longer(Teil_MWB, cols = c(MWB_Tag1:MWB_Tag14), names_to = "Tag_MWB", values_to = "MWB_value")
+Teil_schlaf2_long <- pivot_longer(Teil_schlaf2, cols = c(Schlaf_Tag1:Schlaf_Tag14), names_to = "Tag", values_to = "Schlaf")
+
+# Erstmal mit zwei Mal id zum checken, ob es passt
+#data_long <- cbind(Teil_schlaf_long, Teil_MWB_long)
+## dann ohne id bei MWB
+data_long <- cbind(Teil_schlaf_long, Teil_MWB_long[,-1])
+data_long$Tag <- as.factor(data_long$Tag)
+
+# leider stimmen die levels nicht, daher umsortieren
+data_long$Tag <- factor(data_long$Tag, levels = c("schlaf_abw_Tag1", "schlaf_abw_Tag2", "schlaf_abw_Tag3", "schlaf_abw_Tag4", "schlaf_abw_Tag5", "schlaf_abw_Tag6", "schlaf_abw_Tag7", "schlaf_abw_Tag8", "schlaf_abw_Tag9", "schlaf_abw_Tag10", "schlaf_abw_Tag11", "schlaf_abw_Tag12", "schlaf_abw_Tag13", "schlaf_abw_Tag14"))
+# Tag als numerische Variable einfügen
+data_long$Tag_num <- as.numeric(data_long$Tag)
+
+######
+# Analyse ohne Trennung der within - between Effekte des Schlafs
+######
+
+Teil_schlaf2_long$Tag <- as.factor(Teil_schlaf2_long$Tag)
+Teil_schlaf2_long$Tag <- factor(Teil_schlaf2_long$Tag,levels = c("Schlaf_Tag1", "Schlaf_Tag2", "Schlaf_Tag3", "Schlaf_Tag4", "Schlaf_Tag5", "Schlaf_Tag6", "Schlaf_Tag7", "Schlaf_Tag8", "Schlaf_Tag9", "Schlaf_Tag10", "Schlaf_Tag11", "Schlaf_Tag12", "Schlaf_Tag13", "Schlaf_Tag14"))
+Teil_schlaf2_long$Tag_num <- as.numeric(data_long$Tag)
+
+## Data long Schlaf nicht getrennt
+data_long2 <- cbind(Teil_schlaf2_long, Teil_MWB_long[,-1])
+
+```
+
+## Plot der Daten
+```{r}
+## MWB
+ggplot(data_long, aes(x=Tag_num, y=MWB_value, color = id)) +
+  geom_point() +
+  geom_line(aes(color = id), show.legend =FALSE) +
+  ylim(7, 35) +
+  labs(title = "Mental Wellbeing", x = "Tag", y = "Wellbeing", color = "id")
+
+## Schlaf
+### Abweichung vom Mittel
+ggplot(data_long, aes(x=Tag_num, y=Schlaf_abw, color = id)) +
+  geom_point() +
+  geom_line(aes(color = id), show.legend =FALSE) +
+  ylim(-5, 5) +
+  labs(title = "Abweichung vom mittlerer Schalfqualität", x = "Tag", y = "Schlafqualität", color = "id")
+### Mittlere Schlafqualität
+ggplot(data_long, aes(x=Tag_num, y=schlaf_mean, color = id)) +
+  geom_point() +
+  geom_line(aes(color = id), show.legend =FALSE) +
+  ylim(0, 15) +
+  labs(title = "Mittlere Schlafqualität", x = "Tag", y = "Schlafqualität", color = "id")
+
+### Schlafqualität gesamt
+ggplot(Teil_schlaf2_long, aes(x=Tag_num, y=Schlaf, color = id)) +
+  geom_point() +
+  geom_line(aes(color = id), show.legend =FALSE) +
+  ylim(0, 15) +
+  labs(title = "Schlafqualität", x = "Tag", y = "Schlafqualität", color = "id")
+
+
+```
+
+## Modellsuche Schlaf nicht separiert nach within und between
+```{r}
+RI2 <- lme(data_long2, fixed = MWB_value ~ 1, random = ~ 1 | id, method = "ML")
+
+## Interindividuelle Unterschiede in der Wirkung der Zeit
+RS2 = lme(data_long2, fixed = MWB_value ~ Tag_num, random = ~ Tag_num | id, method = "ML")
+lrtest(RI2, RS2)
+
+## Mit Schlaf
+FS.schlaf2 = lme(data_long2, fixed = MWB_value ~ Schlaf, random = ~ 1 | id, method = "ML")
+lrtest(RI2, FS.schlaf2)
+RS.schlaf2 = lme(data_long2, fixed = MWB_value ~ Schlaf, random = ~ Schlaf | id, method = "ML")
+lrtest(FS.schlaf2, RS.schlaf2)
+AIC(FS.schlaf2)
+AIC(RS.schlaf2)
+
+summary(RS.schlaf2)
+
+```
+
+
+## Modellsuche getrennt nach within und between
+
+```{r}
+# Nullmodell
+NM = gls(MWB_value ~ 1, data = data_long, method = "ML")
+
+# Nullmodell mit random intercept = unterschiedliche intercepts pro Person
+RI = lme(data = data_long, fixed = MWB_value ~ 1, random = ~ 1 | id, method = "ML")
+lrtest(NM, RI)
+
+# Modell mit Zeit als kontinuierliche Variable und linearer Trend
+FS = lme(data = data_long, fixed = MWB_value ~ Tag_num, random = ~ 1 | id, method = "ML")
+lrtest(RI, FS)
+## Interindividuelle Unterschiede in der Wirkung der Zeit
+RS = lme(data_long, fixed = MWB_value ~ Tag_num, random = ~ Tag_num | id, method = "ML")
+lrtest(FS, RS)
+
+AIC(RI)
+AIC(FS)
+AIC(RS)
+### Es gibt keine Trends
+
+# Einbeziehen der Schlafqualität getrennt nach Mittelwert und Abweichung
+FS.schlaf <- lme(data_long, fixed = MWB_value ~ schlaf_mean + Schlaf_abw, random = ~ 1 | id)
+lrtest(RI, FS.schlaf)
+AIC(RI)
+AIC(FS.schlaf)
+summary(FS.schlaf)
+vif(FS.schlaf)
+
+# mit random slope
+RS.schlaf <- lme(data_long, fixed = MWB_value ~ schlaf_mean + Schlaf_abw, random = ~ schlaf_mean + Schlaf_abw | id, method = "ML")
+lrtest(FS.schlaf, RS.schlaf)
+AIC(FS.schlaf)
+AIC(RS.schlaf)
+summary(RS.schlaf)
+vif(RS.schlaf)
+
+```
+
+## Analyse der Residuen getrenntes Modell
+```{r}
+data_long$residuals.RS.schlaf <- residuals(RS.schlaf, type = "normalized")
+data_long$Tag_fac <- as.factor(data_long$Tag_num)
+
+## Verteilung der Residuen zu den Messzeitpunkten
+ggplot(data_long, aes(Tag_fac, residuals.RS.schlaf)) +
+  geom_point() +
+  geom_jitter(width = 0.3, height = 0) + 
+   geom_violin() +
+    ylim(-10, 10) +
+  labs(title = "Residuen", x = "Tag", y = "Std. Residuen")
+
+
+## Autokorrelationsfunktion
+ACF(RS.schlaf, maxLag = 5, resType = "normalized")
+plot(ACF(RS.schlaf, maxLag = 5, resType = "normalized"), alpha = 0.01)
+```
+
+## Vorhergesagte Ergebnisse
+```{r}
+# Fitted values aus dem Random Slope Modell
+data_long$fittedRS.schlaf = fitted(RS.schlaf)
+
+# Wir erstellen zu dem Modell eine Grafik, die die Schätzungen zeigt
+ggplot(data_long, aes(Tag_num, fittedRS.schlaf)) +
+  geom_point() +
+  geom_line(aes(color = id), show.legend = FALSE) +
+  ylim(5, 35) +
+  labs(title = "Vorhersagen des Modells", x = "Tag", y = "Mental Wellbeing", color = "id")
+```

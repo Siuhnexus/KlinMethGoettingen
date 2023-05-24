@@ -1,0 +1,118 @@
+---
+title: "Logistische Regression"
+author: "YH"
+date: "11 2022"
+output:
+  word_document: default
+  html_document: default
+---
+## Packages
+
+```{r}
+library(car)
+library(readr)
+library(lmtest)
+library(rcompanion)
+library(questionr)
+#library(glmm)
+library(ggplot2)
+library(psych)
+library(Hmisc)
+library(tidyr)
+library(tables)
+```
+
+## Working directory und Datei oeffnen
+
+```{r}
+setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg")
+dat_log1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg/BDI_2_LR.csv", header = TRUE, sep = ",", dec = ".")
+dat_log1$ID <- as.factor(dat_log1$ID)
+dat_log1$Therapie <- as.factor(dat_log1$Therapie)
+```
+
+## Visuelle Analyse
+
+```{r}
+# Daten ins long format nur wegen der Abbildung
+dat_log1_long <- as.data.frame(pivot_longer(dat_log1, cols = c(Pre, Post), names_to = "Zeitpunkt",
+values_to = "BDI", values_drop_na = FALSE))
+dat_log1_long$Zeitpunkt <- as.factor(dat_log1_long$Zeitpunkt)
+dat_log1_long$Zeitpunkt <- factor(dat_log1_long$Zeitpunkt, levels = c("Pre", "Post")) 
+dat_log1_long$ID <- as.factor(dat_log1_long$ID)
+
+ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) + 
+  facet_wrap(~Therapie)+
+  geom_line(aes(color= ID), show.legend = FALSE) +
+  geom_hline(yintercept=19.5, color = "red") +
+  annotate("text", x = 0.6, y = 19.5, label = "Depression", vjust = -0.5, color = "red", size =2) +
+  geom_hline(yintercept=12.5, color = "darkgreen") +
+  annotate("text", x = 0.6, y = 12.5, label = "Normal", vjust = -0.5, color = "darkgreen", size =2) +
+  ylab("Score BDI 2") + 
+  xlab("Zeitpunkt") +
+  ggtitle("Depression in Abhängigkeit von Therapieform und Zeitpunkt")
+```
+## Berechnung von Indikatoren für klinisch relevante Veränderung
+Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind.
+1. Reduktion der Symptomatik um 50% zum Postzeitpunkt
+2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich
+3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8
+4. Clinically significant change: Normalbereich BDI Score <=12
+```{r}
+# Reduktion der Symptomatik
+## Berechnung 50% Symptomatik des Prä-Werts
+dat_log1$Half_Pre <- dat_log1$Pre*0.5
+## Bestimmung, ob Kriterium erreicht ist
+dat_log1$Krit_Half <- ifelse(dat_log1$Post <= dat_log1$Half_Pre, 1, 0)
+dat_log1$Krit_Half <- as.factor(dat_log1$Krit_Half)
+dat_log1$Krit_Half <- factor(dat_log1$Krit_Half, labels = c("No_50%_Red", "50%_Reduction"))
+## Tabelle zur Veranschaulichung
+table_krit_half <- tabulr(Therapie ~ Krit_Half, data = dat_log1)
+table_krit_half
+
+# Absinken in den Normalbereich
+
+# Reliable Change Index
+
+# Clinically significant change
+
+```
+
+
+## Logistische Regression
+Es wird ein Modell definiert. Dazu nutzen wir die den Befehl glm() und spezifizieren die Verteilung der Kriteriumsvariable ueber family = binomial. Die Bernoulli-Verteilung des Kriteriums ist ein Spezialfall der Binomialverteilung.
+
+```{r}
+# Kriterium 50% Reduktion des Scores in BDI 2
+Log.Model1 <- glm(dat_log1$Krit_Half ~ dat_log1$Therapie, family = binomial(), data = dat_log1)
+summary.glm(Log.Model1)
+# Odds ratio per Hand
+odds_ratios1 <- exp(Log.Model1$coefficients)
+odds_ratios1
+# Odds ratios mit Konfidenzintervall
+odds_ratios <- odds.ratio(Log.Model1, level = 0.95)
+odds_ratios
+
+```
+
+## Testung des Modells auf Signifikanz
+
+Zuerst definieren wir ein Nullmodell. Mittels eines likelihood ratio tests ueberpruefen wir, ob das Modell die dichotome Kriteriumsvariable vorhersagt. Da es hier nur einen Praediktor gibt, wird durch den Vergleich auch der Praediktor auf Signifikanz getestet.
+
+```{r}
+Nullmodell <- glm(dat_log1$Krit_Half ~ 1, family = binomial(), data = dat_log1)
+summary(Nullmodell)
+lrtest(Nullmodell, Log.Model1)
+AIC(Nullmodell)
+AIC(Log.Model1)
+```
+## Effektstaerke Modell
+
+Normale R^2 lassen sich bei einer logistischen Regression nicht berechnen. Stattdessen gibt es sogenannte Pseudo-R^2, welche die gleiche Bedeutung haben (aber auf den Likelihoods beruhen).
+
+```{r}
+nagelkerke(Log.Model1)
+```
+
+
+
