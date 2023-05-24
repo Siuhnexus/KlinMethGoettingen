@@ -2,34 +2,44 @@
 title: "MetaaanalyseUebung1Normand"
 author: "IK"
 date: "14 5 2021"
-output: html_document
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+    theme: default
+editor: visual
 ---
 
-# 1. Anfang 
-Fuer die erste Uebung werden wir einen Datensatz der in dem Metafor Paket enthalten ist verwenden. 
-Der Datensatz ist von Normand 1999. 
+# 1. Anfang
+
+Fuer die erste Uebung werden wir einen Datensatz der in dem Metafor Paket enthalten ist verwenden. Der Datensatz ist von Normand 1999.
 
 In dem Datensatz dat.normand1999 geht es um Studies on the Length of Hospital Stay of Stroke Patients.
 
-### __Description__
-Results from 9 studies on the length of the hospital stay of stroke patients under specialized care
-and under conventional/routine (non-specialist) care.
+### **Description**
 
-### __Format__
+Results from 9 studies on the length of the hospital stay of stroke patients under specialized care and under conventional/routine (non-specialist) care.
+
+### **Format**
+
 The data frame contains the following columns:
 
-* study --> numeric study number
-* source --> character source of data
-* n1i --> numeric number of patients under specialized care
-* m1i --> numeric mean length of stay (in days) under specialized care
-* sd1i --> numeric standard deviation of the length of stay under specialized care
-* n2i --> numeric number of patients under routine care
-* m2i --> numeric mean length of stay (in days) under routine care
-* sd2i --> numeric standard deviation of the length of stay under routine care
+-   study --\> numeric study number
+-   source --\> character source of data
+-   n1i --\> numeric number of patients under specialized care
+-   m1i --\> numeric mean length of stay (in days) under specialized care
+-   sd1i --\> numeric standard deviation of the length of stay under specialized care
+-   n2i --\> numeric number of patients under routine care
+-   m2i --\> numeric mean length of stay (in days) under routine care
+-   sd2i --\> numeric standard deviation of the length of stay under routine care
 
 ## 1.1 Paket laden und working directory
-Falls ihr das Paket metafor noch nicht installiert habt, könnt ihr es jetzt installieren und danach laden.
-Ansonsten einfach metafor laden.
+
+Falls ihr das Paket metafor noch nicht installiert habt, könnt ihr es jetzt installieren und danach laden. Ansonsten einfach metafor laden.
+
 ```{r}
 #install.packages("metafor")
 library(metafor)
@@ -39,37 +49,39 @@ library(metafor)
 ```
 
 ## 1.2 Daten laden
+
 Ladet jetzt den Datensatz dat.normand1999
+
 ```{r}
 dat <- dat.normand1999
 ```
 
 ### 1.2.1 Daten anschauen
+
 Wenn man einen neuen Datensatz geladen hat ist es immer sinnig einmal einen Blick drauf zu werfen und zu prüfen, ob die Variablen richtig als numerisch oder kategorial definiert sind.
 
-
 # 2. Effekstärken berechnen
-In diesem Datensatz müssen die Effektstärken noch nachberechnet werden. Dafür nutzen wir den Befehl escalc(). 
-Wir haben in diesem Datensatz Mean und SD gegeben und müssen die standardized mean difference berechnen. Schaut in die Hilfe, wie das zu machen ist.
+
+In diesem Datensatz müssen die Effektstärken noch nachberechnet werden. Dafür nutzen wir den Befehl escalc(). Wir haben in diesem Datensatz Mean und SD gegeben und müssen die standardized mean difference berechnen. Schaut in die Hilfe, wie das zu machen ist.
+
 ```{r}
 #?escalc
 
 
 ```
 
-
 # 3. Fixed effects model
+
 Mit diesem Datensatz wollen wir jetzt einmal ein fixed effects model rechnen. dafür benutzen wir den Befehl rma.uni(). Für das fixed effect Modell muss method ="FE" angegeben werden. Am besten schaut ihr in der Hilfe die Syntax des Befehls nach.
-```{r}
-
-```
-
-# 4. Forest Plot 
-Nun wollen wir auch noch einen forest plot zu dieser Analyse erstellen. 
-Der Befehl hierfür ist forest(METAANALYSE). Mehr Informationen in der Hilfe oder unter:
-https://wviechtb.github.io/metafor/reference/forest.rma.html
 
 ```{r}
 
 ```
 
+# 4. Forest Plot
+
+Nun wollen wir auch noch einen forest plot zu dieser Analyse erstellen. Der Befehl hierfür ist forest(METAANALYSE). Mehr Informationen in der Hilfe oder unter: https://wviechtb.github.io/metafor/reference/forest.rma.html
+
+```{r}
+
+```

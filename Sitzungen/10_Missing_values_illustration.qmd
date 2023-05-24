@@ -2,12 +2,15 @@
 title: "Datenanalyse Missing values"
 author: "YH"
 date: '2023-01-02'
-output:
-  word_document: default
-  pdf_document: default
-  html_document: default
-editor_options: 
-  chunk_output_type: console
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+    theme: default
+editor: visual
 ---
 
 ```{r setup, include=FALSE}
@@ -15,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ### Activate packages
+
 ```{r}
 library(ggplot2)
 library(psych)
@@ -25,6 +29,7 @@ library(mice)
 library(rcompanion)
 library(nlme)
 ```
+
 ### set working directory
 
 ```{r}
@@ -60,7 +65,8 @@ dat_missing_MCAR$Post_mis<- ifelse(dat_missing_MCAR$random.y == 1, NA, dat_missi
 ```
 
 ## Missing values je nach Bedingung unterschiedlich
-In diesem Fall sind die missings systematisch, da von der Bedingungen abhängig. 
+
+In diesem Fall sind die missings systematisch, da von der Bedingungen abhängig.
 
 ```{r}
 # setze Wahrscheinlichkeiten für missing in den Gruppen
@@ -79,8 +85,9 @@ dat_missing_MAR_Gruppe$Post_mis<- ifelse(dat_missing_MAR_Gruppe$random.y.mar.Gru
 
 ```
 
-## Missing values je nach Prä-Wert unterschiedlich 
-In diesem Fall sind die missings systematisch, da vom Wert vor der Behandlung abhängig. 
+## Missing values je nach Prä-Wert unterschiedlich
+
+In diesem Fall sind die missings systematisch, da vom Wert vor der Behandlung abhängig.
 
 ```{r}
 # Berechne Median für Aufteilung in hohe und niedrige Prä-Werte
@@ -106,7 +113,8 @@ dat_missing_MAR_Pre$Post_mis<- ifelse(dat_missing_MAR_Pre$random.y == 1, NA, dat
 ```
 
 ## Missing values je nach Post-Wert unterschiedlich
-In diesem Fall sind die missings systematisch, da vom Wert vom Post-Wert abhängig (Missing not at random). 
+
+In diesem Fall sind die missings systematisch, da vom Wert vom Post-Wert abhängig (Missing not at random).
 
 ```{r}
 # setze Wahrscheinlichkeiten für missing
@@ -126,7 +134,8 @@ dat_missing_MNAR$Post_mis<- ifelse(dat_missing_MNAR$random.y == 1, NA, dat_missi
 
 ```
 
-## Visuelle Analyse 
+## Visuelle Analyse
+
 ```{r}
 
 ## Post-Messung komplett
@@ -188,6 +197,7 @@ ggplot(dat_missing_MNAR, aes(Gruppe, Post)) +
 ```
 
 # Analyse Complete
+
 ```{r}
 # deskriptive Analyse
 des.complete <- describeBy(data = dat_1, Post ~ Gruppe, mat = TRUE)
@@ -217,6 +227,7 @@ bptest(M.complete)
 ```
 
 # Analyse MAR Gruppe
+
 ```{r}
 # deskriptive Analyse
 des.MAR.Gruppe <- describeBy(data = dat_missing_MAR_Gruppe, Post ~ Gruppe, mat = TRUE)
@@ -256,6 +267,7 @@ bptest(M.MAR.Gruppe)
 ```
 
 # Analyse MNAR Gruppe
+
 ```{r}
 # deskriptive Analyse
 des.MNAR <- describeBy(data = dat_missing_MNAR, Post ~ Gruppe, mat = TRUE)

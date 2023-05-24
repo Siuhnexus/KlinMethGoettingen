@@ -2,10 +2,16 @@
 title: "Logistische Regression"
 author: "YH"
 date: "11 2022"
-output:
-  word_document: default
-  html_document: default
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
 ---
+
 ## Packages
 
 ```{r}
@@ -52,12 +58,11 @@ ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) +
   xlab("Zeitpunkt") +
   ggtitle("Depression in Abhängigkeit von Therapieform und Zeitpunkt")
 ```
+
 ## Berechnung von Indikatoren für klinisch relevante Veränderung
-Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind.
-1. Reduktion der Symptomatik um 50% zum Postzeitpunkt
-2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich
-3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8
-4. Clinically significant change: Normalbereich BDI Score <=12
+
+Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind. 1. Reduktion der Symptomatik um 50% zum Postzeitpunkt 2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich 3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8 4. Clinically significant change: Normalbereich BDI Score \<=12
+
 ```{r}
 # Reduktion der Symptomatik
 ## Berechnung 50% Symptomatik des Prä-Werts
@@ -78,8 +83,8 @@ table_krit_half
 
 ```
 
-
 ## Logistische Regression
+
 Es wird ein Modell definiert. Dazu nutzen wir die den Befehl glm() und spezifizieren die Verteilung der Kriteriumsvariable ueber family = binomial. Die Bernoulli-Verteilung des Kriteriums ist ein Spezialfall der Binomialverteilung.
 
 ```{r}
@@ -106,13 +111,11 @@ lrtest(Nullmodell, Log.Model1)
 AIC(Nullmodell)
 AIC(Log.Model1)
 ```
+
 ## Effektstaerke Modell
 
-Normale R^2 lassen sich bei einer logistischen Regression nicht berechnen. Stattdessen gibt es sogenannte Pseudo-R^2, welche die gleiche Bedeutung haben (aber auf den Likelihoods beruhen).
+Normale R\^2 lassen sich bei einer logistischen Regression nicht berechnen. Stattdessen gibt es sogenannte Pseudo-R\^2, welche die gleiche Bedeutung haben (aber auf den Likelihoods beruhen).
 
 ```{r}
 nagelkerke(Log.Model1)
 ```
-
-
-

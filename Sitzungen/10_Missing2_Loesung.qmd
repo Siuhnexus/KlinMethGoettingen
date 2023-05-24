@@ -2,20 +2,27 @@
 title: "Missingdata"
 author: "IK & YH"
 date: "2023-01-06"
-output: html_document
-editor_options: 
-  chunk_output_type: console
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+    theme: default
+editor: visual
 ---
 
 ## Notwendige Pakete laden und aktivieren
+
 ```{r warning=FALSE, message=FALSE, results='hide'}
 library(mice)
 library(psych)
 library(ggplot2)
 ```
 
-
 ## Setze Working directory und öffne Daten
+
 ```{r}
 setwd("C:/Users/yhagmay/Documents/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche10_missing_values")
 
@@ -31,6 +38,7 @@ dat_1_imputation <- dat_1[,-1]
 ```
 
 ## Muster Missings
+
 ```{r}
 md.pattern(dat_1_imputation)
 ```
@@ -38,6 +46,7 @@ md.pattern(dat_1_imputation)
 ## Imputation
 
 Imputiere 25/150 = 17 Datensätze
+
 ```{r}
 # predictive mean matching
 imp.pmm <- mice(dat_1_imputation, m=17, method = "pmm")
@@ -46,6 +55,7 @@ imp.norm <- mice(dat_1_imputation, m= 17, method = "norm.boot")
 ```
 
 ## Analysieren der Daten / Modelldefinition und -schaetzung
+
 ```{r}
 # Definiere Modell für alle Datensätze pmm
 fit.pmm <- with(data=imp.pmm,exp=lm(Post_mis ~ Gruppe + Pre))
@@ -61,6 +71,7 @@ summary(fit.norm)
 ```
 
 ## Poole Ergebnisse ueber Datensaetze hinweg
+
 ```{r}
 fit.pmm.pooled <- pool(fit.pmm)
 fit.norm.pooled <- pool(fit.norm)
@@ -71,6 +82,7 @@ summary(fit.norm.pooled)
 ```
 
 ## R2 pooled
+
 ```{r}
 pool.r.squared(fit.pmm)
 # Hinweis: fmi = fraction of missing information
@@ -80,13 +92,16 @@ pool.r.squared(fit.norm)
 # Weiterführende Analysen
 
 ## Complete cases analysis
+
 Berechnen Sie ein lineares Modell nur mit den vollständigen Fällen (na.action = na.omit)
+
 ```{r}
 fit.miss <- lm(Post_mis ~ Gruppe + Pre, data = dat_1, na.action = na.omit)
 summary(fit.miss)
 ```
 
 ## Data without missing analysis
+
 ```{r}
 dat_no_miss <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche10_missing_values/Dat_VR_Anxiety_complete.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
 
@@ -98,10 +113,13 @@ dat_no_miss$Pre <- as.vector(scale(dat_no_miss$Pre, center = TRUE, scale = FALSE
 fit.no.miss <- lm(Post ~ Gruppe + Pre, data = dat_no_miss)
 summary(fit.no.miss)
 ```
+
 Ergebnis: Auch bei Imputation werden die Effekte unterschaetzt
 
-## Analyse woher der Unterschied kommt 
+## Analyse woher der Unterschied kommt
+
 Wichtig: Die Analyse beruht nur auf den beobachteten Daten
+
 ```{r}
 ## Missing als Faktor einfügen
 dat_1$mis_fac <- ifelse(dat_1$Post_mis == "NA", 1, 0)
@@ -161,4 +179,5 @@ ggplot(dat_no_miss, aes(Pre, Post, col = dat_1$mis_fac)) +
   ggtitle("Zusammenhang Prä und Post pro Gruppe und Verteilung der missings")
 
 ```
+
 Fazit: Es gibt einen Zusammenhang zwischen den missings und Prä-Werten der unterschiedlich zwischen den Gruppen ist. Dies ist ein erster Hinweis, dass es ein Problem geben könnte. Das eigentliche Problem ist aber statistisch nicht zu erkennen.

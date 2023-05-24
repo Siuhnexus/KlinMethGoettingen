@@ -2,10 +2,14 @@
 title: "Datenanalyse ALM (3) Kontraste"
 author: "YH"
 date: '2022-05-16'
-output:
-  word_document: default
-  pdf_document: default
-  html_document: default
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
 ---
 
 ```{r setup, include=FALSE}
@@ -14,6 +18,7 @@ knitr::opts_knit$set(root.dir = "")
 ```
 
 ### Activate packages
+
 ```{r}
 library(ggplot2)
 library(psych)
@@ -25,6 +30,7 @@ library(rcompanion)
 library(tidyr)
 library(predictmeans)
 ```
+
 ### set working directory
 
 ```{r}
@@ -34,6 +40,7 @@ setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/3_1
 ### Daten einlesen
 
 Auch hier bitte darauf achten, dass das Verzeichnis für die Datei stimmt.
+
 ```{r}
 dat_1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/3_1_2/Dat_VR_Anxiety_lm4.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
 
@@ -141,11 +148,10 @@ predmeans1b.matrix
 # ANOVA zur Bestimmung der Quadratsummen für die beiden Prädiktoren
 Anova(M1)
 ```
+
 ## Definition von Kontrasten anstelle Dummycodierung
 
-Die beiden zu prüfenden Hypothesen waren: 
-(1) CBT ist wirksam
-(2) CBT mit in virtuo Exposition ist wirksamer als CBT mit in sensu Exposition
+Die beiden zu prüfenden Hypothesen waren: (1) CBT ist wirksam (2) CBT mit in virtuo Exposition ist wirksamer als CBT mit in sensu Exposition
 
 Diese beiden Kontraste können durch einen Helmert-Kontrast für 3 Ausprägungen eines Faktors erfasst werden.
 
@@ -157,7 +163,9 @@ dat_1$Gruppe <- factor(dat_1$Gruppe, levels = c("in_virtuo", "in_sensu", "Wartel
 contrasts(dat_1$Gruppe) <- contr.helmert(3)
 contrasts(dat_1$Gruppe)
 ```
+
 ## Kontrastanalyse zur Prüfung der Hypothesen
+
 ```{r}
 M2 <- lm(Change ~ Pre_c + Gruppe, data = dat_1)
 summary(M2)
@@ -173,6 +181,7 @@ pred.means2$predictmeansBarPlot
 # ANOVA zur Bestimmung der 
 Anova(M2)
 ```
+
 ## Check 2: Analyse der Residuen
 
 ```{r}
@@ -187,7 +196,6 @@ scatterplot(rstandard(M2)~dat_1$ID)
 bptest(M2)
 ```
 
-
 ## Einflussreiche Ausreißer
 
 Cook's distance ist ein gutes Maß zur Ermittlung zu einflussreicher Ausreißer. Die Werte der einzelnen Fälle sollte nicht größer sein als 4/(N-k-1). Die Summe sollte bei 1 liegen.
@@ -198,6 +206,3 @@ cd <- cooks.distance(M2)
 plot(M2,4)
 hist(cd)
 ```
-
-
-

@@ -2,9 +2,15 @@
 title: "Lineare Growth-Modelle 3"
 author: "York Hagmayer"
 date: "11 12 2022"
-output: html_document
-editor_options: 
-  chunk_output_type: console
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+    theme: default
+editor: visual
 ---
 
 ```{r warning=FALSE, message=FALSE, results='hide'}
@@ -17,6 +23,7 @@ library(car)
 ```
 
 ## Working directory setzen
+
 ```{r}
 setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche8_growth2")
 ```
@@ -88,6 +95,7 @@ data_long2 <- cbind(Teil_schlaf2_long, Teil_MWB_long[,-1])
 ```
 
 ## Plot der Daten
+
 ```{r}
 ## MWB
 ggplot(data_long, aes(x=Tag_num, y=MWB_value, color = id)) +
@@ -121,6 +129,7 @@ ggplot(Teil_schlaf2_long, aes(x=Tag_num, y=Schlaf, color = id)) +
 ```
 
 ## Modellsuche Schlaf nicht separiert nach within und between
+
 ```{r}
 RI2 <- lme(data_long2, fixed = MWB_value ~ 1, random = ~ 1 | id, method = "ML")
 
@@ -139,7 +148,6 @@ AIC(RS.schlaf2)
 summary(RS.schlaf2)
 
 ```
-
 
 ## Modellsuche getrennt nach within und between
 
@@ -182,6 +190,7 @@ vif(RS.schlaf)
 ```
 
 ## Analyse der Residuen getrenntes Modell
+
 ```{r}
 data_long$residuals.RS.schlaf <- residuals(RS.schlaf, type = "normalized")
 data_long$Tag_fac <- as.factor(data_long$Tag_num)
@@ -201,6 +210,7 @@ plot(ACF(RS.schlaf, maxLag = 5, resType = "normalized"), alpha = 0.01)
 ```
 
 ## Vorhergesagte Ergebnisse
+
 ```{r}
 # Fitted values aus dem Random Slope Modell
 data_long$fittedRS.schlaf = fitted(RS.schlaf)

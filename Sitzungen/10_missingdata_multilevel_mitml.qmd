@@ -2,10 +2,17 @@
 title: "Mitml_missingdata"
 author: "IK"
 date: "2023-01-09"
-output: html_document
-editor_options: 
-  chunk_output_type: console
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+    theme: default
+editor: visual
 ---
+
 # Imputation bei Multi-level missing data
 
 ## Pakete und working directory
@@ -18,18 +25,18 @@ setwd("C:/Users/yhagmay/Documents/Teaching/Master/Methoden_Klippt/Methoden Klipp
 
 ```
 
-## Beispieldatensatz aus miltml: studentratings 
+## Beispieldatensatz aus miltml: studentratings
 
 ### Description
-Contains simulated data for students nested within schools, featuring students’ ratings of their teachers’ behavior (i.e., disciplinary problems in mathematics and reading class) and their general learning environment (school climate) as well as mathematics and reading achievement scores, and scores for socio-economic status and cognitive ability.
+
+Contains simulated data for students nested within schools, featuring students' ratings of their teachers' behavior (i.e., disciplinary problems in mathematics and reading class) and their general learning environment (school climate) as well as mathematics and reading achievement scores, and scores for socio-economic status and cognitive ability.
 
 In addition, the data set features the ID of 50 different schools (i.e., clusters), the biological sex of all students, and a broad, additional grouping factor. Different amounts of missing data have been inserted into the data set in a completely random fashion.
 
-*Format
-A data frame containing 750 observations on 10 variables.
-ID = school http://127.0.0.1:43759/graphics/plot_zoom_png?width=1680&height=867
+\*Format A data frame containing 750 observations on 10 variables. ID = school http://127.0.0.1:43759/graphics/plot_zoom_png?width=1680&height=867
 
 ### Daten aus mitml Paket
+
 ```{r}
 studentratings <- studentratings
 studentratings$Sex <- as.factor(studentratings$Sex)
@@ -40,7 +47,9 @@ summary(studentratings)
 ```
 
 ### Analyse der Abbhängigkeiten zwischen den Variablen
+
 Hinweis darauf, welche Variablen bei der Imputation sinnvoll eingesetzt werden können
+
 ```{r}
 # Auswahl nur der numerischen Variablen (inklusive Sex)
 studentratings2 <- studentratings[3:10]
@@ -52,102 +61,113 @@ cor.plot(cor.table)
 ```
 
 ### Missing Data pattern
+
 ```{r}
 md.pattern(studentratings, rotate.names = TRUE)
 ```
 
 ## Fragestellung und zu prüfende Hypothese
 
-Fragestellung: Reduzieren disziplinarische Probleme im Leseuntericht die Leseleistung der Kinder in verschiedenen Schulen?
-Hypothese: Ja, das ist der Fall.
+Fragestellung: Reduzieren disziplinarische Probleme im Leseuntericht die Leseleistung der Kinder in verschiedenen Schulen? Hypothese: Ja, das ist der Fall.
 
 ### Modellgleichung in Bezug auf den zentralen Prädiktor (lme4 Syntax)
+
 ```{r}
 ReadAchiev ~ ReadDis + (1|ID)
 ```
-Unterschiede zwischen Schulen = random intercept Schulen
-Prädiktivität Disziplinprobleme für Leseleistung = fixed effect ReadDis
+
+Unterschiede zwischen Schulen = random intercept Schulen Prädiktivität Disziplinprobleme für Leseleistung = fixed effect ReadDis
 
 # Generating imputations
 
 ## Imputationsmodell
-Für die Imputation muss ein Imputationsmodell definiert werden.
-Im Imputationsmodell werden die Anzahl der Imputationen (und Iterationen) spezifiziert.
-Die Variablen die bei der Imputation berücksichtigt werden sollen. 
-(a) Variablen im statistischen Modell
-(b) Variablen, die in Zusammenhang mit den zu imputierenden Variablen stehen
-(c) Variablen, die in Zusammenhang mit den Variablen des statistischen Modells stehen
+
+Für die Imputation muss ein Imputationsmodell definiert werden. Im Imputationsmodell werden die Anzahl der Imputationen (und Iterationen) spezifiziert. Die Variablen die bei der Imputation berücksichtigt werden sollen. (a) Variablen im statistischen Modell (b) Variablen, die in Zusammenhang mit den zu imputierenden Variablen stehen (c) Variablen, die in Zusammenhang mit den Variablen des statistischen Modells stehen
 
 Hier ist das Imputationmodell vereinfacht
+
 ```{r}
 fml <- ReadAchiev + ReadDis + SchClimate ~ 1 + (1|ID)
 ```
 
-Linke Seite von ~ : Imputierte Variablen 
-Rechte Seite von ~ : Nur random intercept 
+Linke Seite von \~ : Imputierte Variablen Rechte Seite von \~ : Nur random intercept
 
 ## Generiere Imputierte Datensätze mit dem panImpute Algorithmus
-n.burn: Der Algorithmus ist so konstruiert, dass er einige Zeit braucht, um stabile Schätzungen für die imputierten Werte zu liefern. Darum gibt es eine burn in Phase. 5000 Iterationen sind gut,
-n.iter: die Schätzungen selbst haben eine hohe Autokorrelation. Um diese auf Null zu senken, werden Schätzungen genommen, die sehr weit (hier 100 Iterationen) voneinander entfernt sind.
-m = Anzahl der Imputationen
+
+n.burn: Der Algorithmus ist so konstruiert, dass er einige Zeit braucht, um stabile Schätzungen für die imputierten Werte zu liefern. Darum gibt es eine burn in Phase. 5000 Iterationen sind gut, n.iter: die Schätzungen selbst haben eine hohe Autokorrelation. Um diese auf Null zu senken, werden Schätzungen genommen, die sehr weit (hier 100 Iterationen) voneinander entfernt sind. m = Anzahl der Imputationen
+
 ```{r}
 imp <- panImpute(studentratings, formula = fml, n.burn = 5000, n.iter = 100, m = 100)
 ```
+
 Alle Imputationen werden in einem imp Objekt gespeichert.
 
 ## Prüfen ob die Imputation anhand der Iterationen geklappt hat
+
 Kommt in der Klausur nicht dran
 
 ### Numerische Prüfung
-Der “potential scale reduction factor” (R^) für jeden Parameter sollte nicht wesentlich größer als 1 sein (nicht >1.05). Ansonsten den Burn in verlängern. 
-R^ = R hat
+
+Der "potential scale reduction factor" (R\^) für jeden Parameter sollte nicht wesentlich größer als 1 sein (nicht \>1.05). Ansonsten den Burn in verlängern. R\^ = R hat
+
 ```{r}
 summary(imp)
 ```
 
 ### Graphische Prüfung
+
 ```{r}
 plot(imp, trace = "all", print = "beta", pos = c(1,2))
 ```
-Fazit: Taken together, both R^ and the diagnostic plots indicate that the imputation model converged, setting the basis for the analysis of the imputed data sets.
+
+Fazit: Taken together, both R\^ and the diagnostic plots indicate that the imputation model converged, setting the basis for the analysis of the imputed data sets.
 
 ## Datensätze mit imputierten Werte komplettieren
+
 In order to work with and analyze the imputed data sets, the data sets must be completed with the imputations generated in the previous steps. To do so, mitml provides the function mitmlComplete.
+
 ```{r}
 implist <- mitmlComplete(imp, "all")
 ```
+
 implist is the resulting object. It is a list that contains the 100 completed data sets.
 
-
 ## Analyse and Pooling der Analyseergebnisse
+
 In order to obtain estimates for the model of interest, the model must be fit separately to each of the completed data sets, and the results must be pooled into a final set of estimates and inferences. The mitml package offers the with function to fit various statistical models to a list of completed data sets.
 
 In this example, we use the lmer function from the R package lme4 to fit the model of interest.
+
 ```{r}
 library(lme4)
 fit <- with(implist, lmer(ReadAchiev ~ 1 + ReadDis + (1|ID)))
 ```
 
 The resulting object is a list containing the 100 fitted models. To pool the results of these models into a set of final estimates and inferences, mitml offers the testEstimates function.
+
 ```{r}
 testest <- testEstimates(fit, extra.pars = TRUE)
 testest
 ```
+
 The estimates can be interpreted in a manner similar to the estimates from the corresponding complete-data procedure. In addition, the output includes diagnostic quantities such as the fraction of missing information (FMI), which can be helpful for interpreting the results and understanding problems with the imputation procedure.
 
 ### Konfidenzintervalle für die TestEstimates.
+
 ```{r}
 confint(testest, level = 0.95)
 ```
 
 ### R squared für Multilevel Modell
+
 ```{r}
 multilevelR2(fit, print = c("RB1", "RB2", "SB", "MVP"))
 ```
+
 Empfehlenswert ist hier "SB", die Version nach Snijders und Bosker (2012).
 
-
 ## Modellvergleiche
+
 ```{r}
 # Erstes neues Modell mit Cognitive ability als Prädiktor
 fit2 <- with(implist, lmer(ReadAchiev ~ 1 + ReadDis + CognAbility + (1|ID)))

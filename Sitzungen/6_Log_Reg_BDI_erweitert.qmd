@@ -2,10 +2,16 @@
 title: "Logistische Regression"
 author: "YH"
 date: "11 2022"
-output:
-  word_document: default
-  html_document: default
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
 ---
+
 ## Packages
 
 ```{r}
@@ -56,11 +62,9 @@ ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) +
 ```
 
 ## Berechnung von Indikatoren für klinisch relevante Veränderung
-Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind.
-1. Reduktion der Symptomatik um 50% zum Postzeitpunkt
-2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich
-3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8
-4. Clinically significant change: Normalbereich BDI Score <=12
+
+Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind. 1. Reduktion der Symptomatik um 50% zum Postzeitpunkt 2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich 3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8 4. Clinically significant change: Normalbereich BDI Score \<=12
+
 ```{r}
 # Reduktion der Symptomatik
 ## Berechnung 50% Symptomatik des Prä-Werts
@@ -104,7 +108,9 @@ g = g + geom_text(data=as.data.frame(ggplot_build(g)$data),
               aes(x = (xmin + xmax) * 0.5, y = (ymin + ymax) * 0.5, label = .n / sum(.n)))
 g 
 ```
+
 ## Einfache Logistische Regression
+
 Es wird ein Modell definiert. Dazu nutzen wir die den Befehl glm() und spezifizieren die Verteilung der Kriteriumsvariable ueber family = binomial. Die Bernoulli-Verteilung des Kriteriums ist ein Spezialfall der Binomialverteilung.
 
 ```{r}
@@ -119,6 +125,7 @@ odds_ratios <- odds.ratio(Log.Model1, level = 0.95)
 odds_ratios
 
 ```
+
 ## Testung des Modells auf Signifikanz
 
 Zuerst definieren wir ein Nullmodell. Mittels eines likelihood ratio tests ueberpruefen wir, ob das Modell die dichotome Kriteriumsvariable vorhersagt. Da es hier nur einen Praediktor gibt, wird durch den Vergleich auch der Praediktor auf Signifikanz getestet.
@@ -130,13 +137,15 @@ lrtest(Nullmodell, Log.Model1)
 AIC(Nullmodell)
 AIC(Log.Model1)
 ```
+
 ## Effektstaerke Modell
 
-Normale R^2 lassen sich bei einer logistischen Regression nicht berechnen. Stattdessen gibt es sogenannte Pseudo-R^2, welche die gleiche Bedeutung haben (aber auf den Likelihoods beruhen).
+Normale R\^2 lassen sich bei einer logistischen Regression nicht berechnen. Stattdessen gibt es sogenannte Pseudo-R\^2, welche die gleiche Bedeutung haben (aber auf den Likelihoods beruhen).
 
 ```{r}
 nagelkerke(Log.Model1)
 ```
+
 ## Erweiterung der Modells um die Prä-Werte und dann um die Interaktion
 
 ```{r}
@@ -156,13 +165,10 @@ odds_ratios
 nagelkerke(Log.Model2)
 
 ```
+
 # Ordinale Regression
 
-Nach dem Modell von Nelson und Hiller sollte als klinisch relevantes Outcome vier unterschiedeliche Kategorien unterschieden werden:
-1. Reliable Verschlechterung
-2. Non Responder
-3. Responder (Reliable Verbesserung aber nicht Unterschreiten eines Cut-offs für klinische Relevanz)
-4. Clinical significant Change (Reliable Verbesserung und Unterschreiten des Cut-offs)
+Nach dem Modell von Nelson und Hiller sollte als klinisch relevantes Outcome vier unterschiedeliche Kategorien unterschieden werden: 1. Reliable Verschlechterung 2. Non Responder 3. Responder (Reliable Verbesserung aber nicht Unterschreiten eines Cut-offs für klinische Relevanz) 4. Clinical significant Change (Reliable Verbesserung und Unterschreiten des Cut-offs)
 
 ```{r}
 # Definition der vier Kategorien
@@ -215,5 +221,3 @@ Modell_ordinal_3 <- glm(CSC ~ Therapie + Pre, family = binomial(), data = dat_lo
 summary.glm(Modell_ordinal_2)
 summary.glm(Modell_ordinal_3)
 ```
-
-

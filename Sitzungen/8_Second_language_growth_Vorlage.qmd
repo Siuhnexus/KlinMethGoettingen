@@ -2,13 +2,19 @@
 title: "Lineare Growth-Modelle 2"
 author: "York Hagmayer"
 date: "11 12 2022"
-output: html_document
-editor_options: 
-  chunk_output_type: inline
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+    theme: default
+editor: visual
 ---
 
-
 ## Notwendige Pakete laden und aktivieren
+
 ```{r warning=FALSE, message=FALSE, results='hide'}
 library(ggplot2)
 library(nlme)
@@ -19,11 +25,13 @@ library(car)
 ```
 
 ## Working directory setzen
+
 ```{r}
 setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche8_growth2")
 ```
 
 ## Daten einlesen und ins long format transformieren
+
 Bei der Transformation ins long format ist zu beachten, dass nun zwei Variablen transformiert werden müssen: der Language Score und die sechs Variablen, die den Field trip erfassen. Dazu ist es am einfachsten, die Daten zu teilen, dann jeweils ins long format zu transfomieren und dann wieder zusammenzufügen.
 
 ```{r}
@@ -56,7 +64,8 @@ data_long$trip_value <- as.factor(data_long$trip_value)
 
 ## Plot der Daten
 
-Machen Sie eine oder zwei Abbildungen, in denen Sie den Verlauf des Sprachlernens über die sechs Messzeitpunkte zeigen. 
+Machen Sie eine oder zwei Abbildungen, in denen Sie den Verlauf des Sprachlernens über die sechs Messzeitpunkte zeigen.
+
 ```{r}
 # Die Schulen unterscheiden sich darin, ob sie während des Schuljahrs einen zweiwöchigen Auslangsaufenthalt zum Erlernen der Zweitsprache machen (Variable Field_trip). Diese Daten sollten getrennt voneinander dargestellt werden.
 # Daher werden hier einfach zwei Teildatensätze gemacht.
@@ -89,6 +98,7 @@ Modellieren Sie Daten. Erstellen Sie dazu immer komplexere Modelle und vergleich
 ## Analyse der Residuen
 
 Analysieren Sie die Residuen ihres besten Modells. Machen Sie sich hierzu eine Abbildung. Berechnen Sie auch die Autokorrelationsfunktion für das Modell und stellen Sie die Autokorrelationen graphisch dar.
+
 ```{r}
 data_long$residualsRS <- residuals(RS.plus3, type = "normalized")
 
@@ -108,7 +118,8 @@ plot(ACF(RS.plus3, maxLag = 3, resType = "normalized"), alpha = 0.01)
 
 ## Vorhergesagte Verläufe
 
-Nutzen Sie ihr Modell umd die Daten der Schüler*innen vorherzusagen. Stellen Sie die Vorhersagen graphisch dar.
+Nutzen Sie ihr Modell umd die Daten der Schüler\*innen vorherzusagen. Stellen Sie die Vorhersagen graphisch dar.
+
 ```{r}
 # Fitted values 
 

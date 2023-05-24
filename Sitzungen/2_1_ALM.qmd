@@ -2,10 +2,14 @@
 title: "Datenanalyse ALM"
 author: "YH"
 date: '2022-05-16'
-output:
-  word_document: default
-  pdf_document: default
-  html_document: default
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
 ---
 
 ```{r setup, include=FALSE}
@@ -13,6 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ### Activate packages
+
 ```{r}
 library(ggplot2)
 library(psych)
@@ -22,11 +27,11 @@ library(lmtest)
 library(effectsize)
 library(rcompanion)
 ```
+
 ### set working directory
 
-Bitte anpassen, damit es für Sie passt. Am einfachsten erst die RMD Datei am Zielort speichern und von dort aus öffnen. 
-Dann unter Session -> Set Working Directory -> To Source file location
-Der Pfad erscheint unten in der Console. Dann über Strg c und Strg v hierher kopieren.
+Bitte anpassen, damit es für Sie passt. Am einfachsten erst die RMD Datei am Zielort speichern und von dort aus öffnen. Dann unter Session -\> Set Working Directory -\> To Source file location Der Pfad erscheint unten in der Console. Dann über Strg c und Strg v hierher kopieren.
+
 ```{r}
 setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/2_1")
 ```
@@ -34,6 +39,7 @@ setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/2_1
 ### Daten einlesen
 
 Auch hier bitte darauf achten, dass das Verzeichnis für die Dateil stimmt und die Datei auch tatsächlich in dem angegeben Ordner zu finden ist.
+
 ```{r}
 dat_1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/2_1/Dat_VR_Anxiety_lm1.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
 
@@ -48,7 +54,9 @@ dat_1$Change <- dat_1$Post - dat_1$Pre
 ```
 
 ## Visuelle Analyse
+
 Sollte immer gemacht werden-
+
 ```{r}
 
 ## Prä-Messung
@@ -124,20 +132,25 @@ M1c <- lm(Post ~ Gruppe, data = dat_1)
 anova(M1b, M1)
 anova(M1c, M1)
 ```
+
 ## Berechnung der Effektstärken = Varianzaufklärung für die einzelnen Prädiktoren
+
 ```{r}
 eta_squared(VA1)
 ```
+
 ## Check 1: Unabhängigkeit der Prädiktoren
 
-Das ALM nimmt an, dass die Prädiktoren unabhängig voneinander sind. Praktisch bedeutet dies, dass vorhandene Korrelationen eher gering sind. Hierfür werden am einfachsten Variance-Inflation_Factors VIF genommen. Diese sollten bei 1 liegen, ab 4 sollte überlegt werden, ob Prädiktoren entfernt oder miteinander verrechnet / integriert werden sollten. 
+Das ALM nimmt an, dass die Prädiktoren unabhängig voneinander sind. Praktisch bedeutet dies, dass vorhandene Korrelationen eher gering sind. Hierfür werden am einfachsten Variance-Inflation_Factors VIF genommen. Diese sollten bei 1 liegen, ab 4 sollte überlegt werden, ob Prädiktoren entfernt oder miteinander verrechnet / integriert werden sollten.
 
 ```{r}
 vif(M1)
 ```
+
 ## Check 2: Analyse der Residuen
 
-Das ALM nimmt an, dass die Fehler zufällig und unabhängig von den Prädiktoren sind (Annahme der Varianzhomogenität btw. Homoskedastizität). Wenn dies der Fall ist, dann sollten die Residuen zufällig und normalverteilt um den Wert von Null streuen. Ebenso sollten sich in einer Abbildung der Residuen und vorhergesagten Werte kein Zusammenhang und keine systematische Abweichung von Null zeigen. 
+Das ALM nimmt an, dass die Fehler zufällig und unabhängig von den Prädiktoren sind (Annahme der Varianzhomogenität btw. Homoskedastizität). Wenn dies der Fall ist, dann sollten die Residuen zufällig und normalverteilt um den Wert von Null streuen. Ebenso sollten sich in einer Abbildung der Residuen und vorhergesagten Werte kein Zusammenhang und keine systematische Abweichung von Null zeigen.
+
 ```{r}
 ## Verteilung der Residuen
 densityPlot(M1$residuals)
@@ -150,6 +163,7 @@ scatterplot(rstandard(M1)~fitted(M1))
 ## Statistischer Test auf Homoskedastizität: Breusch-Pagan Test
 bptest(M1)
 ```
+
 ## Check 3: Test auf Autokorrelation der Residuen
 
 Das ALM geht davon aus, dass Messwerte unabhängig voneinander sind. Wenn diese abhängig voneinander sein sollten, dann nimmt das ALM an, dass diese Abhängigkeit durch die Prädiktoren im Modell erklärt wird. Um zu untersuchen, ob dies der Fall ist, wird analysiert ob die Residuen miteinander korreliert sind. Dies sollte nicht der Fall sein. Wenn diese korreliert sind, dann müssen wir das Modell so erweitern, dass diese Abhängigkeit durch das erweiterte Modell erklärt wird. (Siehe Multi-level)
@@ -157,9 +171,10 @@ Das ALM geht davon aus, dass Messwerte unabhängig voneinander sind. Wenn diese 
 ```{r}
 durbinWatsonTest(M1) # Test für eine Autokorrelation 1.Ordnung
 ```
+
 ## Einflussreiche Ausreißer
 
-Cook's distance ist ein gutes Maß zur Ermittlung zu einflussreicher Ausreißer. Die Werte der einzelnen Fälle sollte nicht größer sein als 4/(N-k-1). Hier im Beispiel N=146 => Werte > 0,0273
+Cook's distance ist ein gutes Maß zur Ermittlung zu einflussreicher Ausreißer. Die Werte der einzelnen Fälle sollte nicht größer sein als 4/(N-k-1). Hier im Beispiel N=146 =\> Werte \> 0,0273
 
 ```{r}
 cd <- cooks.distance(M1)
@@ -167,9 +182,6 @@ cd <- cooks.distance(M1)
 plot(M1,4)
 hist(cd)
 ```
-
-
-
 
 # Zu Grunde gelegtes statistisches Modell
 
@@ -190,20 +202,22 @@ Hierfür werden Modellvergleiche, sprich Varianzanalysen gerechnet. Jeder Prädi
 ```
 
 ## Berechnung der Effektstärken = Varianzaufklärung für die einzelnen Prädiktoren
+
 ```{r}
 
 ```
 
 ## Check 1: Unabhängigkeit der Prädiktoren
 
-Das ALM nimmt an, dass die Prädiktoren unabhängig voneinander sind. Praktisch bedeutet dies, dass vorhandene Korrelationen eher gering sind. Hierfür werden am einfachsten Variance-Inflation_Factors VIF genommen. Diese sollten bei 1 liegen, ab 4 sollte überlegt werden, ob Prädiktoren entfernt oder miteinander verrechnet / integriert werden sollten. 
+Das ALM nimmt an, dass die Prädiktoren unabhängig voneinander sind. Praktisch bedeutet dies, dass vorhandene Korrelationen eher gering sind. Hierfür werden am einfachsten Variance-Inflation_Factors VIF genommen. Diese sollten bei 1 liegen, ab 4 sollte überlegt werden, ob Prädiktoren entfernt oder miteinander verrechnet / integriert werden sollten.
 
 ```{r}
 
 ```
+
 ## Check 2: Analyse der Residuen
 
-Das ALM nimmt an, dass die Fehler zufällig und unabhängig von den Prädiktoren sind (Annahme der Varianzhomogenität btw. Homoskedastizität). Wenn dies der Fall ist, dann sollten die Residuen zufällig und normalverteilt um den Wert von Null streuen. Ebenso sollten sich in einer Abbildung der Residuen und vorhergesagten Werte kein Zusammenhang und keine systematische Abweichung von Null zeigen. 
+Das ALM nimmt an, dass die Fehler zufällig und unabhängig von den Prädiktoren sind (Annahme der Varianzhomogenität btw. Homoskedastizität). Wenn dies der Fall ist, dann sollten die Residuen zufällig und normalverteilt um den Wert von Null streuen. Ebenso sollten sich in einer Abbildung der Residuen und vorhergesagten Werte kein Zusammenhang und keine systematische Abweichung von Null zeigen.
 
 ```{r}
 
@@ -216,5 +230,3 @@ Das ALM geht davon aus, dass Messwerte unabhängig voneinander sind. Wenn diese 
 ```{r}
 
 ```
-
-

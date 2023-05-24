@@ -2,10 +2,14 @@
 title: "Deskriptive Datenanalyse mit ggplot2"
 author: "YH"
 date: '2022-05-16'
-output:
-  word_document: default
-  pdf_document: default
-  html_document: default
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
 ---
 
 ```{r setup, include=FALSE}
@@ -13,24 +17,30 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Vorbereitung
+
 ### Zusaetzliche ggplot2 packages
 
 ```{r}
 #install.packages(c( "colorBlindness", "directlabels", "dplyr", "gameofthrones", "ggforce", "gghighlight", "ggnewscale", "ggplot2", "ggraph", "ggrepel", "ggtext", "ggthemes", "hexbin", "Hmisc", "mapproj", "maps", "munsell", "ozmaps", "paletteer", "patchwork", "rmapshaper", "scico", "seriation", "sf", "stars", "tidygraph", "tidyr", "wesanderson"))
 ```
+
 ### Aktiviere packages)
+
 ```{r}
 library(ggplot2)
 library(psych)
 library(Hmisc)
 library(tidyr)
 ```
+
 ### set working directory
+
 ```{r}
 setwd("~/Teaching/Master/Methoden Klinische 2022/Datenbeispiele/1_4")
 ```
 
 ### Daten einlesen
+
 ```{r}
 dat_1 <- read.csv(file = "~/Teaching/Master/Methoden Klinische 2022/Datenbeispiele/1_4/Dat_VR_Anxiety_1.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
 
@@ -55,8 +65,7 @@ descriptives1
 
 ## Berechnung nach Transformation der Daten in long Format
 
-wide == Daten jeder Person stehen in einer Zeile
-long == Daten der einzelnen Messzeitpunkte stehen in einer Zeile, d.h. jede Person hat mehrere Zeilen
+wide == Daten jeder Person stehen in einer Zeile long == Daten der einzelnen Messzeitpunkte stehen in einer Zeile, d.h. jede Person hat mehrere Zeilen
 
 ```{r}
 dat_1_long <- as.data.frame(pivot_longer(dat_1, cols = c(Pre, Post), names_to = "Messung",
@@ -88,6 +97,7 @@ ggplot(descriptives2, aes(x=Messzeitpunkt, y=mean, group = Bedingung)) +
     ggtitle("Mittelwerte plus/minus 95% Konfidenzintervall")+
     theme_classic()
 ```
+
 ## Berechnung Effektstärken
 
 ```{r}

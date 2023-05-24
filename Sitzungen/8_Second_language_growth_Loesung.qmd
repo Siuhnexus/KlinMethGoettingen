@@ -2,9 +2,15 @@
 title: "Lineare Growth-Modelle 2"
 author: "York Hagmayer"
 date: "11 12 2022"
-output: html_document
-editor_options: 
-  chunk_output_type: console
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+    theme: default
+editor: visual
 ---
 
 ```{r warning=FALSE, message=FALSE, results='hide'}
@@ -18,6 +24,7 @@ library(psych)
 ```
 
 ## Working directory setzen
+
 ```{r}
 setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche8_growth2")
 ```
@@ -56,6 +63,7 @@ data_long$trip_value <- as.factor(data_long$trip_value)
 ```
 
 ## Plot der Daten
+
 ```{r}
 ## Die Schulen unterscheiden sich darin, ob sie während des Schuljahrs einen zweiwöchigen Auslangsaufenthalt zum Erlernen der Zweitsprache machen (Variable Field_trip). Diese Daten sollten getrennt voneinander dargestellt werden.
 ## Daher zwei subsets gemacht
@@ -78,11 +86,14 @@ ggplot(data_long_FT_yes, aes(x=time_int, y=LangScore)) +
   ylim(100, 300) +
   labs(title = "Language Training with Field Trip", x = "Measurement", y = "Language Score", color = "ID")
 ```
+
 ## Deskriptive Analyse
+
 ```{r}
 desmat <- describeBy(data_long$LangScore, group = list(data_long$time, data_long$Field_trip), mat = TRUE)
 desmat
 ```
+
 ## Modellsuche
 
 Hier werden immer komplexere Modelle definiert und mit den weniger komplexen verglichen.
@@ -138,6 +149,7 @@ vif(RS.plus2)
 ```
 
 ## Analyse der Residuen
+
 Diese Analyse fokussiert auf das Modell ohne Interaktion.
 
 ```{r}
@@ -160,16 +172,19 @@ ggplot(data_long, aes(x = time, y = residualsRS.plus)) +
 ACF(RS.plus, maxLag = 5, resType = "normalized")
 plot(ACF(RS.plus, maxLag = 5, resType = "normalized"), alpha = 0.01)
 ```
+
 Das Muster der Autokorrelationen ist sehr ungewöhnlich, da diese z.T. negativ sind. Das macht kaum Sinn. Da immer die Sprachfaehigkeit gemessen wird, sollte die Korrelation wenn ueberhaupt positiv sein. Eine negative Korrelation bedeutet, dass die Ueberdurchschnittlichen, dann beim naechsten Mal eher unterdurchschnittlich sind. Hier muesste man inhaltlich mal schauen, was da bei den einzelnen Messungen wirklich gemessen wurde und ob es methodische Unterschiede gab.
 
 ## Erweiterung des Modells um eine Autokorrelation 1. Ordnung der Residuen
-Diese Analyse macht keinen Sinn, da eine Autokorrelation 1. Ordnung das komische Autokorrelationsmuster dadurch mit Sicherheit nicht erklaert werden kann. 
+
+Diese Analyse macht keinen Sinn, da eine Autokorrelation 1. Ordnung das komische Autokorrelationsmuster dadurch mit Sicherheit nicht erklaert werden kann.
 
 ```{r}
 
 ```
 
 ## Vorhergesagte Verläufe
+
 ```{r}
 # Fitted values aus dem Random Slope Modell
 data_long$fittedRS.plus = fitted(RS.plus)
@@ -184,5 +199,3 @@ ggplot(data_long, aes(time_int, fittedRS.plus)) +
 
 
 ```
-
-

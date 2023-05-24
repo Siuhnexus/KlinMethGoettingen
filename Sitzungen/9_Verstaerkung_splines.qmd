@@ -2,9 +2,15 @@
 title: "growth model with splines"
 author: "York Hagmayer"
 date: "11 01 2023"
-output: html_document
-editor_options: 
-  chunk_output_type: console
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+    theme: default
+editor: visual
 ---
 
 ```{r warning=FALSE, message=FALSE, results='hide'}
@@ -18,6 +24,7 @@ library(psych)
 ```
 
 ## Working directory setzen
+
 ```{r}
 setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche8_growth2")
 ```
@@ -39,6 +46,7 @@ data_long$Tag_num <- rep(1:24, 80)
 ```
 
 ## Plot der Daten
+
 ```{r}
 #erste 20 Personen
 data_long_sub <- subset(data_long, as.numeric(ID) <= 21)
@@ -58,6 +66,7 @@ ggplot(data_long_sub, aes(x=Tag_num, y=Verhalten)) +
 ```
 
 ## Deskriptive Analyse
+
 ```{r}
 desmat <- describeBy(data_long$Verhalten, group = data_long$Tag_num, mat = TRUE)
 desmat
@@ -69,6 +78,7 @@ ggplot(desmat, aes(x=as.numeric(group1), y=mean)) +
   labs(title = "Mittlere Verhaltenshäufigkeit", x = "Tag", y = "Häufigkeit Verhalten")
 
 ```
+
 ## Modell mit Trends
 
 ```{r}
@@ -78,6 +88,7 @@ summary(M1)
 ```
 
 ### Analyse der Residuen
+
 ```{r}
 data_long$residualsM1 <- residuals(M1, type = "normalized")
 
@@ -96,6 +107,7 @@ ggplot(data_long, aes(x = as.factor(Tag_num), y = residualsM1)) +
 ```
 
 ## Vorhergesagte Verläufe
+
 ```{r}
 # Fitted values aus dem Random Slope Modell
 data_long$fittedM1 = fitted(M1)
@@ -110,7 +122,9 @@ ggplot(data_long, aes(Tag_num, fittedM1)) +
 ```
 
 ## ANalyse mit Splines
+
 knots = Tag7 und Tag17
+
 ```{r}
 knot1 = 7
 knot2 = 17
@@ -139,7 +153,9 @@ AIC(M2)
 AIC(M3)
 ## mit ist besser
 ```
+
 ### Analyse der Residuen
+
 ```{r}
 #Model 2
 data_long$residualsM2 <- residuals(M2, type = "normalized")
@@ -172,6 +188,7 @@ ggplot(data_long, aes(x = as.factor(Tag_num), y = residualsM3)) +
 ```
 
 ## Vorhergesagte Verläufe
+
 ```{r}
 # Fitted values aus dem Spline-Modell 2
 data_long$fittedM2 = fitted(M2)

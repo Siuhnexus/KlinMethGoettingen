@@ -2,12 +2,14 @@
 title: "Datenanalyse ALM (5) MESSWIEDERHOLUNG"
 author: "YH"
 date: '2022-11-20'
-output:
-  word_document: default
-  pdf_document: default
-  html_document: default
-editor_options: 
-  chunk_output_type: console
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
 ---
 
 ```{r setup, include=FALSE}
@@ -16,6 +18,7 @@ knitr::opts_knit$set(root.dir = "~/Teaching/Master/Methoden_Klippt/Methoden Klip
 ```
 
 ### Activate packages
+
 ```{r}
 library(ggplot2)
 library(psych)
@@ -29,6 +32,7 @@ library(predictmeans)
 library(nlme)
 library(ez)
 ```
+
 ### set working directory
 
 ```{r}
@@ -38,6 +42,7 @@ setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woc
 ### Daten einlesen
 
 Auch hier bitte darauf achten, dass das Verzeichnis für die Datei stimmt.
+
 ```{r}
 dat_1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche5/BDI_1_ALM.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
 
@@ -46,6 +51,7 @@ dat_1$Gruppe <- as.factor(dat_1$Gruppe)
 dat_1$Gruppe <- factor(dat_1$Gruppe, levels = c("Warteliste", "KVT")) 
 
 ```
+
 ## Transformation der Daten in long Format
 
 ```{r}
@@ -99,7 +105,6 @@ print(ggplot(dat_1_long_b, aes(x=Zeitpunkt, y=BDI, group = ID)) +
 
 ```
 
-
 ### Deskriptive Analyse
 
 ```{r}
@@ -127,16 +132,17 @@ ggplot(descriptives, aes(x=Zeitpunkt, y=mean, group = Bedingung)) +
     ggtitle("Mittelwerte plus/minus 95% Konfidenzintervall")+
     theme_classic()
 ```
+
 # Zu Grunde gelegtes statistisches Modell
 
 Behandlung und Zeitpunkt sowie ihre Interaktion sagen BDI Score vorher.
 
 ## Eine einfach Messwiederholungsvarianzanalyse
+
 ```{r}
 ezANOVA(within=Zeitpunkt, between=Gruppe, wid=ID, dv=BDI, data=dat_1_long)
 # leider mag ezANOVA nicht den Datensatz, in dem die unmöglichen Werte gelöscht wurden, daher der komplette Datensatz
 ```
-
 
 ## Multi-level Modell - Trendkontraste
 
@@ -173,6 +179,7 @@ plot(M1)
 ```
 
 ## Multi-level Modell - Helmertkontraste
+
 ```{r}
 # Mit Helmertkontrasten für Faktor Zeitpunkt
 ###############################################
@@ -200,8 +207,8 @@ scatterplot(res.vec2 ~ fit.vec2)
 plot(M1_helm)
 ```
 
-
 ## Subgruppenanalyse um Trends genauer zu überprüfen
+
 ```{r}
 dat_Warteliste <- subset(dat_1_long_b, Gruppe == "Warteliste")
 dat_KVT <- subset(dat_1_long_b, Gruppe == "KVT")
@@ -259,4 +266,3 @@ AIC(M1_dependencies)
 ## Nein
 
 ```
-

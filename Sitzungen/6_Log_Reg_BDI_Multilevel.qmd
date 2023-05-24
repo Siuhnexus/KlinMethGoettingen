@@ -2,10 +2,16 @@
 title: "Logistische Regression Multilevel"
 author: "YH"
 date: "11 2022"
-output:
-  word_document: default
-  html_document: default
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
 ---
+
 ## Packages
 
 ```{r}
@@ -71,11 +77,9 @@ ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) +
 ```
 
 ## Berechnung von Indikatoren für klinisch relevante Veränderung
-Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind.
-1. Reduktion der Symptomatik um 30% zum Postzeitpunkt
-2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich
-3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8
-4. Clinically significant change: Normalbereich BDI Score <=12
+
+Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind. 1. Reduktion der Symptomatik um 30% zum Postzeitpunkt 2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich 3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8 4. Clinically significant change: Normalbereich BDI Score \<=12
+
 ```{r}
 # Reduktion der Symptomatik
 ## Berechnung 70% Symptomatik des Prä-Werts = -30%
@@ -117,7 +121,9 @@ g = ggplot(dat_log1) +
 g = g + ggtitle("Anteil Reduktion 30% Symptomatik in den Therapiebedingungen")
 g 
 ```
+
 # Multilevel logistische Regression
+
 ```{r}
 # Single level model
 SL.Modell <- glm(Krit_1_3 ~ Therapie, family = binomial, data = dat_log1)
@@ -150,6 +156,3 @@ se <- sqrt(diag(vcov(ML.Modell.ri)))
 exp(tab)
 
 ```
-
-
-

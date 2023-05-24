@@ -1,10 +1,17 @@
 ---
 title: "Lineare Growth-Modelle"
-author: "Bente Hinkenhuis & York Hagmayer"
+author: 
+- York Hagmayer
+- Bente Hinkenhuis
 date: "6 12 2022"
-output: html_document
-editor_options: 
-  chunk_output_type: inline
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
 ---
 
 ```{r warning=FALSE, message=FALSE, results='hide'}
@@ -16,11 +23,13 @@ library(tidyr)
 ```
 
 ## Working directory setzen
+
 ```{r}
 setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche7_growth")
 ```
 
 ## Daten einlesen
+
 ```{r}
 data <- read.csv("ASD.csv")
 
@@ -33,6 +42,7 @@ firstTen$id = as.factor(firstTen$id)
 ```
 
 ## Plot der Daten
+
 ```{r}
 ggplot(firstTen, aes(time, Interaction)) +
   geom_point() +
@@ -42,6 +52,7 @@ ggplot(firstTen, aes(time, Interaction)) +
 ```
 
 ## Inferenzstatistik (explorative Modellsuche)
+
 ```{r}
 # Nullmodell
 NM = glm(Interaction ~ 1, data = data)
@@ -62,6 +73,7 @@ summary(RS)
 ```
 
 ## Plots der Schätzungen
+
 ```{r}
 # Wir extrahieren die geschätzten Werte für die ersten 10 Personen aus den Modellen
 data$fittedFS = fitted(FS)
@@ -82,6 +94,7 @@ ggplot(data, aes(time, fittedRS)) +
 ```
 
 ## Autokorrelation
+
 ```{r}
 ## Am besten erstmal getrennt nach ein paar der Personen
 dat1 <- subset(data, id == "1")
@@ -116,6 +129,7 @@ acf(dat1$residualsFS[,2], type = "partial")
 
 
 ```
+
 ## Einbeziehen der Autokorrelation in das Modell
 
 ```{r}
@@ -133,4 +147,3 @@ acf(dat1$residualsRSplus, type = "partial")
 ### ist verschwunden
 
 ```
-

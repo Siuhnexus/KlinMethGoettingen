@@ -2,12 +2,14 @@
 title: "Datenanalyse ALM (3) Kontraste"
 author: "YH"
 date: '2022-05-16'
-output:
-  word_document: default
-  pdf_document: default
-  html_document: default
-editor_options: 
-  chunk_output_type: inline
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
 ---
 
 ```{r setup, include=FALSE}
@@ -16,6 +18,7 @@ knitr::opts_knit$set(root.dir = "")
 ```
 
 ### Activate packages
+
 ```{r}
 library(ggplot2)
 library(psych)
@@ -29,6 +32,7 @@ library(predictmeans)
 library(ez)
 library(lme4)
 ```
+
 ### set working directory
 
 ```{r}
@@ -38,6 +42,7 @@ setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/4")
 ### Daten einlesen
 
 Auch hier bitte darauf achten, dass das Verzeichnis für die Datei stimmt.
+
 ```{r}
 dat_1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/4/Dat_VR_Anxiety_lm1.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
 
@@ -46,15 +51,14 @@ dat_1$Gruppe <- as.factor(dat_1$Gruppe)
 dat_1$Gruppe <- factor(dat_1$Gruppe, levels = c("in_virtuo", "in_sensu", "Warteliste")) 
 
 ```
+
 ## Transformation der Daten in long Format
 
-wide == Daten jeder Person stehen in einer Zeile
-long == Daten der einzelnen Messzeitpunkte stehen in einer Zeile, d.h. jede Person hat mehrere Zeilen
+wide == Daten jeder Person stehen in einer Zeile long == Daten der einzelnen Messzeitpunkte stehen in einer Zeile, d.h. jede Person hat mehrere Zeilen
 
 ### Warum ist es wichtig Daten ins long Format zu übertragen?
 
-Nur so kann jede der Zeitpunkt der Messung ein Prädiktor sein kann. Jeder Prädiktor muss eine Variable in einer Spalte sein
-=> damit kommt jeder Person zwei Mal vor, d.h. in zwei Zeilen
+Nur so kann jede der Zeitpunkt der Messung ein Prädiktor sein kann. Jeder Prädiktor muss eine Variable in einer Spalte sein =\> damit kommt jeder Person zwei Mal vor, d.h. in zwei Zeilen
 
 ```{r}
 dat_1_long <- as.data.frame(pivot_longer(dat_1, cols = c(Pre, Post), names_to = "Zeitpunkt",
@@ -87,7 +91,6 @@ print(ggplot(dat_1_long, aes(x=Zeitpunkt, y=SP_score, group = ID)) +
 
 ```
 
-
 ### Deskriptive Analyse
 
 ```{r}
@@ -113,6 +116,7 @@ ggplot(descriptives, aes(x=Zeitpunkt, y=mean, group = Bedingung)) +
     ggtitle("Mittelwerte plus/minus 95% Konfidenzintervall")+
     theme_classic()
 ```
+
 # Zu Grunde gelegtes statistisches Modell
 
 Behandlung und Zeitpunkt sowie ihre Interaktion sagen Score in sozialer Phobie vorher
@@ -132,7 +136,9 @@ summary(M1)
 # ANOVA zur Bestimmung der Quadratsummen für die beiden Prädiktoren
 Anova(M1)
 ```
+
 ### Kritisches Problem des Modells = Abhängigkeit der Messungen
+
 ```{r}
 # Graphik der Zusammenhänge der Residuen
 acf(M1$residuals)
@@ -144,7 +150,9 @@ durbinWatsonTest(M1) # Test für eine Autokorrelation 1.Ordnung
 cor(dat_1$Pre, dat_1$Post)
 
 ```
+
 ## Quick fix: Messwiederholungsvarianzanalyse
+
 ```{r}
 # Option 1: Varianzanalyse
 ## Definition Kontraste
@@ -156,6 +164,7 @@ aov_m2
 ```
 
 ## Einfachere Lösung; Multi-level Modell
+
 ```{r}
 # Definition Modell mit random intercept pro Teilnehmer*in = intercept variiert zwischen den Teilnehmer*innen 
 M3 <- lmerTest::lmer(SP_score ~ Gruppe * Zeitpunkt + (1|ID), data = dat_1_long)
@@ -173,7 +182,9 @@ predmeans$predictmeansBarPlot
 
 
 ```
+
 ## Prüfung der Residuen
+
 ```{r}
 library(nlme)
 # Das gleiche Modell nur mit einem anderen Paket gemacht
@@ -191,4 +202,3 @@ fit.vec <- M4$fitted[,1]
 # Scatterplot machen
 scatterplot(res.vec ~ fit.vec)
 ```
-
