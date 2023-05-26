@@ -12,11 +12,7 @@ format:
 editor: visual
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-### Activate packages
+### Pakete laden
 
 ```{r}
 library(ggplot2)
@@ -28,20 +24,13 @@ library(effectsize)
 library(rcompanion)
 ```
 
-### set working directory
-
-Bitte anpassen, damit es für Sie passt. Am einfachsten erst die RMD Datei am Zielort speichern und von dort aus öffnen. Dann unter Session -\> Set Working Directory -\> To Source file location Der Pfad erscheint unten in der Console. Dann über Strg c und Strg v hierher kopieren.
-
-```{r}
-setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/2_1")
-```
-
 ### Daten einlesen
 
 Auch hier bitte darauf achten, dass das Verzeichnis für die Dateil stimmt und die Datei auch tatsächlich in dem angegeben Ordner zu finden ist.
 
 ```{r}
-dat_1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/2_1/Dat_VR_Anxiety_lm1.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
+setwd("Sitzungen")
+dat_1 <- read.csv(file = "Dat_VR_Anxiety_lm1.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
 
 # Characterstrings als Faktoren definieren
 dat_1$Gruppe <- as.factor(dat_1$Gruppe) 
@@ -137,6 +126,7 @@ anova(M1c, M1)
 
 ```{r}
 eta_squared(VA1)
+cohen.d(Post ~ Gruppe, data=dat_1[dat_1$Gruppe == "in_sensu" | dat_1$Gruppe == "Warteliste", ])
 ```
 
 ## Check 1: Unabhängigkeit der Prädiktoren

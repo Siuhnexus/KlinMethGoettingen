@@ -1,573 +1,1180 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="generator" content="quarto-1.3.336">
 
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.336">
+        <meta name="viewport" 
+ content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <meta name="author" content="Bente Hinkenhuis">
 
-<meta name="author" content="Bente Hinkenhuis">
+        <title>KlinMeth-Vorkurs - Sitzung 2</title>
+        <style>
+            code {
+                white-space: pre-wrap;
+            }
+            span.smallcaps {
+                font-variant: small-caps;
+            }
+            div.columns {
+                display: flex;
+                gap: min(4vw, 1.5em);
+            }
+            div.column {
+                flex: auto;
+                overflow-x: auto;
+            }
+            div.hanging-indent {
+                margin-left: 1.5em;
+                text-indent: -1.5em;
+            }
+            ul.task-list {
+                list-style: none;
+            }
+            ul.task-list li input[type="checkbox"] {
+                width: 0.8em;
+                margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+                vertical-align: middle;
+            }
+            /* CSS for syntax highlighting */
+            pre > code.sourceCode {
+                white-space: pre;
+                position: relative;
+            }
+            pre > code.sourceCode > span {
+                display: inline-block;
+                line-height: 1.25;
+            }
+            pre > code.sourceCode > span:empty {
+                height: 1.2em;
+            }
+            .sourceCode {
+                overflow: visible;
+            }
+            code.sourceCode > span {
+                color: inherit;
+                text-decoration: inherit;
+            }
+            div.sourceCode {
+                margin: 1em 0;
+            }
+            pre.sourceCode {
+                margin: 0;
+            }
+            @media screen {
+                div.sourceCode {
+                    overflow: auto;
+                }
+            }
+            @media print {
+                pre > code.sourceCode {
+                    white-space: pre-wrap;
+                }
+                pre > code.sourceCode > span {
+                    text-indent: -5em;
+                    padding-left: 5em;
+                }
+            }
+            pre.numberSource code {
+                counter-reset: source-line 0;
+            }
+            pre.numberSource code > span {
+                position: relative;
+                left: -4em;
+                counter-increment: source-line;
+            }
+            pre.numberSource code > span > a:first-child::before {
+                content: counter(source-line);
+                position: relative;
+                left: -1em;
+                text-align: right;
+                vertical-align: baseline;
+                border: none;
+                display: inline-block;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                padding: 0 4px;
+                width: 4em;
+            }
+            pre.numberSource {
+                margin-left: 3em;
+                padding-left: 4px;
+            }
+            div.sourceCode {
+            }
+            @media screen {
+                pre > code.sourceCode > span > a:first-child::before {
+                    text-decoration: underline;
+                }
+            }
+        </style>
 
-<title>KlinMeth-Vorkurs - Sitzung 2</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
-  vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-</style>
+        <script src="Sitzung2_files/libs/clipboard/clipboard.min.js"></script>
+        <script src="Sitzung2_files/libs/quarto-html/quarto.js"></script>
+        <script src="Sitzung2_files/libs/quarto-html/popper.min.js"></script>
+        <script src="Sitzung2_files/libs/quarto-html/tippy.umd.min.js"></script>
+        <script src="Sitzung2_files/libs/quarto-html/anchor.min.js"></script>
+        <link href="Sitzung2_files/libs/quarto-html/tippy.css" 
+ rel="stylesheet">
+        <link href="Sitzung2_files/libs/quarto-html/quarto-syntax-highlighting.css" 
+ rel="stylesheet" 
+ id="quarto-text-highlighting-styles">
+        <script src="Sitzung2_files/libs/bootstrap/bootstrap.min.js"></script>
+        <link href="Sitzung2_files/libs/bootstrap/bootstrap-icons.css" 
+ rel="stylesheet">
+        <link href="Sitzung2_files/libs/bootstrap/bootstrap.min.css" 
+ rel="stylesheet" 
+ id="quarto-bootstrap" 
+ data-mode="light">
+        <style>
+            html {
+                scroll-behavior: smooth;
+            }
+        </style>
 
+        <link rel="stylesheet" href="../style.css">
+    </head>
 
-<script src="Sitzung2_files/libs/clipboard/clipboard.min.js"></script>
-<script src="Sitzung2_files/libs/quarto-html/quarto.js"></script>
-<script src="Sitzung2_files/libs/quarto-html/popper.min.js"></script>
-<script src="Sitzung2_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="Sitzung2_files/libs/quarto-html/anchor.min.js"></script>
-<link href="Sitzung2_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="Sitzung2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="Sitzung2_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="Sitzung2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="Sitzung2_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<style>html{ scroll-behavior: smooth; }</style>
+    <body><div class="header"><div class="nav-item"><a href="../Sitzungen/">Sitzungen</a></div><div class="nav-item"><a href="../Vorkurs/">Vorkurs</a><div class="nav-list"><div class="nav-item"><a href="../Vorkurs/Sitzung1.html">Sitzung1</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung2.html">Sitzung2</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung3.html">Sitzung3</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung4.html">Sitzung4</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung5.html">Sitzung5</a></div></div></div></div>
+        
 
+        <div id="quarto-content" 
+ class="page-columns page-rows-contents page-layout-article">
+            <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+                <nav id="TOC" role="doc-toc" class="toc-active">
+                    <h2 id="toc-title">Table of contents</h2>
 
-<link rel="stylesheet" href="../style.css">
-</head>
+                    <ul>
+                        <li>
+                            <a href="#klinmeth-vorkurs---r-sprache-und-variablentypen" 
+ id="toc-klinmeth-vorkurs---r-sprache-und-variablentypen" 
+ class="nav-link active" 
+ data-scroll-target="#klinmeth-vorkurs---r-sprache-und-variablentypen">KlinMeth-Vorkurs - R-Sprache und
+                                Variablentypen</a>
+                            <ul class="collapse">
+                                <li>
+                                    <a href="#zuweisungen" 
+ id="toc-zuweisungen" 
+ class="nav-link" 
+ data-scroll-target="#zuweisungen">Zuweisungen</a>
+                                </li>
+                                <li>
+                                    <a href="#funktionen" 
+ id="toc-funktionen" 
+ class="nav-link" 
+ data-scroll-target="#funktionen">Funktionen</a>
+                                </li>
+                                <li>
+                                    <a href="#variablentypen" 
+ id="toc-variablentypen" 
+ class="nav-link" 
+ data-scroll-target="#variablentypen">Variablentypen</a>
+                                </li>
+                                <li>
+                                    <a href="#pakete-installieren-und-laden" 
+ id="toc-pakete-installieren-und-laden" 
+ class="nav-link" 
+ data-scroll-target="#pakete-installieren-und-laden">Pakete installieren und laden</a>
+                                </li>
+                                <li>
+                                    <a href="#indexing-und-subsetting" 
+ id="toc-indexing-und-subsetting" 
+ class="nav-link" 
+ data-scroll-target="#indexing-und-subsetting">Indexing und Subsetting</a>
+                                    <ul class="collapse">
+                                        <li>
+                                            <a href="#vergleiche" 
+ id="toc-vergleiche" 
+ class="nav-link" 
+ data-scroll-target="#vergleiche">Vergleiche</a>
+                                        </li>
+                                        <li>
+                                            <a href="#subsetting" 
+ id="toc-subsetting" 
+ class="nav-link" 
+ data-scroll-target="#subsetting">Subsetting</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <main class="content" id="quarto-document-content">
+                <header id="title-block-header" 
+ class="quarto-title-block default">
+                    <div class="quarto-title">
+                        <h1 class="title">KlinMeth-Vorkurs - Sitzung 2</h1>
+                    </div>
 
-<body>
+                    <div class="quarto-title-meta">
+                        <div>
+                            <div class="quarto-title-meta-heading">Author</div>
+                            <div class="quarto-title-meta-contents">
+                                <p>Bente Hinkenhuis</p>
+                            </div>
+                        </div>
+                    </div>
+                </header>
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-  <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#klinmeth-vorkurs---r-sprache-und-variablentypen" id="toc-klinmeth-vorkurs---r-sprache-und-variablentypen" class="nav-link active" data-scroll-target="#klinmeth-vorkurs---r-sprache-und-variablentypen">KlinMeth-Vorkurs - R-Sprache und Variablentypen</a>
-  <ul class="collapse">
-  <li><a href="#zuweisungen" id="toc-zuweisungen" class="nav-link" data-scroll-target="#zuweisungen">Zuweisungen</a></li>
-  <li><a href="#funktionen" id="toc-funktionen" class="nav-link" data-scroll-target="#funktionen">Funktionen</a></li>
-  <li><a href="#variablentypen" id="toc-variablentypen" class="nav-link" data-scroll-target="#variablentypen">Variablentypen</a></li>
-  <li><a href="#pakete-installieren-und-laden" id="toc-pakete-installieren-und-laden" class="nav-link" data-scroll-target="#pakete-installieren-und-laden">Pakete installieren und laden</a></li>
-  <li><a href="#indexing-und-subsetting" id="toc-indexing-und-subsetting" class="nav-link" data-scroll-target="#indexing-und-subsetting">Indexing und Subsetting</a>
-  <ul class="collapse">
-  <li><a href="#vergleiche" id="toc-vergleiche" class="nav-link" data-scroll-target="#vergleiche">Vergleiche</a></li>
-  <li><a href="#subsetting" id="toc-subsetting" class="nav-link" data-scroll-target="#subsetting">Subsetting</a></li>
-  </ul></li>
-  </ul></li>
-  </ul>
-</nav>
-</div>
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">KlinMeth-Vorkurs - Sitzung 2</h1>
-</div>
-
-
-
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Bente Hinkenhuis </p>
-          </div>
-  </div>
-    
-  
-    
-  </div>
-  
-
-</header>
-
-<section id="klinmeth-vorkurs---r-sprache-und-variablentypen" class="level1">
-<h1>KlinMeth-Vorkurs - R-Sprache und Variablentypen</h1>
-<p>Heute wollen wir R ein bisschen näher kennenlernen. Technisch gesehen ist R zwar eine Programmiersprache, aber für unsere Zwecke müssen wir nicht allzu tief ins Programmieren einsteigen.</p>
-<p>Erstmal könnt ihr R wie einen Taschenrechner benutzen. Alle Grundrechenarten funktionieren (mal mit dem Sternchen * und geteilt mit dem Schrägstrich /).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">+</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 9</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">-</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">*</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 20</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">/</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.25</code></pre>
-</div>
-</div>
-<p>Ergebnisse von Rechnungen lassen sich zu <strong>Variablen zuweisen</strong>, um später damit weiterrechnen zu können.</p>
-<section id="zuweisungen" class="level2">
-<h2 class="anchored" data-anchor-id="zuweisungen">Zuweisungen</h2>
-<p>Diese Zuweisungen sind auf drei Arten möglich. Die erste Möglichkeit ist ein einfaches Gleichheitszeichen:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="dv">3</span> <span class="sc">*</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Das Gleichheitszeichen erfüllt also anders als in der Mathematik nicht den Zweck, zwei Ausdrücke zu <strong>vergleichen</strong>, sondern den Ausdruck rechts der Variable links zuzuweisen.</p>
-<p>Alternativ dazu kann auch ein Pfeil geschrieben werden:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Beim Pfeil wird der Ausdruck der Variable zugewiesen, <strong>auf die der Pfeil zeigt</strong>. Folgendes würde also auch funktionieren:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span> <span class="sc">*</span> <span class="dv">4</span> <span class="ot">-&gt;</span> x3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Mit diesen Variablen lässt sich jetzt weiterrechnen.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">/</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 6</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">*</span> x2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 144</code></pre>
-</div>
-</div>
-<p>Fürs Rechnen allein brauchen wir R aber natürlich nicht. Die meisten interessanteren Features von R stecken in den vielen verfügbaren <strong>Funktionen</strong>.</p>
-</section>
-<section id="funktionen" class="level2">
-<h2 class="anchored" data-anchor-id="funktionen">Funktionen</h2>
-<p>Wir haben in der letzten Sitzung schon 5 R-Funktionen kennengelernt, nämlich <code>getwd()</code>, <code>setwd()</code>, <code>read.csv()</code>, <code>read.csv2()</code> und <code>read.table()</code>. An der letzten dieser Funktionen möchte ich euch erklären, wie Funktionen funktionieren.</p>
-<p>Erstmal ruft man eine Funktion auf, indem man den Funktionsnamen, gefolgt von einer öffnenden und einer schlie?enden Klammer schreibt, also bspw. <code>getwd()</code>. Innerhalb der Klammern kann man der Funktion <strong>Parameter</strong> mit Kommata getrennt übergeben, falls welche benötigt werden. Um Parameter zu verstehen, rufen wir jetzt die Hilfe zu <code>read.table()</code> auf.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>?read.table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>starte den http Server für die Hilfe fertig</code></pre>
-</div>
-</div>
-<p>Unter <strong>Usage</strong> ist beschrieben, welche Parameter die Funktion annimmt. Parameter können alles Mögliche sein; Daten, Pfade, Zahlen, Grafiken etc. Die <code>read.table()</code> Funktion benötigt einen Parameter namens “file” und nimmt daneben auch noch Parameter wie “header”, “sep”, “quote”, “dec” etc. an. Was die im einzelnen alle bedeuten, ist erstmal nicht so wichtig. Wichtig ist, dass es zwei Möglichkeiten gibt, die Parameter zu setzen:</p>
-<ol type="1">
-<li>Wenn die Funktion Werte ohne Parameternamen erhält, wird angenommen, dass die Parameter in der <strong>Reihenfolge der Funktion</strong> vergeben werden. <code>read.table("test.csv", TRUE, ",")</code> würde also die Datei “test.csv” unter Annahme von Spaltennamen und einem Komma zwischen den Werten eingelesen werden.</li>
-<li>Wenn man ein paar Parameter überspringen möchte, die Reihenfolge der Parameter nicht im Kopf hat oder den eigenen Code verständlicher machen möchte, kann man Parameter auch mit Namen übergeben. <code>read.table(header=TRUE, sep=",", file="test.csv")</code> macht also genau dasselbe, nur mit vertauschter Reihenfolge.</li>
-</ol>
-<p>Man kann die beiden Methoden auch mischen, sollte dann aber zuerst Parameter ohne Namen übergeben und dann die Parameter mit Namen, wie das in der letzten Sitzung passiert ist.</p>
-<p>Das klingt zwar erstmal alles sehr theoretisch, wir benutzen das aber bei ziemlich vielen Funktionen, es ist also essentiell. Aber keine Sorge, man gewöhnt sich schnell daran.</p>
-<p>Unter Usage ist übrigens auch angegeben, welche Werte die Funktion für Parameter annimmt, die wir nicht explizit setzen. Bspw. wird für den Dezimaltrenner standardmäßig ein Punkt verwendet.</p>
-<p>Nun wollen wir die beiden gelernten Aspekte kombinieren, indem wir Daten aus der Datei der letzten Sitzung laden und in einer Variable abspeichern.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"motivation_precourse.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Das ist zwar Code, den wir schon aus der letzten Sitzung kennen, aber jetzt verstehen wir auch, was da eigentlich passiert.</p>
-<p>Schauen wir uns genauer an, was in unserer Variable <code>dat</code> so drinsteckt.</p>
-</section>
-<section id="variablentypen" class="level2">
-<h2 class="anchored" data-anchor-id="variablentypen">Variablentypen</h2>
-<p>Klickt dazu einmal auf den weißen Pfeil im blauen Kreis neben der Variable im <strong>Environment</strong>-Tab des Fensters oben rechts. So könnt ihr die Namen der einzelnen Spalten/Variablen sehen, die in <code>dat</code> vertreten sind.</p>
-<p>Jede dieser Variablen ist ein <strong>Vektor</strong> eines bestimmten Typs, enthält also mehrere Einträge dieses Typs. Aber was sind Typen und welche gibt es? Computer speichern Daten auf verschiedene Arten, um die Effizienz von Speicherung und Rechnungen zu erhöhen. Text wird dabei anders gespeichert als Zahlen, und Ganzzahlen nochmal anders als Kommazahlen. Das spiegelt sich auch in den hier vorhandenen Variablen wieder.</p>
-<ul>
-<li><p><code>precourse</code> ist ein Vektor vom Typ <code>chr</code>, was bedeutet, dass er “characters” enthält, was gleichbedeutend mit Text ist.</p></li>
-<li><p><code>subjectNr</code> ist vom Typ <code>int</code>, was f?r “integer” und damit ganze Zahlen steht.</p></li>
-<li><p>Die anderen beiden Variablen sind vom Typ <code>num</code>, enthalten also Dezimalzahlen.</p></li>
-</ul>
-<p>Bestimmte Analyseergebnisse unterscheiden sich je nach Variablentyp, weshalb es nicht schaden kann, zumindest Text und Zahlen auseinanderhalten zu können.</p>
-<p>Für statistische Analysen gibt es noch einen wichtigen Variablentyp, den wir noch nicht kennen. Wenn wir mit diskreten Variablen arbeiten, gibt es eine bestimmte Anzahl (qualitativ) unterschiedlicher Ausprägungen. Dieser Variablentyp heißt Faktor und kann in R aus anderen Variablentypen generiert werden. Dazu greifen wir nun zum ersten Mal auf eine Variable im Datensatz zu. Dazu schreiben wir den Namen des Datensatzes <code>dat</code>, gefolgt von einem $-Zeichen und dem Namen der Variable <code>precourse</code>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pre_fac <span class="ot">=</span> <span class="fu">factor</span>(dat<span class="sc">$</span>precourse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Wenn ihr oben rechts auf den Datentyp von <code>pre_fac</code> schaut, seht ihr da “Factor w/ 2 levels…”. R hat also erkannt, dass in <code>precourse</code> nur zwei verschiedene Werte vorkommen und deshalb einen Faktor mit zwei Stufen generiert.</p>
-<p>In der Praxis würden wir direkt nach dem Einlesen entscheiden, ob eine Variable ein Faktor ist oder nicht, und folgendes schreiben, wenn wir sie in einen Faktor umwandeln wollen:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>precourse <span class="ot">=</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>precourse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Hier weisen wir der <code>precourse</code>-Variable sie selbst als Faktor zu und <strong>?berschreiben</strong> sie so.</p>
-</section>
-<section id="pakete-installieren-und-laden" class="level2">
-<h2 class="anchored" data-anchor-id="pakete-installieren-und-laden">Pakete installieren und laden</h2>
-<p>R ist eine Programmiersprache, die wie viele andere auch von zusätzlichen Paketen, die von der Community geschrieben und verwaltet werden, lebt. Für die nächste Sitzung brauchen wir ein Paket namens <code>ggplot</code>, welches wir nun installieren und laden wollen.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("ggplot2")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Wenn ihr die Installation abgeschlossen habt, ist das Paket auf eurem Computer gespeichert und ihr müsst es ab jetzt bei jedem Benutzen von R nur laden.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>In diesem Modul werden wir einige nützliche Pakete nutzen. Es ist also wichtig, zu wissen, wie man die installiert.</p>
-</section>
-<section id="indexing-und-subsetting" class="level2">
-<h2 class="anchored" data-anchor-id="indexing-und-subsetting">Indexing und Subsetting</h2>
-<p>Für einen grundlegenden Umgang mit Daten fehlt uns jetzt nur noch die Möglichkeit, unsere Daten zu filtern. Ungültige Fragebögen, Personen, die bestimmte Performancekriterien nicht erreichen, oder auch Datensätze mit technischen Fehlern müssen vor einer Analyse ausschließen.</p>
-<p>In R funktioniert das dadurch, dass wir einen Teil unseres Datensatzes aufgrund von bestimmten Kriterien auswählen können und mit diesem Teil dann weiterarbeiten. Dazu müssen wir aber zunächst klären, wie wir auf einzelne Zeilen, Spalten oder Zellen in unseren Daten zugreifen.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat<span class="sc">$</span>mot_post)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 3.0 5.4 2.1 2.8 6.8 3.5</code></pre>
-</div>
-</div>
-<p>Am häufigsten muss man in R auf bestimmte Variablen (Spalten) in den Daten zugreifen, um sie bspw. in Faktoren umzuwandeln. Wie wir bereits gesehen haben, macht man das mit einem <code>$</code> gefolgt von dem Namen der Variable. Mit der <code>head()</code>-Funktion geben wir nur die ersten paar Werte aus (es gibt auch eine <code>tail()</code>-Funktion für die letzten paar Werte).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dat[<span class="dv">1</span>, <span class="dv">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1</code></pre>
-</div>
-</div>
-<p>Wenn wir auf einzelne Zellen zugreifen wollen, schreiben wir eckige Klammern mit der Zeilennummer, gefolgt von einem Komma und der Spaltennummer. Hier greifen wir also auf die erste Zeile der vierten Spalte (subject_nr) zu, geben uns also die subject-ID der ersten Person im Datensatz zurück. Die erste ID ist erwartungsgemäß 1.</p>
-<p>Lassen wir entweder die Zeilennummer oder die Spaltennummer weg, bekommen wir die ganze Zeile bzw. Spalte zurück.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat[, <span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 3.0 5.4 2.1 2.8 6.8 3.5</code></pre>
-</div>
-</div>
-<p>Diese Zeile macht also genau das gleiche wie die Zeile zwei Chunks weiter oben. Besonders hilfreich ist aber die Möglichkeit, nur bestimmte Zeilen auszuwählen. Um damit unseren Datensatz zu filtern, brauchen wir aber noch eine Grundlage.</p>
-<section id="vergleiche" class="level3">
-<h3 class="anchored" data-anchor-id="vergleiche">Vergleiche</h3>
-<p>In R lassen sich wie in vielen anderen Sprachen auch Variablen und Werte vergleichen. Ein Beispiel wäre der Test auf Gleichheit.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">^</span> <span class="dv">3</span> <span class="sc">==</span> <span class="dv">8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-</div>
-<p>Mit dem doppelten Gleichheitszeichen können wir diesen Gleichheitsvergleich ausführen. Zurück bekommen wir einen sogenannten booleschen Wert, auch Wahrheitswert genannt. Dieser hat zwei mögliche Zustände: Entweder der Vergleich ist wahr (TRUE) oder er ist falsch (FALSE). In R kann man auch selbst boolesche Werte mit <code>TRUE</code> oder <code>T</code> bzw. <code>FALSE</code> oder <code>F</code> schreiben.</p>
-<p>Vergleiche funktionieren auch mit Vektoren und Datensätzen.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">^</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">==</span> <span class="dv">8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE FALSE  TRUE FALSE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat <span class="sc">==</span> <span class="st">"Ohne"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     precourse mot_pre mot_post subjectNr
+                <section id="klinmeth-vorkurs---r-sprache-und-variablentypen" 
+ class="level1">
+                    <h1>KlinMeth-Vorkurs - R-Sprache und Variablentypen</h1>
+                    <p>
+                        Heute wollen wir R ein bisschen näher kennenlernen.
+                        Technisch gesehen ist R zwar eine Programmiersprache,
+                        aber für unsere Zwecke müssen wir nicht allzu tief ins
+                        Programmieren einsteigen.
+                    </p>
+                    <p>
+                        Erstmal könnt ihr R wie einen Taschenrechner benutzen.
+                        Alle Grundrechenarten funktionieren (mal mit dem
+                        Sternchen * und geteilt mit dem Schrägstrich /).
+                    </p>
+                    <div class="cell">
+                        <div class="sourceCode cell-code" id="cb1">
+                            <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">+</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                        </div>
+                        <div class="cell-output cell-output-stdout">
+                            <pre><code>[1] 9</code></pre>
+                        </div>
+                        <div class="sourceCode cell-code" id="cb3">
+                            <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">-</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                        </div>
+                        <div class="cell-output cell-output-stdout">
+                            <pre><code>[1] 1</code></pre>
+                        </div>
+                        <div class="sourceCode cell-code" id="cb5">
+                            <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">*</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                        </div>
+                        <div class="cell-output cell-output-stdout">
+                            <pre><code>[1] 20</code></pre>
+                        </div>
+                        <div class="sourceCode cell-code" id="cb7">
+                            <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">/</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                        </div>
+                        <div class="cell-output cell-output-stdout">
+                            <pre><code>[1] 1.25</code></pre>
+                        </div>
+                    </div>
+                    <p>
+                        Ergebnisse von Rechnungen lassen sich zu
+                        <strong>Variablen zuweisen</strong>, um später damit
+                        weiterrechnen zu können.
+                    </p>
+                    <section id="zuweisungen" class="level2">
+                        <h2 class="anchored" data-anchor-id="zuweisungen">
+                            Zuweisungen
+                        </h2>
+                        <p>
+                            Diese Zuweisungen sind auf drei Arten möglich. Die
+                            erste Möglichkeit ist ein einfaches
+                            Gleichheitszeichen:
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb9">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="dv">3</span> <span class="sc">*</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Das Gleichheitszeichen erfüllt also anders als in
+                            der Mathematik nicht den Zweck, zwei Ausdrücke zu
+                            <strong>vergleichen</strong>, sondern den Ausdruck
+                            rechts der Variable links zuzuweisen.
+                        </p>
+                        <p>
+                            Alternativ dazu kann auch ein Pfeil geschrieben
+                            werden:
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb10">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="dv">4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Beim Pfeil wird der Ausdruck der Variable
+                            zugewiesen,
+                            <strong>auf die der Pfeil zeigt</strong>. Folgendes
+                            würde also auch funktionieren:
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb11">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span> <span class="sc">*</span> <span class="dv">4</span> <span class="ot">-&gt;</span> x3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Mit diesen Variablen lässt sich jetzt weiterrechnen.
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb12">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">/</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                            <div class="cell-output cell-output-stdout">
+                                <pre><code>[1] 6</code></pre>
+                            </div>
+                            <div class="sourceCode cell-code" id="cb14">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">*</span> x2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                            <div class="cell-output cell-output-stdout">
+                                <pre><code>[1] 144</code></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Fürs Rechnen allein brauchen wir R aber natürlich
+                            nicht. Die meisten interessanteren Features von R
+                            stecken in den vielen verfügbaren
+                            <strong>Funktionen</strong>.
+                        </p>
+                    </section>
+                    <section id="funktionen" class="level2">
+                        <h2 class="anchored" data-anchor-id="funktionen">
+                            Funktionen
+                        </h2>
+                        <p>
+                            Wir haben in der letzten Sitzung schon 5
+                            R-Funktionen kennengelernt, nämlich
+                            <code>getwd()</code>, <code>setwd()</code>,
+                            <code>read.csv()</code>,
+                            <code>read.csv2()</code> und
+                            <code>read.table()</code>. An der letzten dieser
+                            Funktionen möchte ich euch erklären, wie Funktionen
+                            funktionieren.
+                        </p>
+                        <p>
+                            Erstmal ruft man eine Funktion auf, indem man den
+                            Funktionsnamen, gefolgt von einer öffnenden und
+                            einer schlie?enden Klammer schreibt, also bspw.
+                            <code>getwd()</code>. Innerhalb der Klammern kann
+                            man der Funktion <strong>Parameter</strong> mit
+                            Kommata getrennt übergeben, falls welche benötigt
+                            werden. Um Parameter zu verstehen, rufen wir jetzt
+                            die Hilfe zu <code>read.table()</code> auf.
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb16">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>?read.table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                            <div class="cell-output cell-output-stderr">
+                                <pre><code>starte den http Server für die Hilfe fertig</code></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Unter <strong>Usage</strong> ist beschrieben, welche
+                            Parameter die Funktion annimmt. Parameter können
+                            alles Mögliche sein; Daten, Pfade, Zahlen, Grafiken
+                            etc. Die <code>read.table()</code> Funktion benötigt
+                            einen Parameter namens “file” und nimmt daneben auch
+                            noch Parameter wie “header”, “sep”, “quote”, “dec”
+                            etc. an. Was die im einzelnen alle bedeuten, ist
+                            erstmal nicht so wichtig. Wichtig ist, dass es zwei
+                            Möglichkeiten gibt, die Parameter zu setzen:
+                        </p>
+                        <ol type="1">
+                            <li>
+                                Wenn die Funktion Werte ohne Parameternamen
+                                erhält, wird angenommen, dass die Parameter in
+                                der
+                                <strong>Reihenfolge der Funktion</strong>
+                                vergeben werden.
+                                <code>read.table("test.csv", TRUE, ",")</code>
+                                würde also die Datei “test.csv” unter Annahme
+                                von Spaltennamen und einem Komma zwischen den
+                                Werten eingelesen werden.
+                            </li>
+                            <li>
+                                Wenn man ein paar Parameter überspringen möchte,
+                                die Reihenfolge der Parameter nicht im Kopf hat
+                                oder den eigenen Code verständlicher machen
+                                möchte, kann man Parameter auch mit Namen
+                                übergeben.
+                                <code>read.table(header=TRUE, sep=",",
+                                    file="test.csv")</code>
+                                macht also genau dasselbe, nur mit vertauschter
+                                Reihenfolge.
+                            </li>
+                        </ol>
+                        <p>
+                            Man kann die beiden Methoden auch mischen, sollte
+                            dann aber zuerst Parameter ohne Namen übergeben und
+                            dann die Parameter mit Namen, wie das in der letzten
+                            Sitzung passiert ist.
+                        </p>
+                        <p>
+                            Das klingt zwar erstmal alles sehr theoretisch, wir
+                            benutzen das aber bei ziemlich vielen Funktionen, es
+                            ist also essentiell. Aber keine Sorge, man gewöhnt
+                            sich schnell daran.
+                        </p>
+                        <p>
+                            Unter Usage ist übrigens auch angegeben, welche
+                            Werte die Funktion für Parameter annimmt, die wir
+                            nicht explizit setzen. Bspw. wird für den
+                            Dezimaltrenner standardmäßig ein Punkt verwendet.
+                        </p>
+                        <p>
+                            Nun wollen wir die beiden gelernten Aspekte
+                            kombinieren, indem wir Daten aus der Datei der
+                            letzten Sitzung laden und in einer Variable
+                            abspeichern.
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb18">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"motivation_precourse.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Das ist zwar Code, den wir schon aus der letzten
+                            Sitzung kennen, aber jetzt verstehen wir auch, was
+                            da eigentlich passiert.
+                        </p>
+                        <p>
+                            Schauen wir uns genauer an, was in unserer Variable
+                            <code>dat</code> so drinsteckt.
+                        </p>
+                    </section>
+                    <section id="variablentypen" class="level2">
+                        <h2 class="anchored" data-anchor-id="variablentypen">
+                            Variablentypen
+                        </h2>
+                        <p>
+                            Klickt dazu einmal auf den weißen Pfeil im blauen
+                            Kreis neben der Variable im
+                            <strong>Environment</strong>-Tab des Fensters oben
+                            rechts. So könnt ihr die Namen der einzelnen
+                            Spalten/Variablen sehen, die in
+                            <code>dat</code> vertreten sind.
+                        </p>
+                        <p>
+                            Jede dieser Variablen ist ein
+                            <strong>Vektor</strong> eines bestimmten Typs,
+                            enthält also mehrere Einträge dieses Typs. Aber was
+                            sind Typen und welche gibt es? Computer speichern
+                            Daten auf verschiedene Arten, um die Effizienz von
+                            Speicherung und Rechnungen zu erhöhen. Text wird
+                            dabei anders gespeichert als Zahlen, und Ganzzahlen
+                            nochmal anders als Kommazahlen. Das spiegelt sich
+                            auch in den hier vorhandenen Variablen wieder.
+                        </p>
+                        <ul>
+                            <li>
+                                <p>
+                                    <code>precourse</code> ist ein Vektor vom
+                                    Typ <code>chr</code>, was bedeutet, dass er
+                                    “characters” enthält, was gleichbedeutend
+                                    mit Text ist.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    <code>subjectNr</code> ist vom Typ
+                                    <code>int</code>, was f?r “integer” und
+                                    damit ganze Zahlen steht.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    Die anderen beiden Variablen sind vom Typ
+                                    <code>num</code>, enthalten also
+                                    Dezimalzahlen.
+                                </p>
+                            </li>
+                        </ul>
+                        <p>
+                            Bestimmte Analyseergebnisse unterscheiden sich je
+                            nach Variablentyp, weshalb es nicht schaden kann,
+                            zumindest Text und Zahlen auseinanderhalten zu
+                            können.
+                        </p>
+                        <p>
+                            Für statistische Analysen gibt es noch einen
+                            wichtigen Variablentyp, den wir noch nicht kennen.
+                            Wenn wir mit diskreten Variablen arbeiten, gibt es
+                            eine bestimmte Anzahl (qualitativ) unterschiedlicher
+                            Ausprägungen. Dieser Variablentyp heißt Faktor und
+                            kann in R aus anderen Variablentypen generiert
+                            werden. Dazu greifen wir nun zum ersten Mal auf eine
+                            Variable im Datensatz zu. Dazu schreiben wir den
+                            Namen des Datensatzes <code>dat</code>, gefolgt von
+                            einem $-Zeichen und dem Namen der Variable
+                            <code>precourse</code>.
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb19">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pre_fac <span class="ot">=</span> <span class="fu">factor</span>(dat<span class="sc">$</span>precourse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Wenn ihr oben rechts auf den Datentyp von
+                            <code>pre_fac</code> schaut, seht ihr da “Factor w/
+                            2 levels…”. R hat also erkannt, dass in
+                            <code>precourse</code> nur zwei verschiedene Werte
+                            vorkommen und deshalb einen Faktor mit zwei Stufen
+                            generiert.
+                        </p>
+                        <p>
+                            In der Praxis würden wir direkt nach dem Einlesen
+                            entscheiden, ob eine Variable ein Faktor ist oder
+                            nicht, und folgendes schreiben, wenn wir sie in
+                            einen Faktor umwandeln wollen:
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb20">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>precourse <span class="ot">=</span> <span class="fu">as.factor</span>(dat<span class="sc">$</span>precourse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Hier weisen wir der <code>precourse</code>-Variable
+                            sie selbst als Faktor zu und
+                            <strong>?berschreiben</strong> sie so.
+                        </p>
+                    </section>
+                    <section id="pakete-installieren-und-laden" class="level2">
+                        <h2 class="anchored" 
+ data-anchor-id="pakete-installieren-und-laden">
+                            Pakete installieren und laden
+                        </h2>
+                        <p>
+                            R ist eine Programmiersprache, die wie viele andere
+                            auch von zusätzlichen Paketen, die von der Community
+                            geschrieben und verwaltet werden, lebt. Für die
+                            nächste Sitzung brauchen wir ein Paket namens
+                            <code>ggplot</code>, welches wir nun installieren
+                            und laden wollen.
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb21">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("ggplot2")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Wenn ihr die Installation abgeschlossen habt, ist
+                            das Paket auf eurem Computer gespeichert und ihr
+                            müsst es ab jetzt bei jedem Benutzen von R nur
+                            laden.
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb22">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                        </div>
+                        <p>
+                            In diesem Modul werden wir einige nützliche Pakete
+                            nutzen. Es ist also wichtig, zu wissen, wie man die
+                            installiert.
+                        </p>
+                    </section>
+                    <section id="indexing-und-subsetting" class="level2">
+                        <h2 class="anchored" 
+ data-anchor-id="indexing-und-subsetting">
+                            Indexing und Subsetting
+                        </h2>
+                        <p>
+                            Für einen grundlegenden Umgang mit Daten fehlt uns
+                            jetzt nur noch die Möglichkeit, unsere Daten zu
+                            filtern. Ungültige Fragebögen, Personen, die
+                            bestimmte Performancekriterien nicht erreichen, oder
+                            auch Datensätze mit technischen Fehlern müssen vor
+                            einer Analyse ausschließen.
+                        </p>
+                        <p>
+                            In R funktioniert das dadurch, dass wir einen Teil
+                            unseres Datensatzes aufgrund von bestimmten
+                            Kriterien auswählen können und mit diesem Teil dann
+                            weiterarbeiten. Dazu müssen wir aber zunächst
+                            klären, wie wir auf einzelne Zeilen, Spalten oder
+                            Zellen in unseren Daten zugreifen.
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb23">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat<span class="sc">$</span>mot_post)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                            <div class="cell-output cell-output-stdout">
+                                <pre><code>[1] 3.0 5.4 2.1 2.8 6.8 3.5</code></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Am häufigsten muss man in R auf bestimmte Variablen
+                            (Spalten) in den Daten zugreifen, um sie bspw. in
+                            Faktoren umzuwandeln. Wie wir bereits gesehen haben,
+                            macht man das mit einem
+                            <code>$</code> gefolgt von dem Namen der Variable.
+                            Mit der <code>head()</code>-Funktion geben wir nur
+                            die ersten paar Werte aus (es gibt auch eine
+                            <code>tail()</code>-Funktion für die letzten paar
+                            Werte).
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb25">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dat[<span class="dv">1</span>, <span class="dv">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                            <div class="cell-output cell-output-stdout">
+                                <pre><code>[1] 1</code></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Wenn wir auf einzelne Zellen zugreifen wollen,
+                            schreiben wir eckige Klammern mit der Zeilennummer,
+                            gefolgt von einem Komma und der Spaltennummer. Hier
+                            greifen wir also auf die erste Zeile der vierten
+                            Spalte (subject_nr) zu, geben uns also die
+                            subject-ID der ersten Person im Datensatz zurück.
+                            Die erste ID ist erwartungsgemäß 1.
+                        </p>
+                        <p>
+                            Lassen wir entweder die Zeilennummer oder die
+                            Spaltennummer weg, bekommen wir die ganze Zeile bzw.
+                            Spalte zurück.
+                        </p>
+                        <div class="cell">
+                            <div class="sourceCode cell-code" id="cb27">
+                                <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat[, <span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                            </div>
+                            <div class="cell-output cell-output-stdout">
+                                <pre><code>[1] 3.0 5.4 2.1 2.8 6.8 3.5</code></pre>
+                            </div>
+                        </div>
+                        <p>
+                            Diese Zeile macht also genau das gleiche wie die
+                            Zeile zwei Chunks weiter oben. Besonders hilfreich
+                            ist aber die Möglichkeit, nur bestimmte Zeilen
+                            auszuwählen. Um damit unseren Datensatz zu filtern,
+                            brauchen wir aber noch eine Grundlage.
+                        </p>
+                        <section id="vergleiche" class="level3">
+                            <h3 class="anchored" data-anchor-id="vergleiche">
+                                Vergleiche
+                            </h3>
+                            <p>
+                                In R lassen sich wie in vielen anderen Sprachen
+                                auch Variablen und Werte vergleichen. Ein
+                                Beispiel wäre der Test auf Gleichheit.
+                            </p>
+                            <div class="cell">
+                                <div class="sourceCode cell-code" id="cb29">
+                                    <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">^</span> <span class="dv">3</span> <span class="sc">==</span> <span class="dv">8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                                </div>
+                                <div class="cell-output cell-output-stdout">
+                                    <pre><code>[1] TRUE</code></pre>
+                                </div>
+                            </div>
+                            <p>
+                                Mit dem doppelten Gleichheitszeichen können wir
+                                diesen Gleichheitsvergleich ausführen. Zurück
+                                bekommen wir einen sogenannten booleschen Wert,
+                                auch Wahrheitswert genannt. Dieser hat zwei
+                                mögliche Zustände: Entweder der Vergleich ist
+                                wahr (TRUE) oder er ist falsch (FALSE). In R
+                                kann man auch selbst boolesche Werte mit
+                                <code>TRUE</code> oder <code>T</code> bzw.
+                                <code>FALSE</code> oder
+                                <code>F</code> schreiben.
+                            </p>
+                            <p>
+                                Vergleiche funktionieren auch mit Vektoren und
+                                Datensätzen.
+                            </p>
+                            <div class="cell">
+                                <div class="sourceCode cell-code" id="cb31">
+                                    <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">^</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">==</span> <span class="dv">8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                                </div>
+                                <div class="cell-output cell-output-stdout">
+                                    <pre><code>[1] FALSE FALSE  TRUE FALSE</code></pre>
+                                </div>
+                                <div class="sourceCode cell-code" id="cb33">
+                                    <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat <span class="sc">==</span> <span class="st">"Ohne"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                                </div>
+                                <div class="cell-output cell-output-stdout">
+                                    <pre><code>     precourse mot_pre mot_post subjectNr
 [1,]      TRUE   FALSE    FALSE     FALSE
 [2,]     FALSE   FALSE    FALSE     FALSE
 [3,]     FALSE   FALSE    FALSE     FALSE
 [4,]      TRUE   FALSE    FALSE     FALSE
 [5,]     FALSE   FALSE    FALSE     FALSE
 [6,]     FALSE   FALSE    FALSE     FALSE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat<span class="sc">$</span>precourse <span class="sc">==</span> <span class="st">"Ohne"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]  TRUE FALSE FALSE  TRUE FALSE FALSE</code></pre>
-</div>
-</div>
-<p>Der erste Vergleich zeigt uns, dass nur 2 hoch 3 8 ergibt. Im zweiten Vergleich schauen wir, welche Werte im Datensatz “Ohne” sind. Dabei vergleichen wir aber alle Spalten mit “Ohne” was natürlich keinen Sinn ergibt. Deshalb schauen wir uns im letzten Vergleich nur die <code>precourse</code>-Spalte an. Der Code in der letzten Zeile ist sehr nützlich zum Filtern von Datensätzen. Ihr könnt schon einmal darüber nachdenken, wie das funktionieren könnte.</p>
-<p>Es gibt natürlich auch noch andere Vergleichsmöglichkeiten, gerade wenn man mit Zahlen arbeitet:</p>
-<ul>
-<li><p><code>!=</code> gibt <code>TRUE</code> zurück, wenn zwei Werte nicht gleich sind (<code>8 != 9</code> =&gt; <code>TRUE</code>)</p></li>
-<li><p><code>&gt;</code> gibt <code>TRUE</code> zurück, wenn der linke Wert größer als der rechte ist (<code>9 &gt; 8</code> =&gt; <code>TRUE</code>)</p></li>
-<li><p><code>&lt;</code> gibt <code>TRUE</code> zurück, wenn der linke Wert kleiner als der rechte ist (<code>8 &lt; 9</code> =&gt; <code>TRUE</code>)</p></li>
-<li><p><code>&gt;=</code> gibt <code>TRUE</code> zurück, wenn der linke Wert größer als oder gleich dem rechten ist (<code>9 &gt;= 9</code> =&gt; <code>TRUE</code>)</p></li>
-<li><p><code>&lt;=</code> gibt <code>TRUE</code> zurück, wenn der linke Wert kleiner als oder gleich dem rechten ist (<code style="caret-color: white;">8 &lt;= 8</code> =&gt; <code style="caret-color: white;">TRUE</code>)</p></li>
-</ul>
-<p>Für uns reicht aber meistens ein Vergleich auf Gleichheit. Eine nützliche Sache gibt es noch; Die Anzahl an <code>TRUE</code>-Werten lassen sich leicht zählen, sodass wir herausfinden können, wie viele Leute es gibt, die den Vorkurs nicht besucht haben:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(dat<span class="sc">$</span>precourse <span class="sc">==</span> <span class="st">"Ohne"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 250</code></pre>
-</div>
-</div>
-</section>
-<section id="subsetting" class="level3">
-<h3 class="anchored" data-anchor-id="subsetting">Subsetting</h3>
-<p>Mit unserem neuen Wissen über Vergleiche können wir jetzt die Daten nach Leuten filtern, die den Vorkurs nicht besucht haben.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dat_ohne <span class="ot">=</span> dat[dat<span class="sc">$</span>precourse <span class="sc">==</span> <span class="st">"Ohne"</span>, ]</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>dat_ohne[dat_ohne<span class="sc">$</span>precourse <span class="sc">!=</span> <span class="st">"Ohne"</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] precourse mot_pre   mot_post  subjectNr
+                                </div>
+                                <div class="sourceCode cell-code" id="cb35">
+                                    <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat<span class="sc">$</span>precourse <span class="sc">==</span> <span class="st">"Ohne"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                                </div>
+                                <div class="cell-output cell-output-stdout">
+                                    <pre><code>[1]  TRUE FALSE FALSE  TRUE FALSE FALSE</code></pre>
+                                </div>
+                            </div>
+                            <p>
+                                Der erste Vergleich zeigt uns, dass nur 2 hoch 3
+                                8 ergibt. Im zweiten Vergleich schauen wir,
+                                welche Werte im Datensatz “Ohne” sind. Dabei
+                                vergleichen wir aber alle Spalten mit “Ohne” was
+                                natürlich keinen Sinn ergibt. Deshalb schauen
+                                wir uns im letzten Vergleich nur die
+                                <code>precourse</code>-Spalte an. Der Code in
+                                der letzten Zeile ist sehr nützlich zum Filtern
+                                von Datensätzen. Ihr könnt schon einmal darüber
+                                nachdenken, wie das funktionieren könnte.
+                            </p>
+                            <p>
+                                Es gibt natürlich auch noch andere
+                                Vergleichsmöglichkeiten, gerade wenn man mit
+                                Zahlen arbeitet:
+                            </p>
+                            <ul>
+                                <li>
+                                    <p>
+                                        <code>!=</code> gibt
+                                        <code>TRUE</code> zurück, wenn zwei
+                                        Werte nicht gleich sind (<code>8 != 9</code>
+                                        =&gt; <code>TRUE</code>)
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <code>&gt;</code> gibt
+                                        <code>TRUE</code> zurück, wenn der linke
+                                        Wert größer als der rechte ist (<code>9 &gt; 8</code>
+                                        =&gt; <code>TRUE</code>)
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <code>&lt;</code> gibt
+                                        <code>TRUE</code> zurück, wenn der linke
+                                        Wert kleiner als der rechte ist (<code>8 &lt; 9</code>
+                                        =&gt; <code>TRUE</code>)
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <code>&gt;=</code> gibt
+                                        <code>TRUE</code> zurück, wenn der linke
+                                        Wert größer als oder gleich dem rechten
+                                        ist (<code>9 &gt;= 9</code> =&gt;
+                                        <code>TRUE</code>)
+                                    </p>
+                                </li>
+                                <li>
+                                    <p>
+                                        <code>&lt;=</code> gibt
+                                        <code>TRUE</code> zurück, wenn der linke
+                                        Wert kleiner als oder gleich dem rechten
+                                        ist (<code style="caret-color: white">8 &lt;= 8</code>
+                                        =&gt;
+                                        <code style="caret-color: white">TRUE</code>)
+                                    </p>
+                                </li>
+                            </ul>
+                            <p>
+                                Für uns reicht aber meistens ein Vergleich auf
+                                Gleichheit. Eine nützliche Sache gibt es noch;
+                                Die Anzahl an
+                                <code>TRUE</code>-Werten lassen sich leicht
+                                zählen, sodass wir herausfinden können, wie
+                                viele Leute es gibt, die den Vorkurs nicht
+                                besucht haben:
+                            </p>
+                            <div class="cell">
+                                <div class="sourceCode cell-code" id="cb37">
+                                    <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(dat<span class="sc">$</span>precourse <span class="sc">==</span> <span class="st">"Ohne"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                                </div>
+                                <div class="cell-output cell-output-stdout">
+                                    <pre><code>[1] 250</code></pre>
+                                </div>
+                            </div>
+                        </section>
+                        <section id="subsetting" class="level3">
+                            <h3 class="anchored" data-anchor-id="subsetting">
+                                Subsetting
+                            </h3>
+                            <p>
+                                Mit unserem neuen Wissen über Vergleiche können
+                                wir jetzt die Daten nach Leuten filtern, die den
+                                Vorkurs nicht besucht haben.
+                            </p>
+                            <div class="cell">
+                                <div class="sourceCode cell-code" id="cb39">
+                                    <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dat_ohne <span class="ot">=</span> dat[dat<span class="sc">$</span>precourse <span class="sc">==</span> <span class="st">"Ohne"</span>, ]</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>dat_ohne[dat_ohne<span class="sc">$</span>precourse <span class="sc">!=</span> <span class="st">"Ohne"</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                                </div>
+                                <div class="cell-output cell-output-stdout">
+                                    <pre><code>[1] precourse mot_pre   mot_post  subjectNr
 &lt;0 Zeilen&gt; (oder row.names mit Länge 0)</code></pre>
-</div>
-</div>
-<p>Wenn wir einen Vektor mit booleschen Werten an die Stelle schreiben, wo sonst die Zeilennummer steht, wählt R einfach alle Spalten aus, wo der boolesche Wert <code>TRUE</code> ist. So können wir nur die Zeilen mit Leuten auswählen, wo Leute den Vorkurs nicht besucht haben.</p>
-<p>Dieser Code ist zugegebenermaßen ein bisschen unschön. Zum Glück gibt es in R auch eine Funktion, die genau das gleiche macht, aber ein bisschen übersichtlicher ist.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>dat_first_100 <span class="ot">=</span> <span class="fu">subset</span>(dat, dat<span class="sc">$</span>subjectNr <span class="sc">&lt;=</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Mit <code>subset()</code> können wir auch nur bestimmte Spalten auswählen.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>dat_no_pre <span class="ot">=</span> <span class="fu">subset</span>(dat, <span class="at">select=</span><span class="fu">c</span>(<span class="st">"precourse"</span>, <span class="st">"mot_post"</span>, <span class="st">"subjectNr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Jetzt haben wir alle wichtigen Funktionen zum Umgang mit Daten kennengelernt. In der nächsten Sitzung werden wir uns ggplot anschauen, um schöne Grafiken erstellen zu können.</p>
-</section>
-</section>
-</section>
+                                </div>
+                            </div>
+                            <p>
+                                Wenn wir einen Vektor mit booleschen Werten an
+                                die Stelle schreiben, wo sonst die Zeilennummer
+                                steht, wählt R einfach alle Spalten aus, wo der
+                                boolesche Wert <code>TRUE</code> ist. So können
+                                wir nur die Zeilen mit Leuten auswählen, wo
+                                Leute den Vorkurs nicht besucht haben.
+                            </p>
+                            <p>
+                                Dieser Code ist zugegebenermaßen ein bisschen
+                                unschön. Zum Glück gibt es in R auch eine
+                                Funktion, die genau das gleiche macht, aber ein
+                                bisschen übersichtlicher ist.
+                            </p>
+                            <div class="cell">
+                                <div class="sourceCode cell-code" id="cb41">
+                                    <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>dat_first_100 <span class="ot">=</span> <span class="fu">subset</span>(dat, dat<span class="sc">$</span>subjectNr <span class="sc">&lt;=</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                                </div>
+                            </div>
+                            <p>
+                                Mit <code>subset()</code> können wir auch nur
+                                bestimmte Spalten auswählen.
+                            </p>
+                            <div class="cell">
+                                <div class="sourceCode cell-code" id="cb42">
+                                    <pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>dat_no_pre <span class="ot">=</span> <span class="fu">subset</span>(dat, <span class="at">select=</span><span class="fu">c</span>(<span class="st">"precourse"</span>, <span class="st">"mot_post"</span>, <span class="st">"subjectNr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+                                </div>
+                            </div>
+                            <p>
+                                Jetzt haben wir alle wichtigen Funktionen zum
+                                Umgang mit Daten kennengelernt. In der nächsten
+                                Sitzung werden wir uns ggplot anschauen, um
+                                schöne Grafiken erstellen zu können.
+                            </p>
+                        </section>
+                    </section>
+                </section>
+            </main>
+            <!-- /main column -->
+            <script id="quarto-html-after-body" type="application/javascript">
+                window.document.addEventListener(
+                    "DOMContentLoaded",
+                    function (event) {
+                        const toggleBodyColorMode = (bsSheetEl) => {
+                            const mode = bsSheetEl.getAttribute("data-mode");
+                            const bodyEl =
+                                window.document.querySelector("body");
+                            if (mode === "dark") {
+                                bodyEl.classList.add("quarto-dark");
+                                bodyEl.classList.remove("quarto-light");
+                            } else {
+                                bodyEl.classList.add("quarto-light");
+                                bodyEl.classList.remove("quarto-dark");
+                            }
+                        };
+                        const toggleBodyColorPrimary = () => {
+                            const bsSheetEl = window.document.querySelector(
+                                "link#quarto-bootstrap"
+                            );
+                            if (bsSheetEl) {
+                                toggleBodyColorMode(bsSheetEl);
+                            }
+                        };
+                        toggleBodyColorPrimary();
+                        const icon = "";
+                        const anchorJS = new window.AnchorJS();
+                        anchorJS.options = {
+                            placement: "right",
+                            icon: icon,
+                        };
+                        anchorJS.add(".anchored");
+                        const isCodeAnnotation = (el) => {
+                            for (const clz of el.classList) {
+                                if (clz.startsWith("code-annotation-")) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        };
+                        const clipboard = new window.ClipboardJS(
+                            ".code-copy-button",
+                            {
+                                text: function (trigger) {
+                                    const codeEl =
+                                        trigger.previousElementSibling.cloneNode(
+                                            true
+                                        );
+                                    for (const childEl of codeEl.children) {
+                                        if (isCodeAnnotation(childEl)) {
+                                            childEl.remove();
+                                        }
+                                    }
+                                    return codeEl.innerText;
+                                },
+                            }
+                        );
+                        clipboard.on("success", function (e) {
+                            // button target
+                            const button = e.trigger;
+                            // don't keep focus
+                            button.blur();
+                            // flash "checked"
+                            button.classList.add("code-copy-button-checked");
+                            var currentTitle = button.getAttribute("title");
+                            button.setAttribute("title", "Copied!");
+                            let tooltip;
+                            if (window.bootstrap) {
+                                button.setAttribute(
+                                    "data-bs-toggle",
+                                    "tooltip"
+                                );
+                                button.setAttribute(
+                                    "data-bs-placement",
+                                    "left"
+                                );
+                                button.setAttribute("data-bs-title", "Copied!");
+                                tooltip = new bootstrap.Tooltip(button, {
+                                    trigger: "manual",
+                                    customClass: "code-copy-button-tooltip",
+                                    offset: [0, -8],
+                                });
+                                tooltip.show();
+                            }
+                            setTimeout(function () {
+                                if (tooltip) {
+                                    tooltip.hide();
+                                    button.removeAttribute("data-bs-title");
+                                    button.removeAttribute("data-bs-toggle");
+                                    button.removeAttribute("data-bs-placement");
+                                }
+                                button.setAttribute("title", currentTitle);
+                                button.classList.remove(
+                                    "code-copy-button-checked"
+                                );
+                            }, 1000);
+                            // clear code selection
+                            e.clearSelection();
+                        });
+                        function tippyHover(el, contentFn) {
+                            const config = {
+                                allowHTML: true,
+                                content: contentFn,
+                                maxWidth: 500,
+                                delay: 100,
+                                arrow: false,
+                                appendTo: function (el) {
+                                    return el.parentElement;
+                                },
+                                interactive: true,
+                                interactiveBorder: 10,
+                                theme: "quarto",
+                                placement: "bottom-start",
+                            };
+                            window.tippy(el, config);
+                        }
+                        const noterefs = window.document.querySelectorAll(
+                            'a[role="doc-noteref"]'
+                        );
+                        for (var i = 0; i < noterefs.length; i++) {
+                            const ref = noterefs[i];
+                            tippyHover(ref, function () {
+                                // use id or data attribute instead here
+                                let href =
+                                    ref.getAttribute("data-footnote-href") ||
+                                    ref.getAttribute("href");
+                                try {
+                                    href = new URL(href).hash;
+                                } catch {}
+                                const id = href.replace(/^#\/?/, "");
+                                const note = window.document.getElementById(id);
+                                return note.innerHTML;
+                            });
+                        }
+                        let selectedAnnoteEl;
+                        const selectorForAnnotation = (cell, annotation) => {
+                            let cellAttr = 'data-code-cell="' + cell + '"';
+                            let lineAttr =
+                                'data-code-annotation="' + annotation + '"';
+                            const selector =
+                                "span[" + cellAttr + "][" + lineAttr + "]";
+                            return selector;
+                        };
+                        const selectCodeLines = (annoteEl) => {
+                            const doc = window.document;
+                            const targetCell =
+                                annoteEl.getAttribute("data-target-cell");
+                            const targetAnnotation = annoteEl.getAttribute(
+                                "data-target-annotation"
+                            );
+                            const annoteSpan = window.document.querySelector(
+                                selectorForAnnotation(
+                                    targetCell,
+                                    targetAnnotation
+                                )
+                            );
+                            const lines = annoteSpan
+                                .getAttribute("data-code-lines")
+                                .split(",");
+                            const lineIds = lines.map((line) => {
+                                return targetCell + "-" + line;
+                            });
+                            let top = null;
+                            let height = null;
+                            let parent = null;
+                            if (lineIds.length > 0) {
+                                //compute the position of the single el (top and bottom and make a div)
+                                const el = window.document.getElementById(
+                                    lineIds[0]
+                                );
+                                top = el.offsetTop;
+                                height = el.offsetHeight;
+                                parent = el.parentElement.parentElement;
+                                if (lineIds.length > 1) {
+                                    const lastEl =
+                                        window.document.getElementById(
+                                            lineIds[lineIds.length - 1]
+                                        );
+                                    const bottom =
+                                        lastEl.offsetTop + lastEl.offsetHeight;
+                                    height = bottom - top;
+                                }
+                                if (
+                                    top !== null &&
+                                    height !== null &&
+                                    parent !== null
+                                ) {
+                                    // cook up a div (if necessary) and position it
+                                    let div = window.document.getElementById(
+                                        "code-annotation-line-highlight"
+                                    );
+                                    if (div === null) {
+                                        div =
+                                            window.document.createElement(
+                                                "div"
+                                            );
+                                        div.setAttribute(
+                                            "id",
+                                            "code-annotation-line-highlight"
+                                        );
+                                        div.style.position = "absolute";
+                                        parent.appendChild(div);
+                                    }
+                                    div.style.top = top - 2 + "px";
+                                    div.style.height = height + 4 + "px";
+                                    let gutterDiv =
+                                        window.document.getElementById(
+                                            "code-annotation-line-highlight-gutter"
+                                        );
+                                    if (gutterDiv === null) {
+                                        gutterDiv =
+                                            window.document.createElement(
+                                                "div"
+                                            );
+                                        gutterDiv.setAttribute(
+                                            "id",
+                                            "code-annotation-line-highlight-gutter"
+                                        );
+                                        gutterDiv.style.position = "absolute";
+                                        const codeCell =
+                                            window.document.getElementById(
+                                                targetCell
+                                            );
+                                        const gutter = codeCell.querySelector(
+                                            ".code-annotation-gutter"
+                                        );
+                                        gutter.appendChild(gutterDiv);
+                                    }
+                                    gutterDiv.style.top = top - 2 + "px";
+                                    gutterDiv.style.height = height + 4 + "px";
+                                }
+                                selectedAnnoteEl = annoteEl;
+                            }
+                        };
+                        const unselectCodeLines = () => {
+                            const elementsIds = [
+                                "code-annotation-line-highlight",
+                                "code-annotation-line-highlight-gutter",
+                            ];
+                            elementsIds.forEach((elId) => {
+                                const div =
+                                    window.document.getElementById(elId);
+                                if (div) {
+                                    div.remove();
+                                }
+                            });
+                            selectedAnnoteEl = undefined;
+                        };
+                        // Attach click handler to the DT
+                        const annoteDls = window.document.querySelectorAll(
+                            "dt[data-target-cell]"
+                        );
+                        for (const annoteDlNode of annoteDls) {
+                            annoteDlNode.addEventListener("click", (event) => {
+                                const clickedEl = event.target;
+                                if (clickedEl !== selectedAnnoteEl) {
+                                    unselectCodeLines();
+                                    const activeEl =
+                                        window.document.querySelector(
+                                            "dt[data-target-cell].code-annotation-active"
+                                        );
+                                    if (activeEl) {
+                                        activeEl.classList.remove(
+                                            "code-annotation-active"
+                                        );
+                                    }
+                                    selectCodeLines(clickedEl);
+                                    clickedEl.classList.add(
+                                        "code-annotation-active"
+                                    );
+                                } else {
+                                    // Unselect the line
+                                    unselectCodeLines();
+                                    clickedEl.classList.remove(
+                                        "code-annotation-active"
+                                    );
+                                }
+                            });
+                        }
+                        const findCites = (el) => {
+                            const parentEl = el.parentElement;
+                            if (parentEl) {
+                                const cites = parentEl.dataset.cites;
+                                if (cites) {
+                                    return {
+                                        el,
+                                        cites: cites.split(" "),
+                                    };
+                                } else {
+                                    return findCites(el.parentElement);
+                                }
+                            } else {
+                                return undefined;
+                            }
+                        };
+                        var bibliorefs = window.document.querySelectorAll(
+                            'a[role="doc-biblioref"]'
+                        );
+                        for (var i = 0; i < bibliorefs.length; i++) {
+                            const ref = bibliorefs[i];
+                            const citeInfo = findCites(ref);
+                            if (citeInfo) {
+                                tippyHover(citeInfo.el, function () {
+                                    var popup =
+                                        window.document.createElement("div");
+                                    citeInfo.cites.forEach(function (cite) {
+                                        var citeDiv =
+                                            window.document.createElement(
+                                                "div"
+                                            );
+                                        citeDiv.classList.add("hanging-indent");
+                                        citeDiv.classList.add("csl-entry");
+                                        var biblioDiv =
+                                            window.document.getElementById(
+                                                "ref-" + cite
+                                            );
+                                        if (biblioDiv) {
+                                            citeDiv.innerHTML =
+                                                biblioDiv.innerHTML;
+                                        }
+                                        popup.appendChild(citeDiv);
+                                    });
+                                    return popup.innerHTML;
+                                });
+                            }
+                        }
+                    }
+                );
+            </script>
+        </div>
+        <!-- /content -->
 
-</main>
-<!-- /main column -->
-<script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
-      }
-    }
-    return false;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  function tippyHover(el, contentFn) {
-    const config = {
-      allowHTML: true,
-      content: contentFn,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start'
-    };
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
-      });
-    }
-  }
-});
-</script>
-</div> <!-- /content -->
-
-
-
-<script src="Sitzung2_files/libs/quarto-html/zenscroll-min.js"></script>
-</body></html>
+        <script src="Sitzung2_files/libs/quarto-html/zenscroll-min.js"></script>
+    </body>
+</html>
