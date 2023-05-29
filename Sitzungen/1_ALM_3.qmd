@@ -1,0 +1,220 @@
+---
+title: "Datenanalyse ALM - Messwiederholung"
+author: "YH"
+date: '2022-05-16'
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
+---
+
+# Allgemeines Lineares Modell - Messwiederholung
+
+In den letzten Sitzungen haben wir schon einige wichtige Eckpunkte des ALM (wieder) kennen gelernt. Wir haben aber leider noch ignoriert, dass wir in unserem Design eine wichtige Besonderheit haben: eine Messwiederholung. Jede Person durchläuft nämlich sowohl eine Prä- als auch eine Post-Messung. Heute wollen wir versuchen, das akkurater zu analysieren.
+
+## Vorbereitung
+
+Wie gehabt laden wir Pakete und Daten.
+
+```{r}
+#| warning: false
+library(ggplot2)
+library(psych)
+library(Hmisc)
+library(car)
+library(lmtest)
+library(effectsize)
+library(rcompanion)
+library(tidyr)
+library(predictmeans)
+library(ez)
+library(lme4)
+```
+
+Auch hier bitte darauf achten, dass das Verzeichnis für die Datei stimmt.
+
+```{r}
+#setwd("Sitzungen")
+dat_1 <- read.csv(file = "Dat_VR_Anxiety_lm1.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
+
+# Characterstrings als Faktoren definieren
+dat_1$Gruppe <- as.factor(dat_1$Gruppe) 
+dat_1$Gruppe <- factor(dat_1$Gruppe, levels = c("in_virtuo", "in_sensu", "Warteliste")) 
+
+```
+
+## Transformation der Daten ins Long-Format
+
+Heute kommen wir auf einen wichtigen Inhalt des Vorkurses, die Datentransformation, zurück.
+
+Nur durch eine Transformation ins Long-Format kann jeder der Messzeitpunkte ein Prädiktor sein. Jeder Prädiktor muss eine Variable in einer Spalte sein =\> damit kommt jede Person zwei Mal vor, d.h. in zwei Zeilen.
+
+```{r}
+dat_1_long <- as.data.frame(pivot_longer(dat_1, cols = c(Pre, Post), names_to = "Zeitpunkt",
+values_to = "SP_score", values_drop_na = FALSE))
+dat_1_long$Zeitpunkt <- as.factor(dat_1_long$Zeitpunkt)
+dat_1_long$Zeitpunkt <- factor(dat_1_long$Zeitpunkt, levels = c("Pre", "Post")) 
+dat_1_long$ID <- as.factor(dat_1_long$ID)
+
+```
+
+## Visuelle Analyse
+
+```{r}
+# Soziale Phobie als Kriterium/outcome
+
+print(ggplot(dat_1_long, aes(x=Zeitpunkt, y=SP_score)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  facet_wrap(~Gruppe)+
+  ylab("Score Soziale Phobie") + 
+  xlab("Zeitpunkt") +
+  ggtitle("Veränderung Soziale Phobie Prä zu Post"))
+
+print(ggplot(dat_1_long, aes(x=Zeitpunkt, y=SP_score, group = ID)) + 
+  facet_wrap(~Gruppe)+
+  geom_line(aes(color= ID), show.legend = FALSE) +
+  ylab("Score Soziale Phobie") + 
+  xlab("Zeitpunkt") +
+  ggtitle("Veränderung Soziale Phobie Prä zu Post"))
+
+```
+
+### Deskriptive Analyse
+
+```{r}
+descriptives <- describeBy(SP_score ~ Zeitpunkt + Gruppe, mat = TRUE, data = dat_1_long)
+descriptives
+
+#### Namen der Faktoren in Ergebnimatrix einfuegen
+names(descriptives)[names(descriptives) == "group1"] <- "Zeitpunkt"
+names(descriptives)[names(descriptives) == "group2"] <- "Bedingung"
+#### Konfidenzintervall ausrechnen
+descriptives$ci_95 <- descriptives$se*1.96
+
+descriptives$Zeitpunkt <- factor(descriptives$Zeitpunkt, levels = c("Pre", "Post"))
+descriptives$Bedingung <- factor(descriptives$Bedingung, levels = c("in_virtuo", "in_sensu", "Warteliste"))
+
+#### Grafik machen
+pd <- position_dodge(0.3) # zum Versetzen der Punkte
+
+ggplot(descriptives, aes(x=Zeitpunkt, y=mean, group = Bedingung)) + 
+   geom_errorbar(width=.2, aes(ymin=mean-ci_95, ymax=mean+ci_95), position = pd) +
+  geom_point(aes(color = Bedingung), size=2, position = pd) +
+    geom_line(aes(linetype=Bedingung, color = Bedingung), position = pd) +
+    ggtitle("Mittelwerte plus/minus 95% Konfidenzintervall")+
+    theme_classic()
+```
+
+## Modell mit Zeitpunkt als Prädiktor
+
+Behandlung und Zeitpunkt sowie ihre Interaktion sagen Score in sozialer Phobie vorher.
+
+### Schritt 1: Allgemeines lineares Modell anpassen
+
+**ACHTUNG: DAS FOLGENDE IST FALSCH UND DIENT NUR DER VERANSCHAULICHUNG!**
+
+```{r}
+# Modelldefinition
+contrasts(dat_1_long$Gruppe) <- contr.helmert(3)
+M1 <- lm(SP_score ~ Gruppe * Zeitpunkt, data = dat_1_long)
+
+# Schaetzung der Parameter
+summary(M1)
+
+# ANOVA zur Bestimmung der Quadratsummen für die beiden Prädiktoren
+Anova(M1)
+```
+
+Ungeachtet dem obigen Disclaimer steckt in diesem Code etwas, das wir so in diesem Modul noch nicht hatten. `Gruppe * Zeitpunkt` bei der Modellaufstellung bedeutet, dass R jeweils die Faktoren Gruppe und Zeitpunkt und ihre Interaktion ins Modell einschließen soll. Dies ist eine Kurzschreibweise für `Gruppe + Zeitpunkt + Gruppe:Zeitpunkt`.
+
+Bei der Modellaufstellung signalisiert also eigentlich ein Doppelpunkt zwischen zwei Prädiktornamen ihre Interaktion, aber da man so oft Haupt- und Interaktionseffekte einschließen möchte, gibt es die Kurzschreibweise mit dem `*`.
+
+Bei diesem neuen Modell läuft die Interpretation anders. Da der Zeitpunkt jetzt auch ein Faktor ist, beziehen sich die Koeffizienten nicht mehr auf die Postwerte oder die Veränderung, sondern auf die Prä-Werte. Die Treatment-Parameter `Gruppe1` und `Gruppe2` für die Gruppenunterschiede beziehen sich jetzt also auf die Scores zu der Zeit, bei der noch kein Treatment stattgefunden hat. Das erklärt zum Beispiel, warum es hier keine signifikanten Unterschiede gibt.
+
+Wir bekommen nun auch einen Koeffizienten für den Zeitpunkt. Dieser bezieht sich auf den Effekt im Mittel über die Gruppen hinweg. Das liegt daran, dass die Treatmentgruppe kontrastkodiert ist.
+
+Die eigentlichen Gruppenunterschiede stecken jetzt in den Interaktionsparametern, die sich genauso interpretieren lassen, wie wir es von der Kontrastkodierung schon kennen, also bspw. "Wenn es um den Post-Zeitpunkt geht, dann gibt es Unterschiede zwischen Ausprägung x und y im Score".
+
+### Kritisches Problem des Modells: Abhängigkeit der Messungen (Check 3)
+
+```{r}
+# Graphik der Zusammenhänge der Residuen
+acf(M1$residuals)
+
+# Test für Autokorrelation 1.Ordnung
+durbinWatsonTest(M1) # Test für eine Autokorrelation 1.Ordnung
+
+# Korrelation Prä-Post Messung
+cor(dat_1$Pre, dat_1$Post)
+
+```
+
+Der Test auf Autokorrelation wird signifikant, was bedeutet, dass hier eine Autokorrelation vorliegt. Diese Autokorrelation von ca. 0.36 zwigt sich auch im entsprechenden Plot im zweiten Balken (bei lag = 1).
+
+Um diese Autokorrelation zu vermeiden gibt es mehrere Möglichkeiten. Man kann bspw. auf Messwiederholungsvarianzanalysen ausweichen.
+
+## Quick fix: Messwiederholungsvarianzanalyse
+
+```{r}
+# Option 1: Varianzanalyse
+## Definition Kontraste
+contrasts(dat_1_long$Gruppe) <- contr.helmert(3)
+
+## Berechnung Varianzanalyse
+aov_m2 <- ezANOVA(dat_1_long, dv=SP_score, wid = ID, within = Zeitpunkt, between = Gruppe,  detailed = TRUE, return_aov = TRUE)
+aov_m2
+```
+
+Hier gibt es aber unter anderem das große Problem, dass die Fähigkeit, gerichtete Zusammenhänge zu testen, verloren geht.
+
+## Einfachere Lösung: Multilevel-Modell
+
+Wir werden das Problem der Autokorrelation zwar erst lösen, wenn wir uns Growth-Models anschauen, aber da wir sie für die Lösung brauchen und es noch mehre Probleme mit dem klassischen ALM bei Messwiederholung gibt, wechseln wir zu Multilevel-Modellen.
+
+```{r}
+# Definition Modell mit random intercept pro Teilnehmer*in = intercept variiert zwischen den Teilnehmer:innen 
+M3 <- lmerTest::lmer(SP_score ~ Gruppe * Zeitpunkt + (1|ID), data = dat_1_long)
+
+# Zeigen geschätzte Koeffizienten
+summary(M3)
+
+# Signifikanztest für Faktoren
+Anova(M3)
+
+# Geschätzte Mittelwerte
+predmeans <- predictmeans(M3, "Gruppe:Zeitpunkt", adj ="BH", barplot = TRUE)
+predmeans
+```
+
+```{r}
+predmeans$predictmeansBarPlot
+```
+
+Ein überzeugendes Argument für die Nutzung dieser Modelle ist die Möglichkeit, einzubauen, dass es individuelle Unterschiede in bestimmten Aspekten des Modells gibt. So drücken wir mit dem Term `(1|ID)` aus, dass der Intercept zwischen Personen variiert. Das bedeutet auf deutsch, dass wir die ziemlich realistische Annahme zulassen, dass sich verschiedene Personen in ihrer Präbelastung unterscheiden. Es ließe sich mit diesen Modellen sogar testen, ob variable oder feste Intercepts die Datenlage besser beschreiben, aber das wollen wir hier erstmal nicht tun.
+
+Die Interpretation läuft analog zum normalen ALM, wobei wir zusätzlich eine Schätzung für die Varianz der Intercepts bekommen, die wir zusätzlich interpretieren können.
+
+### Check 2: Prüfung der Residuen
+
+```{r}
+library(nlme)
+# Das gleiche Modell nur mit einem anderen Paket gemacht
+M4 <- lme(SP_score ~ Gruppe * Zeitpunkt, random = ~1|ID, data = dat_1_long)
+summary(M4)
+
+# Residuen
+densityplot(residuals(M4, type = "normalized"))
+## Normalisierung ist wichtig, damit Abhängigkeiten richtig berücksichtigt werden
+
+# Abspeichern der Residuen und fitted values in Vektoren
+res.vec <- residuals(M4, type = "normalized")
+fit.vec <- M4$fitted[,1]
+
+# Scatterplot machen
+scatterplot(res.vec ~ fit.vec)
+```

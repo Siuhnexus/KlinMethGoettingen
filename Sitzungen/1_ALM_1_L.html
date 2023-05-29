@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
+
+<meta charset="utf-8">
+<meta content="quarto-1.3.340" name="generator">
+
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport">
+
+<meta content="YH" name="author">
+<meta content="2022-05-16" name="dcterms.date">
+
+<title>Datenanalyse ALM</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="1_ALM_1_L_files/libs/clipboard/clipboard.min.js"></script>
+<script src="1_ALM_1_L_files/libs/quarto-html/quarto.js"></script>
+<script src="1_ALM_1_L_files/libs/quarto-html/popper.min.js"></script>
+<script src="1_ALM_1_L_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="1_ALM_1_L_files/libs/quarto-html/anchor.min.js"></script>
+<link rel="stylesheet" href="1_ALM_1_L_files/libs/quarto-html/tippy.css">
+<link id="quarto-text-highlighting-styles" rel="stylesheet" href="1_ALM_1_L_files/libs/quarto-html/quarto-syntax-highlighting.css">
+<script src="1_ALM_1_L_files/libs/bootstrap/bootstrap.min.js"></script>
+<link rel="stylesheet" href="1_ALM_1_L_files/libs/bootstrap/bootstrap-icons.css">
+<link data-mode="light" id="quarto-bootstrap" rel="stylesheet" href="1_ALM_1_L_files/libs/bootstrap/bootstrap.min.css">
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link href="../style.css" rel="stylesheet">
+</head>
+
+<body><div class="header"><div class="nav-item"><a href="../Sitzungen/">Sitzungen</a><div class="nav-list"><div class="nav-item"><a href="../Sitzungen/1_ALM_1.html">1_ALM_1</a></div><div class="nav-item"><a href="../Sitzungen/1_ALM_1_L.html">1_ALM_1_L</a></div><div class="nav-item"><a href="../Sitzungen/1_ALM_2.html">1_ALM_2</a></div><div class="nav-item"><a href="../Sitzungen/1_ALM_3.html">1_ALM_3</a></div><div class="nav-item"><a href="../Sitzungen/1_ALM_4.html">1_ALM_4</a></div></div></div><div class="nav-item"><a href="../Vorkurs/">Vorkurs</a><div class="nav-list"><div class="nav-item"><a href="../Vorkurs/Sitzung1.html">Sitzung1</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung2.html">Sitzung2</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung3.html">Sitzung3</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung4.html">Sitzung4</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung5.html">Sitzung5</a></div></div></div></div>
+
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+  <nav class="toc-active" role="doc-toc" id="TOC">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a data-scroll-target="#allgemeines-lineares-modell-1" class="nav-link active" id="toc-allgemeines-lineares-modell-1" href="#allgemeines-lineares-modell-1">Allgemeines Lineares Modell 1</a>
+  <ul class="collapse">
+  <li><a data-scroll-target="#vorbereitung" class="nav-link" id="toc-vorbereitung" href="#vorbereitung">Vorbereitung</a></li>
+  <li><a data-scroll-target="#visuelle-analyse" class="nav-link" id="toc-visuelle-analyse" href="#visuelle-analyse">Visuelle Analyse</a></li>
+  <li><a data-scroll-target="#erstes-allgemeines-lineares-modell" class="nav-link" id="toc-erstes-allgemeines-lineares-modell" href="#erstes-allgemeines-lineares-modell">Erstes Allgemeines Lineares Modell</a>
+  <ul class="collapse">
+  <li><a data-scroll-target="#schritt-1-allgemeines-lineares-modell-anpassen" class="nav-link" id="toc-schritt-1-allgemeines-lineares-modell-anpassen" href="#schritt-1-allgemeines-lineares-modell-anpassen">Schritt 1: Allgemeines lineares Modell anpassen</a></li>
+  <li><a data-scroll-target="#schritt-2-überprüfung-des-modells" class="nav-link" id="toc-schritt-2-überprüfung-des-modells" href="#schritt-2-überprüfung-des-modells">Schritt 2: Überprüfung des Modells</a></li>
+  <li><a data-scroll-target="#schritt-3-berechnung-der-effektstärken" class="nav-link" id="toc-schritt-3-berechnung-der-effektstärken" href="#schritt-3-berechnung-der-effektstärken">Schritt 3: Berechnung der Effektstärken</a></li>
+  <li><a data-scroll-target="#check-1-unabhängigkeit-der-prädiktoren" class="nav-link" id="toc-check-1-unabhängigkeit-der-prädiktoren" href="#check-1-unabhängigkeit-der-prädiktoren">Check 1: Unabhängigkeit der Prädiktoren</a></li>
+  <li><a data-scroll-target="#check-2-analyse-der-residuen" class="nav-link" id="toc-check-2-analyse-der-residuen" href="#check-2-analyse-der-residuen">Check 2: Analyse der Residuen</a></li>
+  <li><a data-scroll-target="#check-3-test-auf-autokorrelation-der-residuen" class="nav-link" id="toc-check-3-test-auf-autokorrelation-der-residuen" href="#check-3-test-auf-autokorrelation-der-residuen">Check 3: Test auf Autokorrelation der Residuen</a></li>
+  <li><a data-scroll-target="#check-4-einflussreiche-ausreißer" class="nav-link" id="toc-check-4-einflussreiche-ausreißer" href="#check-4-einflussreiche-ausreißer">Check 4: Einflussreiche Ausreißer</a></li>
+  </ul></li>
+  <li><a data-scroll-target="#zweites-modell" class="nav-link" id="toc-zweites-modell" href="#zweites-modell">Zweites Modell</a>
+  <ul class="collapse">
+  <li><a data-scroll-target="#schritt-1-allgemeines-lineares-modell-anpassen-1" class="nav-link" id="toc-schritt-1-allgemeines-lineares-modell-anpassen-1" href="#schritt-1-allgemeines-lineares-modell-anpassen-1">Schritt 1: Allgemeines lineares Modell anpassen</a></li>
+  <li><a data-scroll-target="#schritt-2-überprüfung-des-modells-1" class="nav-link" id="toc-schritt-2-überprüfung-des-modells-1" href="#schritt-2-überprüfung-des-modells-1">Schritt 2: Überprüfung des Modells</a></li>
+  <li><a data-scroll-target="#schritt-3-berechnung-der-effektstärken-1" class="nav-link" id="toc-schritt-3-berechnung-der-effektstärken-1" href="#schritt-3-berechnung-der-effektstärken-1">Schritt 3: Berechnung der Effektstärken</a></li>
+  <li><a data-scroll-target="#check-1-unabhängigkeit-der-prädiktoren-1" class="nav-link" id="toc-check-1-unabhängigkeit-der-prädiktoren-1" href="#check-1-unabhängigkeit-der-prädiktoren-1">Check 1: Unabhängigkeit der Prädiktoren</a></li>
+  <li><a data-scroll-target="#check-2-analyse-der-residuen-1" class="nav-link" id="toc-check-2-analyse-der-residuen-1" href="#check-2-analyse-der-residuen-1">Check 2: Analyse der Residuen</a></li>
+  <li><a data-scroll-target="#check-3-test-auf-autokorrelation-der-residuen-1" class="nav-link" id="toc-check-3-test-auf-autokorrelation-der-residuen-1" href="#check-3-test-auf-autokorrelation-der-residuen-1">Check 3: Test auf Autokorrelation der Residuen</a></li>
+  <li><a data-scroll-target="#check-4-einflussreiche-ausreißer-1" class="nav-link" id="toc-check-4-einflussreiche-ausreißer-1" href="#check-4-einflussreiche-ausreißer-1">Check 4: Einflussreiche Ausreißer</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main id="quarto-document-content" class="content">
+
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+<h1 class="title">Datenanalyse ALM</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>YH </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 16, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section class="level1" id="allgemeines-lineares-modell-1">
+<h1>Allgemeines Lineares Modell 1</h1>
+<p>Zum Start des Semesters wollen wir gemeinsam Inhalte aus dem Bachelor rekapitulieren. Ein zentrales Konzept ist das Allgemeine Lineare Modell (ALM), das für uns schon viele Analysemöglichkeiten bereithält.</p>
+<p>Heute wollen wir uns konkret anschauen, wie man ein solches Modell aufstellt, auf seine Annahmen testet und die Ergebnisse interpretiert.</p>
+<section class="level2" id="vorbereitung">
+<h2 data-anchor-id="vorbereitung" class="anchored">Vorbereitung</h2>
+<p>Zunächst laden wir die Pakete, die wir heute brauchen. Nicht vorhandene Pakete müssen mit <code>install.packages("Paketname")</code> installiert werden.</p>
+<div class="cell">
+<div id="cb1" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a tabindex="-1" aria-hidden="true" href="#cb1-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a tabindex="-1" aria-hidden="true" href="#cb1-2"></a><span class="fu">library</span>(psych)</span>
+<span id="cb1-3"><a tabindex="-1" aria-hidden="true" href="#cb1-3"></a><span class="fu">library</span>(Hmisc)</span>
+<span id="cb1-4"><a tabindex="-1" aria-hidden="true" href="#cb1-4"></a><span class="fu">library</span>(car)</span>
+<span id="cb1-5"><a tabindex="-1" aria-hidden="true" href="#cb1-5"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb1-6"><a tabindex="-1" aria-hidden="true" href="#cb1-6"></a><span class="fu">library</span>(effectsize)</span>
+<span id="cb1-7"><a tabindex="-1" aria-hidden="true" href="#cb1-7"></a><span class="fu">library</span>(rcompanion)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+<p>Die Zeile mit <code>warning: false</code> sorgt nur dafür, dass die vielen Warnungen zu nicht ganz gleichen Versionen und Maskierungen von Funktionen (was das ist, interessiert uns nicht) nicht ausgegeben werden.</p>
+<p>Achtet nun beim Einlesen der Daten darauf, dass das Verzeichnis für die Datei stimmt und die Datei auch tatsächlich in dem angegeben Ordner zu finden ist.</p>
+<div class="cell">
+<div id="cb2" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a tabindex="-1" aria-hidden="true" href="#cb2-1"></a><span class="co">#setwd("Sitzungen")</span></span>
+<span id="cb2-2"><a tabindex="-1" aria-hidden="true" href="#cb2-2"></a>dat_1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">"Dat_VR_Anxiety_lm1.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">","</span>, <span class="at">dec =</span> <span class="st">"."</span>, <span class="at">na.strings =</span> <span class="st">"NA"</span>)</span>
+<span id="cb2-3"><a tabindex="-1" aria-hidden="true" href="#cb2-3"></a></span>
+<span id="cb2-4"><a tabindex="-1" aria-hidden="true" href="#cb2-4"></a><span class="co"># Characterstrings als Faktoren definieren</span></span>
+<span id="cb2-5"><a tabindex="-1" aria-hidden="true" href="#cb2-5"></a>dat_1<span class="sc">$</span>Gruppe <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat_1<span class="sc">$</span>Gruppe) </span>
+<span id="cb2-6"><a tabindex="-1" aria-hidden="true" href="#cb2-6"></a>dat_1<span class="sc">$</span>Gruppe <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat_1<span class="sc">$</span>Gruppe, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Warteliste"</span>, <span class="st">"in_sensu"</span>, <span class="st">"in_virtuo"</span>)) </span>
+<span id="cb2-7"><a tabindex="-1" aria-hidden="true" href="#cb2-7"></a></span>
+<span id="cb2-8"><a tabindex="-1" aria-hidden="true" href="#cb2-8"></a><span class="co"># Change berechnen</span></span>
+<span id="cb2-9"><a tabindex="-1" aria-hidden="true" href="#cb2-9"></a></span>
+<span id="cb2-10"><a tabindex="-1" aria-hidden="true" href="#cb2-10"></a>dat_1<span class="sc">$</span>Change <span class="ot">&lt;-</span> dat_1<span class="sc">$</span>Post <span class="sc">-</span> dat_1<span class="sc">$</span>Pre</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+<p>Neben der Erstellung von Faktoren rechnen wir am Ende des Chunks auch die Veränderung im Belastungsscore aus. Man kann sich jetzt nämlich entscheiden, ob man lieber den Postscore oder die Veränderung als Kriterium benutzen möchte.</p>
+</section>
+<section class="level2" id="visuelle-analyse">
+<h2 data-anchor-id="visuelle-analyse" class="anchored">Visuelle Analyse</h2>
+<p>Sollte <strong>immer</strong> gemacht werden. Hier schauen wir uns die Verteilungen der drei relevanten Variablen <code>pre</code>, <code>post</code> und <code>change</code> nach Gruppen getrennt an. Außerdem wollen wir uns den Zusammenhang zwischen Prä- und Postwert ansehen.</p>
+<div class="cell">
+<div id="cb3" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a tabindex="-1" aria-hidden="true" href="#cb3-1"></a><span class="do">## Prä-Messung</span></span>
+<span id="cb3-2"><a tabindex="-1" aria-hidden="true" href="#cb3-2"></a><span class="fu">ggplot</span>(dat_1, <span class="fu">aes</span>(Gruppe, Pre)) <span class="sc">+</span> </span>
+<span id="cb3-3"><a tabindex="-1" aria-hidden="true" href="#cb3-3"></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span> </span>
+<span id="cb3-4"><a tabindex="-1" aria-hidden="true" href="#cb3-4"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb3-5"><a tabindex="-1" aria-hidden="true" href="#cb3-5"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"red"</span>)  <span class="sc">+</span></span>
+<span id="cb3-6"><a tabindex="-1" aria-hidden="true" href="#cb3-6"></a>  <span class="fu">stat_summary</span>(<span class="at">geom=</span><span class="st">"errorbar"</span>, <span class="at">fun.data=</span>mean_cl_normal, <span class="at">width=</span>.<span class="dv">1</span>, <span class="at">col =</span><span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb3-7"><a tabindex="-1" aria-hidden="true" href="#cb3-7"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="dv">40</span>) <span class="sc">+</span></span>
+<span id="cb3-8"><a tabindex="-1" aria-hidden="true" href="#cb3-8"></a>  <span class="fu">ylab</span>(<span class="st">"Score Anxiety"</span>) <span class="sc">+</span> </span>
+<span id="cb3-9"><a tabindex="-1" aria-hidden="true" href="#cb3-9"></a>  <span class="fu">xlab</span>(<span class="st">"Treatment"</span>) <span class="sc">+</span></span>
+<span id="cb3-10"><a tabindex="-1" aria-hidden="true" href="#cb3-10"></a>  <span class="fu">ggtitle</span>(<span class="st">"Belastung vor Behandlung"</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-6-1.png"></p>
+</div>
+<div id="cb4" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a tabindex="-1" aria-hidden="true" href="#cb4-1"></a><span class="do">## Post-Messung</span></span>
+<span id="cb4-2"><a tabindex="-1" aria-hidden="true" href="#cb4-2"></a><span class="fu">ggplot</span>(dat_1, <span class="fu">aes</span>(Gruppe, Post)) <span class="sc">+</span> </span>
+<span id="cb4-3"><a tabindex="-1" aria-hidden="true" href="#cb4-3"></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span> </span>
+<span id="cb4-4"><a tabindex="-1" aria-hidden="true" href="#cb4-4"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb4-5"><a tabindex="-1" aria-hidden="true" href="#cb4-5"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"red"</span>)  <span class="sc">+</span></span>
+<span id="cb4-6"><a tabindex="-1" aria-hidden="true" href="#cb4-6"></a>  <span class="fu">stat_summary</span>(<span class="at">geom=</span><span class="st">"errorbar"</span>, <span class="at">fun.data=</span>mean_cl_normal, <span class="at">width=</span>.<span class="dv">1</span>, <span class="at">col =</span><span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb4-7"><a tabindex="-1" aria-hidden="true" href="#cb4-7"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="dv">40</span>) <span class="sc">+</span></span>
+<span id="cb4-8"><a tabindex="-1" aria-hidden="true" href="#cb4-8"></a>  <span class="fu">ylab</span>(<span class="st">"Score Anxiety"</span>) <span class="sc">+</span> </span>
+<span id="cb4-9"><a tabindex="-1" aria-hidden="true" href="#cb4-9"></a>  <span class="fu">xlab</span>(<span class="st">"Treatment"</span>) <span class="sc">+</span></span>
+<span id="cb4-10"><a tabindex="-1" aria-hidden="true" href="#cb4-10"></a>  <span class="fu">ggtitle</span>(<span class="st">"Belastung nach Behandlung"</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-6-2.png"></p>
+</div>
+<div id="cb5" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a tabindex="-1" aria-hidden="true" href="#cb5-1"></a><span class="do">## Veraenderung</span></span>
+<span id="cb5-2"><a tabindex="-1" aria-hidden="true" href="#cb5-2"></a><span class="fu">ggplot</span>(dat_1, <span class="fu">aes</span>(Gruppe, Change)) <span class="sc">+</span> </span>
+<span id="cb5-3"><a tabindex="-1" aria-hidden="true" href="#cb5-3"></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span> </span>
+<span id="cb5-4"><a tabindex="-1" aria-hidden="true" href="#cb5-4"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a tabindex="-1" aria-hidden="true" href="#cb5-5"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"red"</span>)  <span class="sc">+</span></span>
+<span id="cb5-6"><a tabindex="-1" aria-hidden="true" href="#cb5-6"></a>  <span class="fu">stat_summary</span>(<span class="at">geom=</span><span class="st">"errorbar"</span>, <span class="at">fun.data=</span>mean_cl_normal, <span class="at">width=</span>.<span class="dv">1</span>, <span class="at">col =</span><span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb5-7"><a tabindex="-1" aria-hidden="true" href="#cb5-7"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="dv">30</span>,<span class="sc">+</span><span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb5-8"><a tabindex="-1" aria-hidden="true" href="#cb5-8"></a>  <span class="fu">ylab</span>(<span class="st">"Absolute Change Score Anxiety"</span>) <span class="sc">+</span> </span>
+<span id="cb5-9"><a tabindex="-1" aria-hidden="true" href="#cb5-9"></a>  <span class="fu">xlab</span>(<span class="st">"Treatment"</span>) <span class="sc">+</span></span>
+<span id="cb5-10"><a tabindex="-1" aria-hidden="true" href="#cb5-10"></a>  <span class="fu">ggtitle</span>(<span class="st">"Veränderung Belastung Prä zu Post"</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-6-3.png"></p>
+</div>
+<div id="cb6" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a tabindex="-1" aria-hidden="true" href="#cb6-1"></a><span class="do">## Zusammenhang Pre-Werte und Post-Werte</span></span>
+<span id="cb6-2"><a tabindex="-1" aria-hidden="true" href="#cb6-2"></a><span class="fu">ggplot</span>(dat_1, <span class="fu">aes</span>(Pre, Post)) <span class="sc">+</span> </span>
+<span id="cb6-3"><a tabindex="-1" aria-hidden="true" href="#cb6-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb6-4"><a tabindex="-1" aria-hidden="true" href="#cb6-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a tabindex="-1" aria-hidden="true" href="#cb6-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Gruppe)<span class="sc">+</span></span>
+<span id="cb6-6"><a tabindex="-1" aria-hidden="true" href="#cb6-6"></a>  <span class="fu">ylab</span>(<span class="st">"Post-Werte"</span>) <span class="sc">+</span> </span>
+<span id="cb6-7"><a tabindex="-1" aria-hidden="true" href="#cb6-7"></a>  <span class="fu">xlab</span>(<span class="st">"Prä-Werte"</span>)<span class="sc">+</span></span>
+<span id="cb6-8"><a tabindex="-1" aria-hidden="true" href="#cb6-8"></a>  <span class="fu">ggtitle</span>(<span class="st">"Zusammenhang Prä und Post pro Gruppe"</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-6-4.png"></p>
+</div>
+</div>
+</section>
+<section class="level2" id="erstes-allgemeines-lineares-modell">
+<h2 data-anchor-id="erstes-allgemeines-lineares-modell" class="anchored">Erstes Allgemeines Lineares Modell</h2>
+<p>Zunächst wollen wir analysieren, wie gut Pre-Treatment-Score und die Behandlungsart den Score Post-Treatment vorhersagen.</p>
+<section class="level3" id="schritt-1-allgemeines-lineares-modell-anpassen">
+<h3 data-anchor-id="schritt-1-allgemeines-lineares-modell-anpassen" class="anchored">Schritt 1: Allgemeines lineares Modell anpassen</h3>
+<div class="cell">
+<div id="cb8" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a tabindex="-1" aria-hidden="true" href="#cb8-1"></a><span class="co"># Zentrierung des kontinuierlichen Praediktors Pre-Wert</span></span>
+<span id="cb8-2"><a tabindex="-1" aria-hidden="true" href="#cb8-2"></a>dat_1<span class="sc">$</span>Pre_c <span class="ot">&lt;-</span> <span class="fu">scale</span>(dat_1<span class="sc">$</span>Pre, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale =</span> <span class="cn">FALSE</span>) <span class="co"># dient der besseren Interpretierbarkeit</span></span>
+<span id="cb8-3"><a tabindex="-1" aria-hidden="true" href="#cb8-3"></a></span>
+<span id="cb8-4"><a tabindex="-1" aria-hidden="true" href="#cb8-4"></a><span class="co"># Modelldefinition</span></span>
+<span id="cb8-5"><a tabindex="-1" aria-hidden="true" href="#cb8-5"></a>M1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Post <span class="sc">~</span> Pre_c <span class="sc">+</span> Gruppe, <span class="at">data =</span> dat_1)</span>
+<span id="cb8-6"><a tabindex="-1" aria-hidden="true" href="#cb8-6"></a></span>
+<span id="cb8-7"><a tabindex="-1" aria-hidden="true" href="#cb8-7"></a><span class="co"># Schaetzung der Parameter</span></span>
+<span id="cb8-8"><a tabindex="-1" aria-hidden="true" href="#cb8-8"></a><span class="fu">summary</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Post ~ Pre_c + Gruppe, data = dat_1)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.6406 -1.5549  0.0877  1.3422  5.5416 
+
+Coefficients:
+                Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)     19.78035    0.28806  68.668   &lt;2e-16 ***
+Pre_c            0.64380    0.04496  14.320   &lt;2e-16 ***
+Gruppein_sensu  -3.81778    0.40783  -9.361   &lt;2e-16 ***
+Gruppein_virtuo -9.36327    0.40717 -22.996   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.033 on 146 degrees of freedom
+Multiple R-squared:  0.8303,    Adjusted R-squared:  0.8268 
+F-statistic: 238.1 on 3 and 146 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Erstmal sieht man hier, dass bei dem Faktor Behandlungsart eine sogenannte “Dummy-Kodierung” stattgefunden hat. Da das ALM nur mit kontinuierlichen oder dichotomen Prädiktoren gut umgehen kann, wurde der Faktor dichotomisiert. Die Koeffizienten und Statistiken beziehen sich so auf den Unterschied zwischen der jeweiligen Gruppe im Namen und der Gruppe, die in keinem Namen vorkommt (hier also der Unterschied zwischen in_sensu und Warteliste bzw. in_virtuo und Warteliste).</p>
+<p>Für diese Prädiktoren ergeben sich (an Koeffizienten und p-Werten ablesbar) folgende Befunde:</p>
+<ol type="1">
+<li>Jeder zusätzliche Punkt beim Pre-Score erhöht den Post-Score um durchschnittlich 0.64 Punkte (p &lt; 0.05).</li>
+<li>Ein in_sensu-Treatment zu erhalten verringert die Symptomatik im Vergleich zur Warteliste durchschnittlich um 3.82 Punkte (p &lt; 0.05).</li>
+<li>Ein in_virtuo-Treatment verringert die Symptomatik durchschnittlich um 9.36 Punkte.</li>
+</ol>
+</section>
+<section class="level3" id="schritt-2-überprüfung-des-modells">
+<h3 data-anchor-id="schritt-2-überprüfung-des-modells" class="anchored">Schritt 2: Überprüfung des Modells</h3>
+<p>Um zu testen, ob alle Prädiktoren ins Modell eingeschlossen werden sollten, werden Modellvergleiche, sprich Varianzanalysen, gerechnet. Jeder Prädiktor wird aus dem Gesamtmodell entfernt und es wird getestet, ob das Gesamtmodell besser als das Teilmodell ist.</p>
+<div class="cell">
+<div id="cb10" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a tabindex="-1" aria-hidden="true" href="#cb10-1"></a>VA1 <span class="ot">&lt;-</span> <span class="fu">Anova</span>(M1)</span>
+<span id="cb10-2"><a tabindex="-1" aria-hidden="true" href="#cb10-2"></a>VA1</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type II tests)
+
+Response: Post
+           Sum Sq  Df F value    Pr(&gt;F)    
+Pre_c      847.88   1  205.06 &lt; 2.2e-16 ***
+Gruppe    2212.73   2  267.57 &lt; 2.2e-16 ***
+Residuals  603.68 146                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="cb12" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a tabindex="-1" aria-hidden="true" href="#cb12-1"></a>M1b <span class="ot">&lt;-</span> <span class="fu">lm</span>(Post <span class="sc">~</span> Pre_c, <span class="at">data =</span> dat_1)</span>
+<span id="cb12-2"><a tabindex="-1" aria-hidden="true" href="#cb12-2"></a>M1c <span class="ot">&lt;-</span> <span class="fu">lm</span>(Post <span class="sc">~</span> Gruppe, <span class="at">data =</span> dat_1)</span>
+<span id="cb12-3"><a tabindex="-1" aria-hidden="true" href="#cb12-3"></a><span class="fu">anova</span>(M1b, M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: Post ~ Pre_c
+Model 2: Post ~ Pre_c + Gruppe
+  Res.Df     RSS Df Sum of Sq      F    Pr(&gt;F)    
+1    148 2816.41                                  
+2    146  603.68  2    2212.7 267.57 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="cb14" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a tabindex="-1" aria-hidden="true" href="#cb14-1"></a><span class="fu">anova</span>(M1c, M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: Post ~ Gruppe
+Model 2: Post ~ Pre_c + Gruppe
+  Res.Df     RSS Df Sum of Sq      F    Pr(&gt;F)    
+1    147 1451.56                                  
+2    146  603.68  1    847.88 205.06 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Beide Modellvergleiche sind signifikant, also sollten beide Prädiktoren im Modell bleiben.</p>
+</section>
+<section class="level3" id="schritt-3-berechnung-der-effektstärken">
+<h3 data-anchor-id="schritt-3-berechnung-der-effektstärken" class="anchored">Schritt 3: Berechnung der Effektstärken</h3>
+<p>Als Effektstärken nutzen wir hier die Varianzaufklärung der einzelnen Prädiktoren (<code>eta_squared()</code>). Außerdem berechnen wir Cohen’s d als Maß für die Stärke des Unterschieds zwischen einzelnen Gruppen.</p>
+<div class="cell">
+<div id="cb16" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a tabindex="-1" aria-hidden="true" href="#cb16-1"></a><span class="fu">eta_squared</span>(VA1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Effect Size for ANOVA (Type II)
+
+Parameter | Eta2 (partial) |       95% CI
+-----------------------------------------
+Pre_c     |           0.58 | [0.50, 1.00]
+Gruppe    |           0.79 | [0.74, 1.00]
+
+- One-sided CIs: upper bound fixed at [1.00].</code></pre>
+</div>
+<div id="cb18" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a tabindex="-1" aria-hidden="true" href="#cb18-1"></a><span class="fu">cohen.d</span>(Post <span class="sc">~</span> Gruppe, <span class="at">data=</span>dat_1[dat_1<span class="sc">$</span>Gruppe <span class="sc">==</span> <span class="st">"in_sensu"</span> <span class="sc">|</span> dat_1<span class="sc">$</span>Gruppe <span class="sc">==</span> <span class="st">"Warteliste"</span>, ])</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: cohen.d(x = Post ~ Gruppe, data = dat_1[dat_1$Gruppe == "in_sensu" | 
+    dat_1$Gruppe == "Warteliste", ])
+Cohen d statistic of difference between two means
+     lower effect upper
+Post -1.41  -0.99 -0.58
+
+Multivariate (Mahalanobis) distance between groups
+[1] 0.99
+r equivalent of difference between two means
+ Post 
+-0.44 </code></pre>
+</div>
+<div id="cb20" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a tabindex="-1" aria-hidden="true" href="#cb20-1"></a><span class="fu">cohen.d</span>(Post <span class="sc">~</span> Gruppe, <span class="at">data=</span>dat_1[dat_1<span class="sc">$</span>Gruppe <span class="sc">==</span> <span class="st">"in_virtuo"</span> <span class="sc">|</span> dat_1<span class="sc">$</span>Gruppe <span class="sc">==</span> <span class="st">"Warteliste"</span>, ])</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: cohen.d(x = Post ~ Gruppe, data = dat_1[dat_1$Gruppe == "in_virtuo" | 
+    dat_1$Gruppe == "Warteliste", ])
+Cohen d statistic of difference between two means
+     lower effect upper
+Post -3.54  -2.97 -2.39
+
+Multivariate (Mahalanobis) distance between groups
+[1] 3
+r equivalent of difference between two means
+ Post 
+-0.83 </code></pre>
+</div>
+</div>
+</section>
+<section class="level3" id="check-1-unabhängigkeit-der-prädiktoren">
+<h3 data-anchor-id="check-1-unabhängigkeit-der-prädiktoren" class="anchored">Check 1: Unabhängigkeit der Prädiktoren</h3>
+<p>Das ALM nimmt an, dass die Prädiktoren unabhängig voneinander sind. Praktisch bedeutet dies, dass vorhandene Korrelationen eher gering sind. Hierfür werden am einfachsten Variance-Inflation_Factors VIF genommen. Diese sollten bei 1 liegen, ab 4 sollte überlegt werden, ob Prädiktoren entfernt oder miteinander verrechnet / integriert werden sollten.</p>
+<div class="cell">
+<div id="cb22" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a tabindex="-1" aria-hidden="true" href="#cb22-1"></a><span class="fu">vif</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           GVIF Df GVIF^(1/(2*Df))
+Pre_c  1.005814  1        1.002903
+Gruppe 1.005814  2        1.001450</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" id="check-2-analyse-der-residuen">
+<h3 data-anchor-id="check-2-analyse-der-residuen" class="anchored">Check 2: Analyse der Residuen</h3>
+<p>Das ALM nimmt an, dass die Fehler zufällig und unabhängig von den Prädiktoren sind (Annahme der Varianzhomogenität btw. Homoskedastizität). Wenn dies der Fall ist, dann sollten die Residuen zufällig und normalverteilt um den Wert von Null streuen. Ebenso sollten sich in einer Abbildung der Residuen und vorhergesagten Werte kein Zusammenhang und keine systematische Abweichung von Null zeigen.</p>
+<div class="cell">
+<div id="cb24" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a tabindex="-1" aria-hidden="true" href="#cb24-1"></a><span class="do">## Verteilung der Residuen</span></span>
+<span id="cb24-2"><a tabindex="-1" aria-hidden="true" href="#cb24-2"></a><span class="fu">densityPlot</span>(M1<span class="sc">$</span>residuals)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-16-1.png"></p>
+</div>
+<div id="cb25" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a tabindex="-1" aria-hidden="true" href="#cb25-1"></a><span class="fu">plotNormalDensity</span>(M1<span class="sc">$</span>residuals)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-16-2.png"></p>
+</div>
+<div id="cb26" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a tabindex="-1" aria-hidden="true" href="#cb26-1"></a><span class="do">## Verteilung der Residuen in Abhängigkeit von vorhergesagten Werten</span></span>
+<span id="cb26-2"><a tabindex="-1" aria-hidden="true" href="#cb26-2"></a><span class="fu">scatterplot</span>(M1<span class="sc">$</span>residuals <span class="sc">~</span> M1<span class="sc">$</span>fitted.values)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-16-3.png"></p>
+</div>
+<div id="cb27" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a tabindex="-1" aria-hidden="true" href="#cb27-1"></a><span class="fu">scatterplot</span>(<span class="fu">rstandard</span>(M1)<span class="sc">~</span><span class="fu">fitted</span>(M1))</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-16-4.png"></p>
+</div>
+<div id="cb28" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a tabindex="-1" aria-hidden="true" href="#cb28-1"></a><span class="do">## Statistischer Test auf Homoskedastizität: Breusch-Pagan Test</span></span>
+<span id="cb28-2"><a tabindex="-1" aria-hidden="true" href="#cb28-2"></a><span class="fu">bptest</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    studentized Breusch-Pagan test
+
+data:  M1
+BP = 1.2579, df = 3, p-value = 0.7392</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" id="check-3-test-auf-autokorrelation-der-residuen">
+<h3 data-anchor-id="check-3-test-auf-autokorrelation-der-residuen" class="anchored">Check 3: Test auf Autokorrelation der Residuen</h3>
+<p>Das ALM geht davon aus, dass Messwerte unabhängig voneinander sind. Wenn diese abhängig voneinander sein sollten, dann nimmt das ALM an, dass diese Abhängigkeit durch die Prädiktoren im Modell erklärt wird. Um zu untersuchen, ob dies der Fall ist, wird analysiert ob die Residuen miteinander korreliert sind. Dies sollte nicht der Fall sein. Wenn diese korreliert sind, dann müssen wir das Modell so erweitern, dass diese Abhängigkeit durch das erweiterte Modell erklärt wird. (Siehe Multi-level)</p>
+<div class="cell">
+<div id="cb30" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a tabindex="-1" aria-hidden="true" href="#cb30-1"></a><span class="fu">durbinWatsonTest</span>(M1) <span class="co"># Test für eine Autokorrelation 1.Ordnung</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> lag Autocorrelation D-W Statistic p-value
+   1      0.04393641      1.906612    0.46
+ Alternative hypothesis: rho != 0</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" id="check-4-einflussreiche-ausreißer">
+<h3 data-anchor-id="check-4-einflussreiche-ausreißer" class="anchored">Check 4: Einflussreiche Ausreißer</h3>
+<p>Cook’s distance ist ein gutes Maß zur Ermittlung zu einflussreicher Ausreißer. Die Werte der einzelnen Fälle sollte nicht größer sein als 4/(N-k-1). Hier im Beispiel N=146 =&gt; Werte &gt; 0,0273</p>
+<div class="cell">
+<div id="cb32" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a tabindex="-1" aria-hidden="true" href="#cb32-1"></a>cd <span class="ot">&lt;-</span> <span class="fu">cooks.distance</span>(M1)</span>
+<span id="cb32-2"><a tabindex="-1" aria-hidden="true" href="#cb32-2"></a><span class="co">#View(cd)</span></span>
+<span id="cb32-3"><a tabindex="-1" aria-hidden="true" href="#cb32-3"></a><span class="fu">plot</span>(M1,<span class="dv">4</span>)</span>
+<span id="cb32-4"><a tabindex="-1" aria-hidden="true" href="#cb32-4"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fl">0.0273</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-20-1.png"></p>
+</div>
+<div id="cb33" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a tabindex="-1" aria-hidden="true" href="#cb33-1"></a><span class="fu">hist</span>(cd)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-20-2.png"></p>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" id="zweites-modell">
+<h2 data-anchor-id="zweites-modell" class="anchored">Zweites Modell</h2>
+<p>Als Übung dürft ihr nun versuchen, die Veränderung des Ängstlichkeit-Scores mit Behandlungsart und Pre-Treatment-Score vorherzusagen. Dabei sollten wie beim letzten Modell auch die wichtigen Annahmen getestet und die Ergebnisse interpretiert werden.</p>
+<section class="level3" id="schritt-1-allgemeines-lineares-modell-anpassen-1">
+<h3 data-anchor-id="schritt-1-allgemeines-lineares-modell-anpassen-1" class="anchored">Schritt 1: Allgemeines lineares Modell anpassen</h3>
+<div class="cell">
+<div id="cb34" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a tabindex="-1" aria-hidden="true" href="#cb34-1"></a>M2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Change <span class="sc">~</span> Gruppe <span class="sc">+</span> Pre_c, <span class="at">data =</span> dat_1)</span>
+<span id="cb34-2"><a tabindex="-1" aria-hidden="true" href="#cb34-2"></a><span class="fu">summary</span>(M2)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Change ~ Gruppe + Pre_c, data = dat_1)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.6406 -1.5549  0.0877  1.3422  5.5416 
+
+Coefficients:
+                Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)     -0.27298    0.28806  -0.948    0.345    
+Gruppein_sensu  -3.81778    0.40783  -9.361  &lt; 2e-16 ***
+Gruppein_virtuo -9.36327    0.40717 -22.996  &lt; 2e-16 ***
+Pre_c           -0.35620    0.04496  -7.923 5.43e-13 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.033 on 146 degrees of freedom
+Multiple R-squared:  0.8081,    Adjusted R-squared:  0.8041 
+F-statistic: 204.9 on 3 and 146 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" id="schritt-2-überprüfung-des-modells-1">
+<h3 data-anchor-id="schritt-2-überprüfung-des-modells-1" class="anchored">Schritt 2: Überprüfung des Modells</h3>
+<p>Um zu testen, ob alle Prädiktoren ins Modell eingeschlossen werden sollten, werden Modellvergleiche, sprich Varianzanalysen, gerechnet. Jeder Prädiktor wird aus dem Gesamtmodell entfernt und es wird getestet, ob das Gesamtmodell besser als das Teilmodell ist.</p>
+<div class="cell">
+<div id="cb36" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a tabindex="-1" aria-hidden="true" href="#cb36-1"></a><span class="fu">Anova</span>(M2)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type II tests)
+
+Response: Change
+           Sum Sq  Df F value    Pr(&gt;F)    
+Gruppe    2212.73   2 267.574 &lt; 2.2e-16 ***
+Pre_c      259.56   1  62.774 5.429e-13 ***
+Residuals  603.68 146                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" id="schritt-3-berechnung-der-effektstärken-1">
+<h3 data-anchor-id="schritt-3-berechnung-der-effektstärken-1" class="anchored">Schritt 3: Berechnung der Effektstärken</h3>
+<p>Als Effektstärken nutzen wir hier die Varianzaufklärung der einzelnen Prädiktoren (<code>eta_squared()</code>). Cohen’s d braucht ihr hier nicht nochmal berechnen.</p>
+<div class="cell">
+<div id="cb38" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a tabindex="-1" aria-hidden="true" href="#cb38-1"></a><span class="fu">eta_squared</span>(<span class="fu">Anova</span>(M2))</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Effect Size for ANOVA (Type II)
+
+Parameter | Eta2 (partial) |       95% CI
+-----------------------------------------
+Gruppe    |           0.79 | [0.74, 1.00]
+Pre_c     |           0.30 | [0.20, 1.00]
+
+- One-sided CIs: upper bound fixed at [1.00].</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" id="check-1-unabhängigkeit-der-prädiktoren-1">
+<h3 data-anchor-id="check-1-unabhängigkeit-der-prädiktoren-1" class="anchored">Check 1: Unabhängigkeit der Prädiktoren</h3>
+<p>Das ALM nimmt an, dass die Prädiktoren unabhängig voneinander sind. Praktisch bedeutet dies, dass vorhandene Korrelationen eher gering sind. Hierfür werden am einfachsten Variance-Inflation_Factors VIF genommen. Diese sollten bei 1 liegen, ab 4 sollte überlegt werden, ob Prädiktoren entfernt oder miteinander verrechnet / integriert werden sollten.</p>
+<div class="cell">
+<div id="cb40" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a tabindex="-1" aria-hidden="true" href="#cb40-1"></a><span class="fu">vif</span>(M2)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           GVIF Df GVIF^(1/(2*Df))
+Gruppe 1.005814  2        1.001450
+Pre_c  1.005814  1        1.002903</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" id="check-2-analyse-der-residuen-1">
+<h3 data-anchor-id="check-2-analyse-der-residuen-1" class="anchored">Check 2: Analyse der Residuen</h3>
+<p>Das ALM nimmt an, dass die Fehler zufällig und unabhängig von den Prädiktoren sind (Annahme der Varianzhomogenität btw. Homoskedastizität). Wenn dies der Fall ist, dann sollten die Residuen zufällig und normalverteilt um den Wert von Null streuen. Ebenso sollten sich in einer Abbildung der Residuen und vorhergesagten Werte kein Zusammenhang und keine systematische Abweichung von Null zeigen.</p>
+<div class="cell">
+<div id="cb42" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a tabindex="-1" aria-hidden="true" href="#cb42-1"></a><span class="do">## Verteilung der Residuen</span></span>
+<span id="cb42-2"><a tabindex="-1" aria-hidden="true" href="#cb42-2"></a><span class="fu">plotNormalDensity</span>(M2<span class="sc">$</span>residuals)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-30-1.png"></p>
+</div>
+<div id="cb43" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a tabindex="-1" aria-hidden="true" href="#cb43-1"></a><span class="do">## Verteilung der Residuen in Abhängigkeit von vorhergesagten Werten</span></span>
+<span id="cb43-2"><a tabindex="-1" aria-hidden="true" href="#cb43-2"></a><span class="fu">scatterplot</span>(<span class="fu">rstandard</span>(M2)<span class="sc">~</span><span class="fu">fitted</span>(M2))</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-30-2.png"></p>
+</div>
+<div id="cb44" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a tabindex="-1" aria-hidden="true" href="#cb44-1"></a><span class="do">## Statistischer Test auf Homoskedastizität: Breusch-Pagan Test</span></span>
+<span id="cb44-2"><a tabindex="-1" aria-hidden="true" href="#cb44-2"></a><span class="fu">bptest</span>(M2)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    studentized Breusch-Pagan test
+
+data:  M2
+BP = 1.2579, df = 3, p-value = 0.7392</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" id="check-3-test-auf-autokorrelation-der-residuen-1">
+<h3 data-anchor-id="check-3-test-auf-autokorrelation-der-residuen-1" class="anchored">Check 3: Test auf Autokorrelation der Residuen</h3>
+<p>Das ALM geht davon aus, dass Messwerte unabhängig voneinander sind. Wenn diese abhängig voneinander sein sollten, dann nimmt das ALM an, dass diese Abhängigkeit durch die Prädiktoren im Modell erklärt wird. Um zu untersuchen, ob dies der Fall ist, wird analysiert ob die Residuen miteinander korreliert sind. Dies sollte nicht der Fall sein. Wenn diese korreliert sind, dann müssen wir das Modell so erweitern, dass diese Abhängigkeit durch das erweiterte Modell erklärt wird. (Siehe Multi-level)</p>
+<div class="cell">
+<div id="cb46" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a tabindex="-1" aria-hidden="true" href="#cb46-1"></a><span class="fu">durbinWatsonTest</span>(M2) <span class="co"># Test für eine Autokorrelation 1.Ordnung</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> lag Autocorrelation D-W Statistic p-value
+   1      0.04393641      1.906612   0.512
+ Alternative hypothesis: rho != 0</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" id="check-4-einflussreiche-ausreißer-1">
+<h3 data-anchor-id="check-4-einflussreiche-ausreißer-1" class="anchored">Check 4: Einflussreiche Ausreißer</h3>
+<p>Cook’s distance ist ein gutes Maß zur Ermittlung zu einflussreicher Ausreißer. Die Werte der einzelnen Fälle sollte nicht größer sein als 4/(N-k-1). Hier im Beispiel N=146 =&gt; Werte &gt; 0,0273</p>
+<div class="cell">
+<div id="cb48" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a tabindex="-1" aria-hidden="true" href="#cb48-1"></a>cd2 <span class="ot">&lt;-</span> <span class="fu">cooks.distance</span>(M2)</span>
+<span id="cb48-2"><a tabindex="-1" aria-hidden="true" href="#cb48-2"></a><span class="co">#View(cd)</span></span>
+<span id="cb48-3"><a tabindex="-1" aria-hidden="true" href="#cb48-3"></a><span class="fu">plot</span>(M2,<span class="dv">4</span>)</span>
+<span id="cb48-4"><a tabindex="-1" aria-hidden="true" href="#cb48-4"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fl">0.0273</span>)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-34-1.png"></p>
+</div>
+<div id="cb49" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a tabindex="-1" aria-hidden="true" href="#cb49-1"></a><span class="fu">hist</span>(cd2)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_1_L_files/figure-html/unnamed-chunk-34-2.png"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script type="application/javascript" id="quarto-html-after-body">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+<script src="1_ALM_1_L_files/libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

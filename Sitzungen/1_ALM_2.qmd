@@ -1,0 +1,232 @@
+---
+title: "Datenanalyse ALM - Kontraste"
+author: "YH"
+date: '2022-05-16'
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
+---
+
+# Allgemeines Lineares Modell 2 - Kontraste
+
+In der letzten Sitzung haben wir den Behandlungsfaktor per Dummykodierung dichotomisiert. Das ist zwar schon gut, hat aber den Nachteil, dass multiples Testen auftritt, für das korrigiert werden muss.
+
+Um das zu umgehen, lernen wir heute ein noch besseres Verfahren, die Kontraste, (wieder) kennen.
+
+## Vorbereitung
+
+```{r}
+#| warning: false
+library(ggplot2)
+library(psych)
+library(Hmisc)
+library(car)
+library(lmtest)
+library(effectsize)
+library(rcompanion)
+library(tidyr)
+library(predictmeans)
+```
+
+Auch hier wieder darauf achten, dass das Verzeichnis passt.
+
+```{r}
+#setwd("Sitzungen")
+
+dat_1 <- read.csv(file = "Dat_VR_Anxiety_lm4.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
+
+# Characterstrings als Faktoren definieren
+dat_1$Gruppe <- as.factor(dat_1$Gruppe) 
+dat_1$Gruppe <- factor(dat_1$Gruppe, levels = c("Warteliste", "in_sensu", "in_virtuo")) 
+
+# Change berechnen
+
+dat_1$Change <- dat_1$Post - dat_1$Pre
+
+```
+
+## Visuelle Analyse
+
+```{r}
+# Post als Kriterium/outcome
+
+## Prä-Messung
+ggplot(dat_1, aes(Gruppe, Pre)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung vor Behandlung")
+
+## Post-Messung
+ggplot(dat_1, aes(Gruppe, Post)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  ylim(0,40) +
+  ylab("Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Belastung nach Behandlung")
+
+## Zusammenhang Pre-Werte und Post-Werte
+ggplot(dat_1, aes(Pre, Post)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(~Gruppe)+
+  ylab("Post-Werte") + 
+  xlab("Prä-Werte")+
+  ggtitle("Zusammenhang Prä und Post pro Gruppe")
+
+# Veränderung prä zu post als Kriterium
+
+## Veraenderung
+ggplot(dat_1, aes(Gruppe, Change)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  stat_summary(fun = mean, geom = "point", size = 2, col = "red")  +
+  stat_summary(geom="errorbar", fun.data=mean_cl_normal, width=.1, col ="red")+
+  ylim(-30,+10) +
+  ylab("Absolute Change Score Anxiety") + 
+  xlab("Treatment") +
+  ggtitle("Veränderung Belastung Prä zu Post")
+
+## Zusammenhang Pre-Werte und Veränderung
+ggplot(dat_1, aes(Pre, Change)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(~Gruppe)+
+  ylab("Post-Werte") + 
+  xlab("Prä-Werte")+
+  ggtitle("Zusammenhang Prä und Change pro Gruppe")
+```
+
+## Bekanntes Modell
+
+Score Pre-Treatment und Behandlung sagen Change im Score vorher.
+
+### Schritt 1: Allgemeines lineares Modell anpassen
+
+```{r}
+# Zentrierung des kontinuierlichen Praediktors Pre-Wert
+dat_1$Pre_c <- as.vector(scale(dat_1$Pre, center = TRUE, scale = FALSE)) # dient der besseren Interpretierbarkeit
+
+# Modelldefinition
+M1 <- lm(Change ~ Pre_c + Gruppe, data = dat_1)
+
+# Schaetzung der Parameter
+summary(M1)
+
+# Deskriptive Mittelwerte
+describeBy(dat_1$Change, group = dat_1$Gruppe, data = dat_1, mat = TRUE)
+
+# Geschätzte Mittelwerte
+predmeans <- predictmeans(M1, "Gruppe", adj ="BH", barplot = TRUE)
+predmeans
+```
+
+```{r}
+predmeans$predictmeansBarPlot
+```
+
+```{r}
+# Geschätzte Mittelwerte
+new <- data.frame(Pre_c = rep(c(-10,0,10),3), Gruppe = c(rep("Warteliste",3),rep("in_sensu", 3), rep("in_virtuo",3)))
+new$Gruppe <- as.factor(new$Gruppe)
+                  
+predmeans1b <- predict(M1, newdata = new, interval = "confidence")
+predmeans1b.matrix <- as.data.frame(cbind(new, predmeans1b))
+predmeans1b.matrix
+
+# ANOVA zur Bestimmung der Quadratsummen für die beiden Prädiktoren
+Anova(M1)
+```
+
+Hier haben wir neben den aus der letzten Sitzung bekannten Schritten die `predict()`-Funktion benutzt. Mit dieser können wir das Modell um eine Vorhersage für eine bestimmte Konfiguration der Prädiktoren bitten. Hat eine Person einen `Pre_c`-Score von -10 (zentriert!) und eine Behandlung in sensu, ließe sich der durch das Modell vorhergsagte Wert also in der `predmeans1b.matrix`-Tabelle ablesen.
+
+## Modell mit Kontrasten anstelle von Dummycodierung
+
+Die beiden zu prüfenden Hypothesen waren:
+
+1.  CBT ist wirksam.
+2.  CBT mit in virtuo Exposition ist wirksamer als CBT mit in sensu Exposition.
+
+Diese beiden Kontraste können durch einen Helmert-Kontrast für 3 Ausprägungen eines Faktors erfasst werden. Dazu sortieren wir die Faktorstufen so, dass die Warteliste zuletzt kommt, damit in einem Vergleich `in_sensu` mit `in_virtuo` und im zweiten Vergleich diese beiden zusammen mit der Warteliste verglichen werden.
+
+```{r}
+dat_1$Gruppe <- factor(dat_1$Gruppe, levels = c("in_virtuo", "in_sensu", "Warteliste"))
+
+contrasts(dat_1$Gruppe) <- contr.helmert(3)
+contrasts(dat_1$Gruppe)
+```
+
+Zuletzt schauen wir uns noch an, ob die Kontraste richtig gesetzt sind (nützlich zur Selbstüberprüfung).
+
+### Prüfung der Hypothesen
+
+```{r}
+M2 <- lm(Change ~ Pre_c + Gruppe, data = dat_1)
+summary(M2)
+
+# Mittelwert Change overall
+mean(dat_1$Change)
+
+# Vorhergesagte Mittelwerte
+pred.means2 <- predictmeans(M2, "Gruppe", adj ="BH", barplot = TRUE)
+pred.means2
+```
+
+```{r}
+pred.means2$predictmeansBarPlot
+```
+
+```{r}
+Anova(M2)
+```
+
+Die Koeffizienten von Kontrastprädiktoren ließen sich zwar mathematisch genau interpretieren, aber uns interessiert nur die Richtung (und natürlich die Signifikanz). Um der Frage vorzubeugen, wie sich das denn genau machen ließe, wird das im nächsten Absatz beschrieben. Zunächst aber zu der einfachen Variante:
+
+1.  Der Regressionsparameter ist positiv, was bedeutet, dass die Stufen mit positiven Kontrastkoeffizienten einen höheren Change-Wert haben. Je niedriger der Change-Wert ist, desto höher ist die Verbesserung. Zusammen bedeutet das, dass Menschen mit Exposition in sensu eine geringere Verbesserung aufweisen (positiver Regressionsparameter + positiver Kontrastkoeffizient =\> höherer Change-Wert =\> geringere Verbesserung).
+2.  Mit der gleichen Logik haben Menschen in der Warteliste eine noch geringere Verbesserung (positiver Regressionsparameter + positiver Kontrastkoeffizient =\> höherer Change-Wert =\> geringere Verbesserung).
+
+Und nun für alle besonders Interessierten: Das Modell gibt uns zusammen mit den Kontrastkoeffizienten schon vor, wie wir die genauen Unterschiede zwischen den Mittelwerten der verschiedenen Gruppen ausrechnen müssen. So gilt:
+
+1.  delta_in_virtuo = (-1) \* beta_Gruppe1 + (-1) \* beta_Gruppe2 \~= -4.71 - 2.55 = -7.26
+2.  delta_in_sensu = 1 \* beta_Gruppe1 + (-1) \* beta_Gruppe2 \~= 4.71 - 2.55 = 2.16
+3.  delta_Warteliste = 0 \* beta_Gruppe1 + 2 \* beta_Gruppe2 \~= 2 \* 2.55 = 5.10
+
+Ich habe dabei ein "delta" vor die Ausprägung geschrieben, weil das Ergebnis noch mit den anderen Prädiktoren verrechnet werden müsste, um den wirklichen Mittelwert in der Gruppe zu erhalten (vor allem mit dem Intercept).
+
+### Check 2: Analyse der Residuen
+
+```{r}
+## Verteilung der Residuen
+plotNormalDensity(M2$residuals)
+
+## Verteilung der Residuen in Abhängigkeit von vorhergesagten Werten
+scatterplot(rstandard(M2)~fitted(M2))
+scatterplot(rstandard(M2)~dat_1$ID)
+
+## Statistischer Test auf Homoskedastizität: Breusch-Pagan Test
+bptest(M2)
+```
+
+### Check 4: Einflussreiche Ausreißer
+
+Cook's distance ist ein gutes Maß zur Ermittlung zu einflussreicher Ausreißer. Die Werte der einzelnen Fälle sollte nicht größer sein als 4/(N-k-1). Die Summe sollte bei 1 liegen.
+
+```{r}
+cd <- cooks.distance(M2)
+#View(cd)
+plot(M2,4)
+abline(h = 0.0273)
+hist(cd)
+```

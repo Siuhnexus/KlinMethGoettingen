@@ -1,0 +1,285 @@
+---
+title: "Datenanalyse ALM - Modellvergleiche"
+author: "YH"
+date: '2022-11-20'
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
+---
+
+# Allgemeines Lineares Modell - Trendkontraste und Modellvergleiche
+
+In dieser letzten Sitzung zum ALM wollen wir uns noch anschauen, wie sich verschiedene Formen von Trends als Kontraste ausdrücken und analysieren lassen. Außerdem gibt es einfache Möglichkeiten, verschiedene Modelle miteinander zu vergleichen, um herauszufinden, welches die Daten (für die Anzahl an Prädiktoren) am besten beschreibt.
+
+## Vorbereitung
+
+```{r}
+#| warning: false
+library(ggplot2)
+library(psych)
+library(Hmisc)
+library(car)
+library(lmtest)
+library(effectsize)
+library(rcompanion)
+library(tidyr)
+library(predictmeans)
+library(nlme)
+library(ez)
+```
+
+```{r}
+#setwd("Sitzungen")
+dat_1 <- read.csv(file = "BDI_1_ALM.csv", header = TRUE, sep = ",", dec = ".", na.strings = "NA")
+
+# Characterstrings als Faktoren definieren
+dat_1$Gruppe <- as.factor(dat_1$Gruppe) 
+dat_1$Gruppe <- factor(dat_1$Gruppe, levels = c("Warteliste", "KVT")) 
+```
+
+## Transformation der Daten
+
+```{r}
+dat_1_long <- as.data.frame(pivot_longer(dat_1, cols = c(Pre, Post, Follow_up), names_to = "Zeitpunkt",
+values_to = "BDI", values_drop_na = FALSE))
+dat_1_long$Zeitpunkt <- as.factor(dat_1_long$Zeitpunkt)
+dat_1_long$Zeitpunkt <- factor(dat_1_long$Zeitpunkt, levels = c("Pre", "Post", "Follow_up")) 
+dat_1_long$ID <- as.factor(dat_1_long$ID)
+```
+
+## Visuelle Analyse
+
+```{r}
+# BDI als Kriterium/outcome
+
+print(ggplot(dat_1_long, aes(x=Zeitpunkt, y=BDI)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  facet_wrap(~Gruppe)+
+  ylab("Score BDI 2") + 
+  xlab("Zeitpunkt") +
+  ggtitle("Depression in Abhängigkeit von Behandlung und Zeitpunkt N=200"))
+
+print(ggplot(dat_1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) + 
+  facet_wrap(~Gruppe)+
+  geom_line(aes(color= ID), show.legend = FALSE) +
+  ylab("Score BDI 2") + 
+  xlab("Zeitpunkt") +
+  ggtitle("Depression in Abhängigkeit von Behandlung und Zeitpunkt"))
+
+## Wegen nicht möglicher Werte im BDI Daten bereinigen
+dat_1_long_b <- subset(dat_1_long, BDI >= 0)
+nrow(dat_1_long_b)
+
+## Abbildungen ohne die nicht möglichen Werte
+print(ggplot(dat_1_long_b, aes(x=Zeitpunkt, y=BDI)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.3, height = 0, col = "grey", size = 0.5) +
+  facet_wrap(~Gruppe)+
+  ylab("Score BDI 2") + 
+  xlab("Zeitpunkt") +
+  ggtitle("Depression in Abhängigkeit von Behandlung und Zeitpunkt N=200"))
+
+print(ggplot(dat_1_long_b, aes(x=Zeitpunkt, y=BDI, group = ID)) + 
+  facet_wrap(~Gruppe)+
+  geom_line(aes(color= ID), show.legend = FALSE) +
+  ylab("Score BDI 2") + 
+  xlab("Zeitpunkt") +
+  ggtitle("Depression in Abhängigkeit von Behandlung und Zeitpunkt"))
+
+```
+
+### Deskriptive Analyse
+
+```{r}
+descriptives <- describeBy(BDI ~ Zeitpunkt + Gruppe, mat = TRUE, data = dat_1_long_b)
+descriptives
+
+#### Namen der Faktoren in Ergebnimatrix einfuegen
+names(descriptives)[names(descriptives) == "group1"] <- "Zeitpunkt"
+names(descriptives)[names(descriptives) == "group2"] <- "Bedingung"
+#### Konfidenzintervall ausrechnen
+descriptives$ci_95 <- descriptives$se*1.96
+
+descriptives$Zeitpunkt <- factor(descriptives$Zeitpunkt, levels = c("Pre", "Post", "Follow_up"))
+descriptives$Bedingung <- factor(descriptives$Bedingung, levels = c("Warteliste", "KVT"))
+
+#### Graphik machen
+pd <- position_dodge(0.3) 
+# pd zum Versetzen der Punkte der Mittelwert so dass diese sichtbar sind
+
+ggplot(descriptives, aes(x=Zeitpunkt, y=mean, group = Bedingung)) + 
+  ylim(0,40) +
+   geom_errorbar(width=.2, aes(ymin=mean-ci_95, ymax=mean+ci_95), position = pd) +
+  geom_point(aes(color = Bedingung), size=2, position = pd) +
+    geom_line(aes(linetype=Bedingung, color = Bedingung), position = pd) +
+    ggtitle("Mittelwerte plus/minus 95% Konfidenzintervall")+
+    theme_classic()
+```
+
+## Inferenzstatistik
+
+Behandlung und Zeitpunkt sowie ihre Interaktion sagen den BDI Score vorher.
+
+### Eine einfach Messwiederholungsvarianzanalyse
+
+```{r}
+ezANOVA(within=Zeitpunkt, between=Gruppe, wid=ID, dv=BDI, data=dat_1_long)
+# leider mag ezANOVA nicht den Datensatz, in dem die unmöglichen Werte gelöscht wurden, daher der komplette Datensatz
+```
+
+### Multi-level Modell - Trendkontraste
+
+```{r}
+# Mit Trendkontrasten für Faktor Zeitpunkt
+###############################################
+dat_1_long_b$Zeitpunkt = factor(dat_1_long_b$Zeitpunkt, levels=c("Pre", "Post", "Follow_up"))
+contrasts(dat_1_long_b$Zeitpunkt) <- contr.poly(3)
+contrasts(dat_1_long_b$Zeitpunkt)
+
+# Modelldefinition
+M1 <- lme(BDI ~ Gruppe * Zeitpunkt, random = ~1|ID, data = dat_1_long_b)
+summary(M1)
+Anova(M1)
+
+# Vorhergesagte Mittelwerte
+predmeans <- predictmeans(M1, "Gruppe:Zeitpunkt", adj ="BH", barplot = TRUE)
+predmeans
+predmeans$predictmeansBarPlot
+
+# Residuen
+densityplot(residuals(M1, type = "normalized"))
+## Normalisierung ist wichtig, damit Abhängigkeiten richtig berücksichtigt werden
+
+# Abspeichern der Residuen und fitted values in Vektoren
+res.vec <- residuals(M1, type = "normalized")
+fit.vec <- M1$fitted[,1]
+
+# Scatterplot machen für Verteilung in den 6 Bedingungen
+scatterplot(res.vec ~ fit.vec)
+
+# Scatterplot für Residuen unter Berücksichtigung des random intercept
+plot(M1)
+```
+
+Wenn euch die Interpretation dieser Ausgabe schwerfällt, ist das eher ein gutes als ein schlechtes Zeichen. Wir werden uns weiter unten eine Subgruppenanalyse zum besseren Verständnis anschauen. Dennoch möchte ich die Ergebnisse hier kurz interpretieren:
+
+1.  Im Mittel über alle Zeitpunkte hinweg reduziert sich die Symptomatik um ca. 7.12 Punkte, wenn man in der KVT-Bedingung statt der Warteliste ist (`GruppeKVT`).
+2.  In der Wartelistenbedingung erhöht sich die Symptomatik mit jedem Zeitpunkt um durchschnittlich ca. 1.91 Punkte (`Zeitpunkt.L`).
+3.  In der KVT-Gruppe kehrt sich der lineare Trend um (die Symptomatik wird geringer) (`Zeitpunkt.L + GruppeKVT:Zeitpunkt.L`).
+4.  Die Abnahme in der KVT-Gruppe flacht mit der Zeit ab (`Zeitpunkt.Q + GruppeKVT:Zeitpunkt.Q`).
+
+### Multi-level Modell - Helmertkontraste
+
+```{r}
+# Mit Helmertkontrasten für Faktor Zeitpunkt
+###############################################
+dat_1_long_b$Zeitpunkt = factor(dat_1_long_b$Zeitpunkt, levels=c("Follow_up", "Post", "Pre"))
+contrasts(dat_1_long_b$Zeitpunkt) <- contr.helmert(3)
+contrasts(dat_1_long_b$Zeitpunkt)
+
+# Modelldefinition
+M1_helm <- lme(BDI ~ Gruppe * Zeitpunkt, random = ~1|ID, data = dat_1_long_b)
+summary(M1_helm)
+Anova(M1_helm)
+
+# Residuen
+densityplot(residuals(M1_helm, type = "normalized"))
+## Normalisierung ist wichtig, damit Abhängigkeiten richtig berücksichtigt werden
+
+# Abspeichern der Residuen und fitted values in Vektoren
+res.vec2 <- residuals(M1_helm, type = "normalized")
+fit.vec2 <- M1_helm$fitted[,1]
+
+# Scatterplot machen für Verteilung in den 6 Bedingungen
+scatterplot(res.vec2 ~ fit.vec2)
+
+# Scatterplot für Residuen unter Berücksichtigung des random intercept
+plot(M1_helm)
+```
+
+An der Interpretation des Modells mit Helmertkontrasten könnt ihr euch nun einmal selbst versuchen. Bei Fragen wie immer gerne melden.
+
+### Subgruppenanalyse zur genaueren Überprüfung der Trends
+
+```{r}
+dat_Warteliste <- subset(dat_1_long_b, Gruppe == "Warteliste")
+dat_KVT <- subset(dat_1_long_b, Gruppe == "KVT")
+
+## Warteliste
+dat_Warteliste$Zeitpunkt <- factor(dat_Warteliste$Zeitpunkt, levels = c("Pre", "Post", "Follow_up"))
+contrasts(dat_Warteliste$Zeitpunkt) <- contr.poly(3)
+M2 <- lme(BDI ~ Zeitpunkt, random = ~1|ID, data = dat_Warteliste)
+summary(M2)
+
+## KVT
+contrasts(dat_KVT$Zeitpunkt) <- contr.helmert(3)
+contrasts(dat_KVT$Zeitpunkt)
+M3 <- lme(BDI ~ Zeitpunkt, random = ~1|ID, data = dat_KVT)
+summary(M3)
+```
+
+Hier wie versprochen die Subgruppenanalyse. Bezüglich der Wartelistengruppe bestätigen sich die Aussagen von oben.
+
+Wenn man die KVT-Gruppe mit Helmertkontrasten analysiert, findet sich eine signifikante Abnahme von Prä zu Post, aber keine signifikante Abnahme von Post zu Follow-up, was mit einem generell fallenden, aber eben abflachenden Trend zusammenpasst.
+
+Hier lässt sich erkennen, dass es einen großen Unterschied für die Interpretation macht, welche Trends man benutzt. Die Helmertkontraste legen den Fokus auf einzelne (, nicht vorhandene) Unterschiede, während Trendkontraste auf Zusammenhänge aus sind, die mit dem Vergleichen von zwei Ausprägungen nicht mehr viel zu tun haben.
+
+## Modellvergleiche
+
+Die Modellvergleiche dienen dazu, herauszufinden, ob das Modell so in Ordnung ist, oder das Modell vereinfacht oder komplexer gemacht werden sollte.
+
+Wir schauen uns hier verschiedene Fragen an, die wir mit Modellvergleichen beantworten können. Zunächst die Frage aus der letzten Sitzung, inwiefern random intercepts notwendig sind.
+
+```{r}
+M1_no_random_intercept <- gls(BDI ~ Gruppe * Zeitpunkt, data = dat_1_long_b)
+lrtest(M1_no_random_intercept, M1)
+AIC(M1)
+AIC(M1_no_random_intercept)
+```
+
+Ja, das Modell mit random intercept ist besser. Aber können wir vielleicht Prädiktoren entfernen?
+
+```{r}
+Anova(M1)
+```
+
+Nein, das Modell würde signifikant schlechter werden.
+
+Wir können bei einem Multilevelmodell nicht nur den Intercept variieren lassen, sondern auch die Steigung für einzelne Prädiktoren. Vielleicht wirkt die Therapie ja nicht bei allen Menschen gleich schnell. Wäre das hier sinnvoll?
+
+```{r}
+M1_random_slope_Zeitpunkt <- lme(BDI ~ Gruppe * Zeitpunkt, random = ~Zeitpunkt|ID, data = dat_1_long_b)
+lrtest(M1, M1_random_slope_Zeitpunkt)
+AIC(M1)
+AIC(M1_random_slope_Zeitpunkt)
+```
+
+Nein, es wäre hier nicht sinnvoll. Vielleicht wirkt aber KVT an sich nicht bei allen Menschen gleich gut.
+
+```{r}
+M1_random_slope_Bedingung <- lme(BDI ~ Gruppe * Zeitpunkt, random = ~Gruppe|ID, data = dat_1_long_b)
+lrtest(M1, M1_random_slope_Bedingung)
+AIC(M1)
+AIC(M1_random_slope_Bedingung)
+## Nein
+```
+
+Auch das ist hier keine sinnvolle Annahme.
+
+Besonders hilfreich werden Modellvergleiche bei Growth models. Als kleinen Vorgriff auf das, was kommt: Gibt es vielleicht Abhängigkeiten in der Autokorrelation des Kriteriums, die modelliert werden müssen?
+
+```{r}
+M1_dependencies <- lme(BDI ~ Gruppe * Zeitpunkt, random = ~1|ID, correlation = corARMA(c(0.1,0.1), form = ~1|ID, p=1, q=1), data = dat_1_long_b)
+lrtest(M1, M1_dependencies)
+summary(M1_dependencies)
+AIC(M1)
+AIC(M1_dependencies)
+```
+
+Bei diesen Daten scheinen solche Abhängigkeiten nicht vorzuliegen.

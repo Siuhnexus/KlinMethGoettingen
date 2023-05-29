@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
+
+<meta charset="utf-8">
+<meta content="quarto-1.3.340" name="generator">
+
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport">
+
+<meta content="YH" name="author">
+<meta content="2022-11-20" name="dcterms.date">
+
+<title>Datenanalyse ALM - Modellvergleiche</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="1_ALM_4_files/libs/clipboard/clipboard.min.js"></script>
+<script src="1_ALM_4_files/libs/quarto-html/quarto.js"></script>
+<script src="1_ALM_4_files/libs/quarto-html/popper.min.js"></script>
+<script src="1_ALM_4_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="1_ALM_4_files/libs/quarto-html/anchor.min.js"></script>
+<link rel="stylesheet" href="1_ALM_4_files/libs/quarto-html/tippy.css">
+<link id="quarto-text-highlighting-styles" rel="stylesheet" href="1_ALM_4_files/libs/quarto-html/quarto-syntax-highlighting.css">
+<script src="1_ALM_4_files/libs/bootstrap/bootstrap.min.js"></script>
+<link rel="stylesheet" href="1_ALM_4_files/libs/bootstrap/bootstrap-icons.css">
+<link data-mode="light" id="quarto-bootstrap" rel="stylesheet" href="1_ALM_4_files/libs/bootstrap/bootstrap.min.css">
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link href="../style.css" rel="stylesheet">
+</head>
+
+<body><div class="header"><div class="nav-item"><a href="../Sitzungen/">Sitzungen</a><div class="nav-list"><div class="nav-item"><a href="../Sitzungen/1_ALM_1.html">1_ALM_1</a></div><div class="nav-item"><a href="../Sitzungen/1_ALM_1_L.html">1_ALM_1_L</a></div><div class="nav-item"><a href="../Sitzungen/1_ALM_2.html">1_ALM_2</a></div><div class="nav-item"><a href="../Sitzungen/1_ALM_3.html">1_ALM_3</a></div><div class="nav-item"><a href="../Sitzungen/1_ALM_4.html">1_ALM_4</a></div></div></div><div class="nav-item"><a href="../Vorkurs/">Vorkurs</a><div class="nav-list"><div class="nav-item"><a href="../Vorkurs/Sitzung1.html">Sitzung1</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung2.html">Sitzung2</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung3.html">Sitzung3</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung4.html">Sitzung4</a></div><div class="nav-item"><a href="../Vorkurs/Sitzung5.html">Sitzung5</a></div></div></div></div>
+
+<div class="page-columns page-rows-contents page-layout-article" id="quarto-content">
+<div class="sidebar margin-sidebar" id="quarto-margin-sidebar">
+  <nav class="toc-active" role="doc-toc" id="TOC">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a data-scroll-target="#allgemeines-lineares-modell---trendkontraste-und-modellvergleiche" class="nav-link active" id="toc-allgemeines-lineares-modell---trendkontraste-und-modellvergleiche" href="#allgemeines-lineares-modell---trendkontraste-und-modellvergleiche">Allgemeines Lineares Modell - Trendkontraste und Modellvergleiche</a>
+  <ul class="collapse">
+  <li><a data-scroll-target="#vorbereitung" class="nav-link" id="toc-vorbereitung" href="#vorbereitung">Vorbereitung</a></li>
+  <li><a data-scroll-target="#transformation-der-daten" class="nav-link" id="toc-transformation-der-daten" href="#transformation-der-daten">Transformation der Daten</a></li>
+  <li><a data-scroll-target="#visuelle-analyse" class="nav-link" id="toc-visuelle-analyse" href="#visuelle-analyse">Visuelle Analyse</a>
+  <ul class="collapse">
+  <li><a data-scroll-target="#deskriptive-analyse" class="nav-link" id="toc-deskriptive-analyse" href="#deskriptive-analyse">Deskriptive Analyse</a></li>
+  </ul></li>
+  <li><a data-scroll-target="#inferenzstatistik" class="nav-link" id="toc-inferenzstatistik" href="#inferenzstatistik">Inferenzstatistik</a>
+  <ul class="collapse">
+  <li><a data-scroll-target="#eine-einfach-messwiederholungsvarianzanalyse" class="nav-link" id="toc-eine-einfach-messwiederholungsvarianzanalyse" href="#eine-einfach-messwiederholungsvarianzanalyse">Eine einfach Messwiederholungsvarianzanalyse</a></li>
+  <li><a data-scroll-target="#multi-level-modell---trendkontraste" class="nav-link" id="toc-multi-level-modell---trendkontraste" href="#multi-level-modell---trendkontraste">Multi-level Modell - Trendkontraste</a></li>
+  <li><a data-scroll-target="#multi-level-modell---helmertkontraste" class="nav-link" id="toc-multi-level-modell---helmertkontraste" href="#multi-level-modell---helmertkontraste">Multi-level Modell - Helmertkontraste</a></li>
+  <li><a data-scroll-target="#subgruppenanalyse-zur-genaueren-überprüfung-der-trends" class="nav-link" id="toc-subgruppenanalyse-zur-genaueren-überprüfung-der-trends" href="#subgruppenanalyse-zur-genaueren-überprüfung-der-trends">Subgruppenanalyse zur genaueren Überprüfung der Trends</a></li>
+  </ul></li>
+  <li><a data-scroll-target="#modellvergleiche" class="nav-link" id="toc-modellvergleiche" href="#modellvergleiche">Modellvergleiche</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main id="quarto-document-content" class="content">
+
+<header class="quarto-title-block default" id="title-block-header">
+<div class="quarto-title">
+<h1 class="title">Datenanalyse ALM - Modellvergleiche</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>YH </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 20, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section class="level1" id="allgemeines-lineares-modell---trendkontraste-und-modellvergleiche">
+<h1>Allgemeines Lineares Modell - Trendkontraste und Modellvergleiche</h1>
+<p>In dieser letzten Sitzung zum ALM wollen wir uns noch anschauen, wie sich verschiedene Formen von Trends als Kontraste ausdrücken und analysieren lassen. Außerdem gibt es einfache Möglichkeiten, verschiedene Modelle miteinander zu vergleichen, um herauszufinden, welches die Daten (für die Anzahl an Prädiktoren) am besten beschreibt.</p>
+<section class="level2" id="vorbereitung">
+<h2 data-anchor-id="vorbereitung" class="anchored">Vorbereitung</h2>
+<div class="cell">
+<div id="cb1" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a tabindex="-1" aria-hidden="true" href="#cb1-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a tabindex="-1" aria-hidden="true" href="#cb1-2"></a><span class="fu">library</span>(psych)</span>
+<span id="cb1-3"><a tabindex="-1" aria-hidden="true" href="#cb1-3"></a><span class="fu">library</span>(Hmisc)</span>
+<span id="cb1-4"><a tabindex="-1" aria-hidden="true" href="#cb1-4"></a><span class="fu">library</span>(car)</span>
+<span id="cb1-5"><a tabindex="-1" aria-hidden="true" href="#cb1-5"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb1-6"><a tabindex="-1" aria-hidden="true" href="#cb1-6"></a><span class="fu">library</span>(effectsize)</span>
+<span id="cb1-7"><a tabindex="-1" aria-hidden="true" href="#cb1-7"></a><span class="fu">library</span>(rcompanion)</span>
+<span id="cb1-8"><a tabindex="-1" aria-hidden="true" href="#cb1-8"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-9"><a tabindex="-1" aria-hidden="true" href="#cb1-9"></a><span class="fu">library</span>(predictmeans)</span>
+<span id="cb1-10"><a tabindex="-1" aria-hidden="true" href="#cb1-10"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb1-11"><a tabindex="-1" aria-hidden="true" href="#cb1-11"></a><span class="fu">library</span>(ez)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div id="cb2" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a tabindex="-1" aria-hidden="true" href="#cb2-1"></a><span class="co">#setwd("Sitzungen")</span></span>
+<span id="cb2-2"><a tabindex="-1" aria-hidden="true" href="#cb2-2"></a>dat_1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="at">file =</span> <span class="st">"BDI_1_ALM.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">","</span>, <span class="at">dec =</span> <span class="st">"."</span>, <span class="at">na.strings =</span> <span class="st">"NA"</span>)</span>
+<span id="cb2-3"><a tabindex="-1" aria-hidden="true" href="#cb2-3"></a></span>
+<span id="cb2-4"><a tabindex="-1" aria-hidden="true" href="#cb2-4"></a><span class="co"># Characterstrings als Faktoren definieren</span></span>
+<span id="cb2-5"><a tabindex="-1" aria-hidden="true" href="#cb2-5"></a>dat_1<span class="sc">$</span>Gruppe <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat_1<span class="sc">$</span>Gruppe) </span>
+<span id="cb2-6"><a tabindex="-1" aria-hidden="true" href="#cb2-6"></a>dat_1<span class="sc">$</span>Gruppe <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat_1<span class="sc">$</span>Gruppe, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Warteliste"</span>, <span class="st">"KVT"</span>)) </span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section class="level2" id="transformation-der-daten">
+<h2 data-anchor-id="transformation-der-daten" class="anchored">Transformation der Daten</h2>
+<div class="cell">
+<div id="cb3" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a tabindex="-1" aria-hidden="true" href="#cb3-1"></a>dat_1_long <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">pivot_longer</span>(dat_1, <span class="at">cols =</span> <span class="fu">c</span>(Pre, Post, Follow_up), <span class="at">names_to =</span> <span class="st">"Zeitpunkt"</span>,</span>
+<span id="cb3-2"><a tabindex="-1" aria-hidden="true" href="#cb3-2"></a><span class="at">values_to =</span> <span class="st">"BDI"</span>, <span class="at">values_drop_na =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb3-3"><a tabindex="-1" aria-hidden="true" href="#cb3-3"></a>dat_1_long<span class="sc">$</span>Zeitpunkt <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat_1_long<span class="sc">$</span>Zeitpunkt)</span>
+<span id="cb3-4"><a tabindex="-1" aria-hidden="true" href="#cb3-4"></a>dat_1_long<span class="sc">$</span>Zeitpunkt <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat_1_long<span class="sc">$</span>Zeitpunkt, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Post"</span>, <span class="st">"Follow_up"</span>)) </span>
+<span id="cb3-5"><a tabindex="-1" aria-hidden="true" href="#cb3-5"></a>dat_1_long<span class="sc">$</span>ID <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(dat_1_long<span class="sc">$</span>ID)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section class="level2" id="visuelle-analyse">
+<h2 data-anchor-id="visuelle-analyse" class="anchored">Visuelle Analyse</h2>
+<div class="cell">
+<div id="cb4" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a tabindex="-1" aria-hidden="true" href="#cb4-1"></a><span class="co"># BDI als Kriterium/outcome</span></span>
+<span id="cb4-2"><a tabindex="-1" aria-hidden="true" href="#cb4-2"></a></span>
+<span id="cb4-3"><a tabindex="-1" aria-hidden="true" href="#cb4-3"></a><span class="fu">print</span>(<span class="fu">ggplot</span>(dat_1_long, <span class="fu">aes</span>(<span class="at">x=</span>Zeitpunkt, <span class="at">y=</span>BDI)) <span class="sc">+</span> </span>
+<span id="cb4-4"><a tabindex="-1" aria-hidden="true" href="#cb4-4"></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span> </span>
+<span id="cb4-5"><a tabindex="-1" aria-hidden="true" href="#cb4-5"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb4-6"><a tabindex="-1" aria-hidden="true" href="#cb4-6"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Gruppe)<span class="sc">+</span></span>
+<span id="cb4-7"><a tabindex="-1" aria-hidden="true" href="#cb4-7"></a>  <span class="fu">ylab</span>(<span class="st">"Score BDI 2"</span>) <span class="sc">+</span> </span>
+<span id="cb4-8"><a tabindex="-1" aria-hidden="true" href="#cb4-8"></a>  <span class="fu">xlab</span>(<span class="st">"Zeitpunkt"</span>) <span class="sc">+</span></span>
+<span id="cb4-9"><a tabindex="-1" aria-hidden="true" href="#cb4-9"></a>  <span class="fu">ggtitle</span>(<span class="st">"Depression in Abhängigkeit von Behandlung und Zeitpunkt N=200"</span>))</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_4_files/figure-html/unnamed-chunk-8-1.png"></p>
+</div>
+<div id="cb5" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a tabindex="-1" aria-hidden="true" href="#cb5-1"></a><span class="fu">print</span>(<span class="fu">ggplot</span>(dat_1_long, <span class="fu">aes</span>(<span class="at">x=</span>Zeitpunkt, <span class="at">y=</span>BDI, <span class="at">group =</span> ID)) <span class="sc">+</span> </span>
+<span id="cb5-2"><a tabindex="-1" aria-hidden="true" href="#cb5-2"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Gruppe)<span class="sc">+</span></span>
+<span id="cb5-3"><a tabindex="-1" aria-hidden="true" href="#cb5-3"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color=</span> ID), <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb5-4"><a tabindex="-1" aria-hidden="true" href="#cb5-4"></a>  <span class="fu">ylab</span>(<span class="st">"Score BDI 2"</span>) <span class="sc">+</span> </span>
+<span id="cb5-5"><a tabindex="-1" aria-hidden="true" href="#cb5-5"></a>  <span class="fu">xlab</span>(<span class="st">"Zeitpunkt"</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a tabindex="-1" aria-hidden="true" href="#cb5-6"></a>  <span class="fu">ggtitle</span>(<span class="st">"Depression in Abhängigkeit von Behandlung und Zeitpunkt"</span>))</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_4_files/figure-html/unnamed-chunk-8-2.png"></p>
+</div>
+<div id="cb6" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a tabindex="-1" aria-hidden="true" href="#cb6-1"></a><span class="do">## Wegen nicht möglicher Werte im BDI Daten bereinigen</span></span>
+<span id="cb6-2"><a tabindex="-1" aria-hidden="true" href="#cb6-2"></a>dat_1_long_b <span class="ot">&lt;-</span> <span class="fu">subset</span>(dat_1_long, BDI <span class="sc">&gt;=</span> <span class="dv">0</span>)</span>
+<span id="cb6-3"><a tabindex="-1" aria-hidden="true" href="#cb6-3"></a><span class="fu">nrow</span>(dat_1_long_b)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 598</code></pre>
+</div>
+<div id="cb8" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a tabindex="-1" aria-hidden="true" href="#cb8-1"></a><span class="do">## Abbildungen ohne die nicht möglichen Werte</span></span>
+<span id="cb8-2"><a tabindex="-1" aria-hidden="true" href="#cb8-2"></a><span class="fu">print</span>(<span class="fu">ggplot</span>(dat_1_long_b, <span class="fu">aes</span>(<span class="at">x=</span>Zeitpunkt, <span class="at">y=</span>BDI)) <span class="sc">+</span> </span>
+<span id="cb8-3"><a tabindex="-1" aria-hidden="true" href="#cb8-3"></a>  <span class="fu">geom_violin</span>() <span class="sc">+</span> </span>
+<span id="cb8-4"><a tabindex="-1" aria-hidden="true" href="#cb8-4"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"grey"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb8-5"><a tabindex="-1" aria-hidden="true" href="#cb8-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Gruppe)<span class="sc">+</span></span>
+<span id="cb8-6"><a tabindex="-1" aria-hidden="true" href="#cb8-6"></a>  <span class="fu">ylab</span>(<span class="st">"Score BDI 2"</span>) <span class="sc">+</span> </span>
+<span id="cb8-7"><a tabindex="-1" aria-hidden="true" href="#cb8-7"></a>  <span class="fu">xlab</span>(<span class="st">"Zeitpunkt"</span>) <span class="sc">+</span></span>
+<span id="cb8-8"><a tabindex="-1" aria-hidden="true" href="#cb8-8"></a>  <span class="fu">ggtitle</span>(<span class="st">"Depression in Abhängigkeit von Behandlung und Zeitpunkt N=200"</span>))</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_4_files/figure-html/unnamed-chunk-8-3.png"></p>
+</div>
+<div id="cb9" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a tabindex="-1" aria-hidden="true" href="#cb9-1"></a><span class="fu">print</span>(<span class="fu">ggplot</span>(dat_1_long_b, <span class="fu">aes</span>(<span class="at">x=</span>Zeitpunkt, <span class="at">y=</span>BDI, <span class="at">group =</span> ID)) <span class="sc">+</span> </span>
+<span id="cb9-2"><a tabindex="-1" aria-hidden="true" href="#cb9-2"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Gruppe)<span class="sc">+</span></span>
+<span id="cb9-3"><a tabindex="-1" aria-hidden="true" href="#cb9-3"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color=</span> ID), <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a tabindex="-1" aria-hidden="true" href="#cb9-4"></a>  <span class="fu">ylab</span>(<span class="st">"Score BDI 2"</span>) <span class="sc">+</span> </span>
+<span id="cb9-5"><a tabindex="-1" aria-hidden="true" href="#cb9-5"></a>  <span class="fu">xlab</span>(<span class="st">"Zeitpunkt"</span>) <span class="sc">+</span></span>
+<span id="cb9-6"><a tabindex="-1" aria-hidden="true" href="#cb9-6"></a>  <span class="fu">ggtitle</span>(<span class="st">"Depression in Abhängigkeit von Behandlung und Zeitpunkt"</span>))</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_4_files/figure-html/unnamed-chunk-8-4.png"></p>
+</div>
+</div>
+<section class="level3" id="deskriptive-analyse">
+<h3 data-anchor-id="deskriptive-analyse" class="anchored">Deskriptive Analyse</h3>
+<div class="cell">
+<div id="cb10" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a tabindex="-1" aria-hidden="true" href="#cb10-1"></a>descriptives <span class="ot">&lt;-</span> <span class="fu">describeBy</span>(BDI <span class="sc">~</span> Zeitpunkt <span class="sc">+</span> Gruppe, <span class="at">mat =</span> <span class="cn">TRUE</span>, <span class="at">data =</span> dat_1_long_b)</span>
+<span id="cb10-2"><a tabindex="-1" aria-hidden="true" href="#cb10-2"></a>descriptives</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     item    group1     group2 vars   n     mean       sd median  trimmed
+BDI1    1       Pre Warteliste    1 100 24.30000 7.805075   24.5 24.35000
+BDI2    2      Post Warteliste    1 100 25.47000 8.099701   25.0 25.53750
+BDI3    3 Follow_up Warteliste    1 100 27.00000 7.772004   27.5 27.33750
+BDI4    4       Pre        KVT    1 100 25.12000 7.807378   25.0 25.06250
+BDI5    5      Post        KVT    1  99 15.57576 7.334697   15.0 15.24691
+BDI6    6 Follow_up        KVT    1  99 14.95960 7.281398   13.0 14.37037
+        mad min max range        skew    kurtosis        se
+BDI1 6.6717   2  47    45  0.01576095  0.40901303 0.7805075
+BDI2 8.8956   6  43    37 -0.05173688 -0.51816133 0.8099701
+BDI3 9.6369   9  47    38 -0.25011693 -0.47408910 0.7772004
+BDI4 7.4130   7  45    38  0.13388079  0.09987586 0.7807378
+BDI5 5.9304   0  37    37  0.42907583  0.29601458 0.7371647
+BDI6 7.4130   2  36    34  0.77777521  0.24687241 0.7318080</code></pre>
+</div>
+<div id="cb12" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a tabindex="-1" aria-hidden="true" href="#cb12-1"></a><span class="do">#### Namen der Faktoren in Ergebnimatrix einfuegen</span></span>
+<span id="cb12-2"><a tabindex="-1" aria-hidden="true" href="#cb12-2"></a><span class="fu">names</span>(descriptives)[<span class="fu">names</span>(descriptives) <span class="sc">==</span> <span class="st">"group1"</span>] <span class="ot">&lt;-</span> <span class="st">"Zeitpunkt"</span></span>
+<span id="cb12-3"><a tabindex="-1" aria-hidden="true" href="#cb12-3"></a><span class="fu">names</span>(descriptives)[<span class="fu">names</span>(descriptives) <span class="sc">==</span> <span class="st">"group2"</span>] <span class="ot">&lt;-</span> <span class="st">"Bedingung"</span></span>
+<span id="cb12-4"><a tabindex="-1" aria-hidden="true" href="#cb12-4"></a><span class="do">#### Konfidenzintervall ausrechnen</span></span>
+<span id="cb12-5"><a tabindex="-1" aria-hidden="true" href="#cb12-5"></a>descriptives<span class="sc">$</span>ci_95 <span class="ot">&lt;-</span> descriptives<span class="sc">$</span>se<span class="sc">*</span><span class="fl">1.96</span></span>
+<span id="cb12-6"><a tabindex="-1" aria-hidden="true" href="#cb12-6"></a></span>
+<span id="cb12-7"><a tabindex="-1" aria-hidden="true" href="#cb12-7"></a>descriptives<span class="sc">$</span>Zeitpunkt <span class="ot">&lt;-</span> <span class="fu">factor</span>(descriptives<span class="sc">$</span>Zeitpunkt, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Post"</span>, <span class="st">"Follow_up"</span>))</span>
+<span id="cb12-8"><a tabindex="-1" aria-hidden="true" href="#cb12-8"></a>descriptives<span class="sc">$</span>Bedingung <span class="ot">&lt;-</span> <span class="fu">factor</span>(descriptives<span class="sc">$</span>Bedingung, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Warteliste"</span>, <span class="st">"KVT"</span>))</span>
+<span id="cb12-9"><a tabindex="-1" aria-hidden="true" href="#cb12-9"></a></span>
+<span id="cb12-10"><a tabindex="-1" aria-hidden="true" href="#cb12-10"></a><span class="do">#### Graphik machen</span></span>
+<span id="cb12-11"><a tabindex="-1" aria-hidden="true" href="#cb12-11"></a>pd <span class="ot">&lt;-</span> <span class="fu">position_dodge</span>(<span class="fl">0.3</span>) </span>
+<span id="cb12-12"><a tabindex="-1" aria-hidden="true" href="#cb12-12"></a><span class="co"># pd zum Versetzen der Punkte der Mittelwert so dass diese sichtbar sind</span></span>
+<span id="cb12-13"><a tabindex="-1" aria-hidden="true" href="#cb12-13"></a></span>
+<span id="cb12-14"><a tabindex="-1" aria-hidden="true" href="#cb12-14"></a><span class="fu">ggplot</span>(descriptives, <span class="fu">aes</span>(<span class="at">x=</span>Zeitpunkt, <span class="at">y=</span>mean, <span class="at">group =</span> Bedingung)) <span class="sc">+</span> </span>
+<span id="cb12-15"><a tabindex="-1" aria-hidden="true" href="#cb12-15"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>,<span class="dv">40</span>) <span class="sc">+</span></span>
+<span id="cb12-16"><a tabindex="-1" aria-hidden="true" href="#cb12-16"></a>   <span class="fu">geom_errorbar</span>(<span class="at">width=</span>.<span class="dv">2</span>, <span class="fu">aes</span>(<span class="at">ymin=</span>mean<span class="sc">-</span>ci_95, <span class="at">ymax=</span>mean<span class="sc">+</span>ci_95), <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb12-17"><a tabindex="-1" aria-hidden="true" href="#cb12-17"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> Bedingung), <span class="at">size=</span><span class="dv">2</span>, <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb12-18"><a tabindex="-1" aria-hidden="true" href="#cb12-18"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype=</span>Bedingung, <span class="at">color =</span> Bedingung), <span class="at">position =</span> pd) <span class="sc">+</span></span>
+<span id="cb12-19"><a tabindex="-1" aria-hidden="true" href="#cb12-19"></a>    <span class="fu">ggtitle</span>(<span class="st">"Mittelwerte plus/minus 95% Konfidenzintervall"</span>)<span class="sc">+</span></span>
+<span id="cb12-20"><a tabindex="-1" aria-hidden="true" href="#cb12-20"></a>    <span class="fu">theme_classic</span>()</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_4_files/figure-html/unnamed-chunk-10-1.png"></p>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" id="inferenzstatistik">
+<h2 data-anchor-id="inferenzstatistik" class="anchored">Inferenzstatistik</h2>
+<p>Behandlung und Zeitpunkt sowie ihre Interaktion sagen den BDI Score vorher.</p>
+<section class="level3" id="eine-einfach-messwiederholungsvarianzanalyse">
+<h3 data-anchor-id="eine-einfach-messwiederholungsvarianzanalyse" class="anchored">Eine einfach Messwiederholungsvarianzanalyse</h3>
+<div class="cell">
+<div id="cb13" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a tabindex="-1" aria-hidden="true" href="#cb13-1"></a><span class="fu">ezANOVA</span>(<span class="at">within=</span>Zeitpunkt, <span class="at">between=</span>Gruppe, <span class="at">wid=</span>ID, <span class="at">dv=</span>BDI, <span class="at">data=</span>dat_1_long)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ANOVA
+            Effect DFn DFd         F            p p&lt;.05        ges
+2           Gruppe   1 198  48.90910 4.026472e-11     * 0.17703223
+3        Zeitpunkt   2 396  94.68304 2.471670e-34     * 0.05816541
+4 Gruppe:Zeitpunkt   2 396 210.06633 6.531570e-63     * 0.12050566
+
+$`Mauchly's Test for Sphericity`
+            Effect         W         p p&lt;.05
+3        Zeitpunkt 0.9950691 0.6145343      
+4 Gruppe:Zeitpunkt 0.9950691 0.6145343      
+
+$`Sphericity Corrections`
+            Effect       GGe        p[GG] p[GG]&lt;.05      HFe       p[HF]
+3        Zeitpunkt 0.9950933 3.529952e-34         * 1.005172 2.47167e-34
+4 Gruppe:Zeitpunkt 0.9950933 1.285407e-62         * 1.005172 6.53157e-63
+  p[HF]&lt;.05
+3         *
+4         *</code></pre>
+</div>
+<div id="cb15" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a tabindex="-1" aria-hidden="true" href="#cb15-1"></a><span class="co"># leider mag ezANOVA nicht den Datensatz, in dem die unmöglichen Werte gelöscht wurden, daher der komplette Datensatz</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section class="level3" id="multi-level-modell---trendkontraste">
+<h3 data-anchor-id="multi-level-modell---trendkontraste" class="anchored">Multi-level Modell - Trendkontraste</h3>
+<div class="cell">
+<div id="cb16" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a tabindex="-1" aria-hidden="true" href="#cb16-1"></a><span class="co"># Mit Trendkontrasten für Faktor Zeitpunkt</span></span>
+<span id="cb16-2"><a tabindex="-1" aria-hidden="true" href="#cb16-2"></a><span class="do">###############################################</span></span>
+<span id="cb16-3"><a tabindex="-1" aria-hidden="true" href="#cb16-3"></a>dat_1_long_b<span class="sc">$</span>Zeitpunkt <span class="ot">=</span> <span class="fu">factor</span>(dat_1_long_b<span class="sc">$</span>Zeitpunkt, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Post"</span>, <span class="st">"Follow_up"</span>))</span>
+<span id="cb16-4"><a tabindex="-1" aria-hidden="true" href="#cb16-4"></a><span class="fu">contrasts</span>(dat_1_long_b<span class="sc">$</span>Zeitpunkt) <span class="ot">&lt;-</span> <span class="fu">contr.poly</span>(<span class="dv">3</span>)</span>
+<span id="cb16-5"><a tabindex="-1" aria-hidden="true" href="#cb16-5"></a><span class="fu">contrasts</span>(dat_1_long_b<span class="sc">$</span>Zeitpunkt)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     .L         .Q
+Pre       -7.071068e-01  0.4082483
+Post      -7.850462e-17 -0.8164966
+Follow_up  7.071068e-01  0.4082483</code></pre>
+</div>
+<div id="cb18" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a tabindex="-1" aria-hidden="true" href="#cb18-1"></a><span class="co"># Modelldefinition</span></span>
+<span id="cb18-2"><a tabindex="-1" aria-hidden="true" href="#cb18-2"></a>M1 <span class="ot">&lt;-</span> <span class="fu">lme</span>(BDI <span class="sc">~</span> Gruppe <span class="sc">*</span> Zeitpunkt, <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>ID, <span class="at">data =</span> dat_1_long_b)</span>
+<span id="cb18-3"><a tabindex="-1" aria-hidden="true" href="#cb18-3"></a><span class="fu">summary</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: dat_1_long_b 
+       AIC      BIC    logLik
+  3688.765 3723.833 -1836.383
+
+Random effects:
+ Formula: ~1 | ID
+        (Intercept) Residual
+StdDev:    6.922806  3.40129
+
+Fixed effects:  BDI ~ Gruppe * Zeitpunkt 
+                          Value Std.Error  DF   t-value p-value
+(Intercept)           25.590000 0.7195936 394  35.56174  0.0000
+GruppeKVT             -7.118634 1.0178427 198  -6.99384  0.0000
+Zeitpunkt.L            1.909188 0.3401290 394   5.61313  0.0000
+Zeitpunkt.Q            0.146969 0.3401290 394   0.43210  0.6659
+GruppeKVT:Zeitpunkt.L -9.194367 0.4818926 394 -19.07970  0.0000
+GruppeKVT:Zeitpunkt.Q  3.520493 0.4824819 394   7.29663  0.0000
+ Correlation: 
+                      (Intr) GrpKVT Ztpn.L Ztpn.Q GKVT:Z.L
+GruppeKVT             -0.707                              
+Zeitpunkt.L            0.000  0.000                       
+Zeitpunkt.Q            0.000  0.000  0.000                
+GruppeKVT:Zeitpunkt.L  0.000  0.001 -0.706  0.000         
+GruppeKVT:Zeitpunkt.Q  0.000  0.000  0.000 -0.705  0.002  
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-2.65942450 -0.58107314 -0.02273876  0.49834186  2.52781027 
+
+Number of Observations: 598
+Number of Groups: 200 </code></pre>
+</div>
+<div id="cb20" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a tabindex="-1" aria-hidden="true" href="#cb20-1"></a><span class="fu">Anova</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table (Type II tests)
+
+Response: BDI
+                   Chisq Df Pr(&gt;Chisq)    
+Gruppe            48.651  1  3.059e-12 ***
+Zeitpunkt        186.066  2  &lt; 2.2e-16 ***
+Gruppe:Zeitpunkt 417.867  2  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="cb22" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a tabindex="-1" aria-hidden="true" href="#cb22-1"></a><span class="co"># Vorhergesagte Mittelwerte</span></span>
+<span id="cb22-2"><a tabindex="-1" aria-hidden="true" href="#cb22-2"></a>predmeans <span class="ot">&lt;-</span> <span class="fu">predictmeans</span>(M1, <span class="st">"Gruppe:Zeitpunkt"</span>, <span class="at">adj =</span><span class="st">"BH"</span>, <span class="at">barplot =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb22-3"><a tabindex="-1" aria-hidden="true" href="#cb22-3"></a>predmeans</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`Predicted Means`
+          Gruppe Warteliste     KVT
+Zeitpunkt                          
+Pre                 24.3000 25.1200
+Post                25.4700 15.4769
+Follow_up           27.0000 14.8172
+
+$`Standard Error of Means`
+          Gruppe Warteliste     KVT
+Zeitpunkt                          
+Pre                 0.77132 0.77132
+Post                0.77132 0.77242
+Follow_up           0.77132 0.77242
+
+$`Standard Error of Differences`
+  Max.SED   Min.SED  Aveg.SED 
+1.0915907 0.4810150 0.8476738 
+attr(,"For the Same Level of Factor")
+            Gruppe Zeitpunkt
+Aveg.SED 0.4821856  1.091333
+Min.SED  0.4810150  1.090816
+Max.SED  0.4845313  1.091591
+
+$LSD
+ Max.LSD  Min.LSD Aveg.LSD 
+ 2.14607  0.94568  1.66653 
+attr(,"For the Same Level of Factor")
+          Gruppe Zeitpunkt
+Aveg.LSD 0.94798   2.14556
+Min.LSD  0.94568   2.14455
+Max.LSD  0.95259   2.14607
+attr(,"Significant level")
+[1] 0.05
+attr(,"Degree of freedom")
+Gruppe:Zeitpunkt 
+             394 
+
+$`Pairwise p-value`
+                     Warteliste:Pre Warteliste:Post Warteliste:Follow_up
+Warteliste:Pre               0.0000         -2.4324              -5.6131
+Warteliste:Post              0.0211          0.0000              -3.1808
+Warteliste:Follow_up         0.0000          0.0024               0.0000
+KVT:Pre                      0.4850          0.7485               0.1070
+KVT:Post                     0.0000          0.0000               0.0000
+KVT:Follow_up                0.0000          0.0000               0.0000
+                     KVT:Pre KVT:Post KVT:Follow_up
+Warteliste:Pre       -0.7517   8.0828        8.6871
+Warteliste:Post       0.3209   9.1546        9.7590
+Warteliste:Follow_up  1.7235  10.5563       11.1606
+KVT:Pre               0.0000  19.9746       21.3411
+KVT:Post              0.0000   0.0000        1.3615
+KVT:Follow_up         0.0000   0.2009        0.0000
+attr(,"Degree of freedom")
+Gruppe:Zeitpunkt 
+             394 
+attr(,"Note")
+[1] "The matrix has t-value above the diagonal, p-value (adjusted by 'BH' method) below the diagonal"
+attr(,"Letter-based representation of pairwise comparisons at significant level '0.05'")
+             Treatment    Mean Group
+1 Warteliste:Follow_up 27.0000  A   
+2      Warteliste:Post 25.4700   B  
+3              KVT:Pre 25.1200  ABC 
+4       Warteliste:Pre 24.3000    C 
+5             KVT:Post 15.4769     D
+6        KVT:Follow_up 14.8172     D
+
+$mean_table
+      Gruppe Zeitpunkt Predicted means Standard error  Df LL of 95% CI
+1 Warteliste       Pre         24.3000      0.7713236 394     22.78358
+2 Warteliste      Post         25.4700      0.7713236 394     23.95358
+3 Warteliste Follow_up         27.0000      0.7713236 394     25.48358
+4        KVT       Pre         25.1200      0.7713236 394     23.60358
+5        KVT      Post         15.4769      0.7724183 394     13.95832
+6        KVT Follow_up         14.8172      0.7724183 394     13.29863
+  UL of 95% CI LetterGrp
+1     25.81642      A   
+2     26.98642       B  
+3     28.51642        C 
+4     26.63642      ABC 
+5     16.99547         D
+6     16.33578         D</code></pre>
+</div>
+<div id="cb24" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a tabindex="-1" aria-hidden="true" href="#cb24-1"></a>predmeans<span class="sc">$</span>predictmeansBarPlot</span>
+<span id="cb24-2"><a tabindex="-1" aria-hidden="true" href="#cb24-2"></a></span>
+<span id="cb24-3"><a tabindex="-1" aria-hidden="true" href="#cb24-3"></a><span class="co"># Residuen</span></span>
+<span id="cb24-4"><a tabindex="-1" aria-hidden="true" href="#cb24-4"></a><span class="fu">densityplot</span>(<span class="fu">residuals</span>(M1, <span class="at">type =</span> <span class="st">"normalized"</span>))</span>
+<span id="cb24-5"><a tabindex="-1" aria-hidden="true" href="#cb24-5"></a><span class="do">## Normalisierung ist wichtig, damit Abhängigkeiten richtig berücksichtigt werden</span></span>
+<span id="cb24-6"><a tabindex="-1" aria-hidden="true" href="#cb24-6"></a></span>
+<span id="cb24-7"><a tabindex="-1" aria-hidden="true" href="#cb24-7"></a><span class="co"># Abspeichern der Residuen und fitted values in Vektoren</span></span>
+<span id="cb24-8"><a tabindex="-1" aria-hidden="true" href="#cb24-8"></a>res.vec <span class="ot">&lt;-</span> <span class="fu">residuals</span>(M1, <span class="at">type =</span> <span class="st">"normalized"</span>)</span>
+<span id="cb24-9"><a tabindex="-1" aria-hidden="true" href="#cb24-9"></a>fit.vec <span class="ot">&lt;-</span> M1<span class="sc">$</span>fitted[,<span class="dv">1</span>]</span>
+<span id="cb24-10"><a tabindex="-1" aria-hidden="true" href="#cb24-10"></a></span>
+<span id="cb24-11"><a tabindex="-1" aria-hidden="true" href="#cb24-11"></a><span class="co"># Scatterplot machen für Verteilung in den 6 Bedingungen</span></span>
+<span id="cb24-12"><a tabindex="-1" aria-hidden="true" href="#cb24-12"></a><span class="fu">scatterplot</span>(res.vec <span class="sc">~</span> fit.vec)</span>
+<span id="cb24-13"><a tabindex="-1" aria-hidden="true" href="#cb24-13"></a></span>
+<span id="cb24-14"><a tabindex="-1" aria-hidden="true" href="#cb24-14"></a><span class="co"># Scatterplot für Residuen unter Berücksichtigung des random intercept</span></span>
+<span id="cb24-15"><a tabindex="-1" aria-hidden="true" href="#cb24-15"></a><span class="fu">plot</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+<p>Wenn euch die Interpretation dieser Ausgabe schwerfällt, ist das eher ein gutes als ein schlechtes Zeichen. Wir werden uns weiter unten eine Subgruppenanalyse zum besseren Verständnis anschauen. Dennoch möchte ich die Ergebnisse hier kurz interpretieren:</p>
+<ol type="1">
+<li>Im Mittel über alle Zeitpunkte hinweg reduziert sich die Symptomatik um ca. 7.12 Punkte, wenn man in der KVT-Bedingung statt der Warteliste ist (<code>GruppeKVT</code>).</li>
+<li>In der Wartelistenbedingung erhöht sich die Symptomatik mit jedem Zeitpunkt um durchschnittlich ca. 1.91 Punkte (<code>Zeitpunkt.L</code>).</li>
+<li>In der KVT-Gruppe kehrt sich der lineare Trend um (die Symptomatik wird geringer) (<code>Zeitpunkt.L + GruppeKVT:Zeitpunkt.L</code>).</li>
+<li>Die Abnahme in der KVT-Gruppe flacht mit der Zeit ab (<code>Zeitpunkt.Q + GruppeKVT:Zeitpunkt.Q</code>).</li>
+</ol>
+</section>
+<section class="level3" id="multi-level-modell---helmertkontraste">
+<h3 data-anchor-id="multi-level-modell---helmertkontraste" class="anchored">Multi-level Modell - Helmertkontraste</h3>
+<div class="cell">
+<div id="cb25" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a tabindex="-1" aria-hidden="true" href="#cb25-1"></a><span class="co"># Mit Helmertkontrasten für Faktor Zeitpunkt</span></span>
+<span id="cb25-2"><a tabindex="-1" aria-hidden="true" href="#cb25-2"></a><span class="do">###############################################</span></span>
+<span id="cb25-3"><a tabindex="-1" aria-hidden="true" href="#cb25-3"></a>dat_1_long_b<span class="sc">$</span>Zeitpunkt <span class="ot">=</span> <span class="fu">factor</span>(dat_1_long_b<span class="sc">$</span>Zeitpunkt, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"Follow_up"</span>, <span class="st">"Post"</span>, <span class="st">"Pre"</span>))</span>
+<span id="cb25-4"><a tabindex="-1" aria-hidden="true" href="#cb25-4"></a><span class="fu">contrasts</span>(dat_1_long_b<span class="sc">$</span>Zeitpunkt) <span class="ot">&lt;-</span> <span class="fu">contr.helmert</span>(<span class="dv">3</span>)</span>
+<span id="cb25-5"><a tabindex="-1" aria-hidden="true" href="#cb25-5"></a><span class="fu">contrasts</span>(dat_1_long_b<span class="sc">$</span>Zeitpunkt)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1] [,2]
+Follow_up   -1   -1
+Post         1   -1
+Pre          0    2</code></pre>
+</div>
+<div id="cb27" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a tabindex="-1" aria-hidden="true" href="#cb27-1"></a><span class="co"># Modelldefinition</span></span>
+<span id="cb27-2"><a tabindex="-1" aria-hidden="true" href="#cb27-2"></a>M1_helm <span class="ot">&lt;-</span> <span class="fu">lme</span>(BDI <span class="sc">~</span> Gruppe <span class="sc">*</span> Zeitpunkt, <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>ID, <span class="at">data =</span> dat_1_long_b)</span>
+<span id="cb27-3"><a tabindex="-1" aria-hidden="true" href="#cb27-3"></a><span class="fu">summary</span>(M1_helm)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: dat_1_long_b 
+       AIC      BIC    logLik
+  3693.735 3728.803 -1838.868
+
+Random effects:
+ Formula: ~1 | ID
+        (Intercept) Residual
+StdDev:    6.922806  3.40129
+
+Fixed effects:  BDI ~ Gruppe * Zeitpunkt 
+                         Value Std.Error  DF  t-value p-value
+(Intercept)          25.590000 0.7195936 394 35.56174  0.0000
+GruppeKVT            -7.118634 1.0178427 198 -6.99384  0.0000
+Zeitpunkt1           -0.765000 0.2405075 394 -3.18077  0.0016
+Zeitpunkt2           -0.645000 0.1388571 394 -4.64506  0.0000
+GruppeKVT:Zeitpunkt1  1.094847 0.3413744 394  3.20717  0.0014
+GruppeKVT:Zeitpunkt2  3.969317 0.1966114 394 20.18864  0.0000
+ Correlation: 
+                     (Intr) GrpKVT Ztpnk1 Ztpnk2 GKVT:Z1
+GruppeKVT            -0.707                             
+Zeitpunkt1            0.000  0.000                      
+Zeitpunkt2            0.000  0.000  0.000               
+GruppeKVT:Zeitpunkt1  0.000  0.000 -0.705  0.000        
+GruppeKVT:Zeitpunkt2  0.000 -0.001  0.000 -0.706  0.000 
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-2.65942450 -0.58107314 -0.02273876  0.49834186  2.52781027 
+
+Number of Observations: 598
+Number of Groups: 200 </code></pre>
+</div>
+<div id="cb29" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a tabindex="-1" aria-hidden="true" href="#cb29-1"></a><span class="fu">Anova</span>(M1_helm)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table (Type II tests)
+
+Response: BDI
+                   Chisq Df Pr(&gt;Chisq)    
+Gruppe            48.651  1  3.059e-12 ***
+Zeitpunkt        186.066  2  &lt; 2.2e-16 ***
+Gruppe:Zeitpunkt 417.867  2  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="cb31" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a tabindex="-1" aria-hidden="true" href="#cb31-1"></a><span class="co"># Residuen</span></span>
+<span id="cb31-2"><a tabindex="-1" aria-hidden="true" href="#cb31-2"></a><span class="fu">densityplot</span>(<span class="fu">residuals</span>(M1_helm, <span class="at">type =</span> <span class="st">"normalized"</span>))</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_4_files/figure-html/unnamed-chunk-16-1.png"></p>
+</div>
+<div id="cb32" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a tabindex="-1" aria-hidden="true" href="#cb32-1"></a><span class="do">## Normalisierung ist wichtig, damit Abhängigkeiten richtig berücksichtigt werden</span></span>
+<span id="cb32-2"><a tabindex="-1" aria-hidden="true" href="#cb32-2"></a></span>
+<span id="cb32-3"><a tabindex="-1" aria-hidden="true" href="#cb32-3"></a><span class="co"># Abspeichern der Residuen und fitted values in Vektoren</span></span>
+<span id="cb32-4"><a tabindex="-1" aria-hidden="true" href="#cb32-4"></a>res.vec2 <span class="ot">&lt;-</span> <span class="fu">residuals</span>(M1_helm, <span class="at">type =</span> <span class="st">"normalized"</span>)</span>
+<span id="cb32-5"><a tabindex="-1" aria-hidden="true" href="#cb32-5"></a>fit.vec2 <span class="ot">&lt;-</span> M1_helm<span class="sc">$</span>fitted[,<span class="dv">1</span>]</span>
+<span id="cb32-6"><a tabindex="-1" aria-hidden="true" href="#cb32-6"></a></span>
+<span id="cb32-7"><a tabindex="-1" aria-hidden="true" href="#cb32-7"></a><span class="co"># Scatterplot machen für Verteilung in den 6 Bedingungen</span></span>
+<span id="cb32-8"><a tabindex="-1" aria-hidden="true" href="#cb32-8"></a><span class="fu">scatterplot</span>(res.vec2 <span class="sc">~</span> fit.vec2)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_4_files/figure-html/unnamed-chunk-16-2.png"></p>
+</div>
+<div id="cb33" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a tabindex="-1" aria-hidden="true" href="#cb33-1"></a><span class="co"># Scatterplot für Residuen unter Berücksichtigung des random intercept</span></span>
+<span id="cb33-2"><a tabindex="-1" aria-hidden="true" href="#cb33-2"></a><span class="fu">plot</span>(M1_helm)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img width="672" class="img-fluid" src="1_ALM_4_files/figure-html/unnamed-chunk-16-3.png"></p>
+</div>
+</div>
+<p>An der Interpretation des Modells mit Helmertkontrasten könnt ihr euch nun einmal selbst versuchen. Bei Fragen wie immer gerne melden.</p>
+</section>
+<section class="level3" id="subgruppenanalyse-zur-genaueren-überprüfung-der-trends">
+<h3 data-anchor-id="subgruppenanalyse-zur-genaueren-überprüfung-der-trends" class="anchored">Subgruppenanalyse zur genaueren Überprüfung der Trends</h3>
+<div class="cell">
+<div id="cb34" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a tabindex="-1" aria-hidden="true" href="#cb34-1"></a>dat_Warteliste <span class="ot">&lt;-</span> <span class="fu">subset</span>(dat_1_long_b, Gruppe <span class="sc">==</span> <span class="st">"Warteliste"</span>)</span>
+<span id="cb34-2"><a tabindex="-1" aria-hidden="true" href="#cb34-2"></a>dat_KVT <span class="ot">&lt;-</span> <span class="fu">subset</span>(dat_1_long_b, Gruppe <span class="sc">==</span> <span class="st">"KVT"</span>)</span>
+<span id="cb34-3"><a tabindex="-1" aria-hidden="true" href="#cb34-3"></a></span>
+<span id="cb34-4"><a tabindex="-1" aria-hidden="true" href="#cb34-4"></a><span class="do">## Warteliste</span></span>
+<span id="cb34-5"><a tabindex="-1" aria-hidden="true" href="#cb34-5"></a>dat_Warteliste<span class="sc">$</span>Zeitpunkt <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat_Warteliste<span class="sc">$</span>Zeitpunkt, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Post"</span>, <span class="st">"Follow_up"</span>))</span>
+<span id="cb34-6"><a tabindex="-1" aria-hidden="true" href="#cb34-6"></a><span class="fu">contrasts</span>(dat_Warteliste<span class="sc">$</span>Zeitpunkt) <span class="ot">&lt;-</span> <span class="fu">contr.poly</span>(<span class="dv">3</span>)</span>
+<span id="cb34-7"><a tabindex="-1" aria-hidden="true" href="#cb34-7"></a>M2 <span class="ot">&lt;-</span> <span class="fu">lme</span>(BDI <span class="sc">~</span> Zeitpunkt, <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>ID, <span class="at">data =</span> dat_Warteliste)</span>
+<span id="cb34-8"><a tabindex="-1" aria-hidden="true" href="#cb34-8"></a><span class="fu">summary</span>(M2)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: dat_Warteliste 
+       AIC      BIC    logLik
+  1857.935 1876.404 -923.9676
+
+Random effects:
+ Formula: ~1 | ID
+        (Intercept) Residual
+StdDev:    7.120393 3.407266
+
+Fixed effects:  BDI ~ Zeitpunkt 
+                Value Std.Error  DF  t-value p-value
+(Intercept) 25.590000 0.7387139 198 34.64129  0.0000
+Zeitpunkt.L  1.909188 0.3407266 198  5.60329  0.0000
+Zeitpunkt.Q  0.146969 0.3407266 198  0.43134  0.6667
+ Correlation: 
+            (Intr) Ztpn.L
+Zeitpunkt.L 0            
+Zeitpunkt.Q 0      0     
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-1.91916183 -0.60908507 -0.04553866  0.51152891  2.36937936 
+
+Number of Observations: 300
+Number of Groups: 100 </code></pre>
+</div>
+<div id="cb36" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a tabindex="-1" aria-hidden="true" href="#cb36-1"></a><span class="do">## KVT</span></span>
+<span id="cb36-2"><a tabindex="-1" aria-hidden="true" href="#cb36-2"></a><span class="fu">contrasts</span>(dat_KVT<span class="sc">$</span>Zeitpunkt) <span class="ot">&lt;-</span> <span class="fu">contr.helmert</span>(<span class="dv">3</span>)</span>
+<span id="cb36-3"><a tabindex="-1" aria-hidden="true" href="#cb36-3"></a><span class="fu">contrasts</span>(dat_KVT<span class="sc">$</span>Zeitpunkt)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1] [,2]
+Follow_up   -1   -1
+Post         1   -1
+Pre          0    2</code></pre>
+</div>
+<div id="cb38" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a tabindex="-1" aria-hidden="true" href="#cb38-1"></a>M3 <span class="ot">&lt;-</span> <span class="fu">lme</span>(BDI <span class="sc">~</span> Zeitpunkt, <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>ID, <span class="at">data =</span> dat_KVT)</span>
+<span id="cb38-2"><a tabindex="-1" aria-hidden="true" href="#cb38-2"></a><span class="fu">summary</span>(M3)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: dat_KVT 
+       AIC      BIC    logLik
+  1837.024 1855.459 -913.5121
+
+Random effects:
+ Formula: ~1 | ID
+        (Intercept) Residual
+StdDev:    6.718375 3.395441
+
+Fixed effects:  BDI ~ Zeitpunkt 
+                Value Std.Error  DF   t-value p-value
+(Intercept) 18.471864 0.7001197 196 26.383866  0.0000
+Zeitpunkt1   0.329711 0.2418456 196  1.363311  0.1743
+Zeitpunkt2   3.324068 0.1389532 196 23.922209  0.0000
+ Correlation: 
+           (Intr) Ztpnk1
+Zeitpunkt1  0.000       
+Zeitpunkt2 -0.002  0.000
+
+Standardized Within-Group Residuals:
+         Min           Q1          Med           Q3          Max 
+-2.675391087 -0.563557701 -0.008639186  0.484410585  2.541669342 
+
+Number of Observations: 298
+Number of Groups: 100 </code></pre>
+</div>
+</div>
+<p>Hier wie versprochen die Subgruppenanalyse. Bezüglich der Wartelistengruppe bestätigen sich die Aussagen von oben.</p>
+<p>Wenn man die KVT-Gruppe mit Helmertkontrasten analysiert, findet sich eine signifikante Abnahme von Prä zu Post, aber keine signifikante Abnahme von Post zu Follow-up, was mit einem generell fallenden, aber eben abflachenden Trend zusammenpasst.</p>
+<p>Hier lässt sich erkennen, dass es einen großen Unterschied für die Interpretation macht, welche Trends man benutzt. Die Helmertkontraste legen den Fokus auf einzelne (, nicht vorhandene) Unterschiede, während Trendkontraste auf Zusammenhänge aus sind, die mit dem Vergleichen von zwei Ausprägungen nicht mehr viel zu tun haben.</p>
+</section>
+</section>
+<section class="level2" id="modellvergleiche">
+<h2 data-anchor-id="modellvergleiche" class="anchored">Modellvergleiche</h2>
+<p>Die Modellvergleiche dienen dazu, herauszufinden, ob das Modell so in Ordnung ist, oder das Modell vereinfacht oder komplexer gemacht werden sollte.</p>
+<p>Wir schauen uns hier verschiedene Fragen an, die wir mit Modellvergleichen beantworten können. Zunächst die Frage aus der letzten Sitzung, inwiefern random intercepts notwendig sind.</p>
+<div class="cell">
+<div id="cb40" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a tabindex="-1" aria-hidden="true" href="#cb40-1"></a>M1_no_random_intercept <span class="ot">&lt;-</span> <span class="fu">gls</span>(BDI <span class="sc">~</span> Gruppe <span class="sc">*</span> Zeitpunkt, <span class="at">data =</span> dat_1_long_b)</span>
+<span id="cb40-2"><a tabindex="-1" aria-hidden="true" href="#cb40-2"></a><span class="fu">lrtest</span>(M1_no_random_intercept, M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in modelUpdate(objects[[i - 1]], objects[[i]]): original model was of
+class "gls", updated model is of class "lme"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: BDI ~ Gruppe * Zeitpunkt
+Model 2: BDI ~ Gruppe * Zeitpunkt
+  #Df  LogLik Df Chisq Pr(&gt;Chisq)    
+1   7 -2065.0                        
+2   8 -1836.4  1 457.3  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="cb43" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a tabindex="-1" aria-hidden="true" href="#cb43-1"></a><span class="fu">AIC</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3688.765</code></pre>
+</div>
+<div id="cb45" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a tabindex="-1" aria-hidden="true" href="#cb45-1"></a><span class="fu">AIC</span>(M1_no_random_intercept)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4144.066</code></pre>
+</div>
+</div>
+<p>Ja, das Modell mit random intercept ist besser. Aber können wir vielleicht Prädiktoren entfernen?</p>
+<div class="cell">
+<div id="cb47" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a tabindex="-1" aria-hidden="true" href="#cb47-1"></a><span class="fu">Anova</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table (Type II tests)
+
+Response: BDI
+                   Chisq Df Pr(&gt;Chisq)    
+Gruppe            48.651  1  3.059e-12 ***
+Zeitpunkt        186.066  2  &lt; 2.2e-16 ***
+Gruppe:Zeitpunkt 417.867  2  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Nein, das Modell würde signifikant schlechter werden.</p>
+<p>Wir können bei einem Multilevelmodell nicht nur den Intercept variieren lassen, sondern auch die Steigung für einzelne Prädiktoren. Vielleicht wirkt die Therapie ja nicht bei allen Menschen gleich schnell. Wäre das hier sinnvoll?</p>
+<div class="cell">
+<div id="cb49" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a tabindex="-1" aria-hidden="true" href="#cb49-1"></a>M1_random_slope_Zeitpunkt <span class="ot">&lt;-</span> <span class="fu">lme</span>(BDI <span class="sc">~</span> Gruppe <span class="sc">*</span> Zeitpunkt, <span class="at">random =</span> <span class="sc">~</span>Zeitpunkt<span class="sc">|</span>ID, <span class="at">data =</span> dat_1_long_b)</span>
+<span id="cb49-2"><a tabindex="-1" aria-hidden="true" href="#cb49-2"></a><span class="fu">lrtest</span>(M1, M1_random_slope_Zeitpunkt)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: BDI ~ Gruppe * Zeitpunkt
+Model 2: BDI ~ Gruppe * Zeitpunkt
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)
+1   8 -1836.4                     
+2  13 -1838.0  5 3.3442     0.6471</code></pre>
+</div>
+<div id="cb51" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a tabindex="-1" aria-hidden="true" href="#cb51-1"></a><span class="fu">AIC</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3688.765</code></pre>
+</div>
+<div id="cb53" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a tabindex="-1" aria-hidden="true" href="#cb53-1"></a><span class="fu">AIC</span>(M1_random_slope_Zeitpunkt)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3702.109</code></pre>
+</div>
+</div>
+<p>Nein, es wäre hier nicht sinnvoll. Vielleicht wirkt aber KVT an sich nicht bei allen Menschen gleich gut.</p>
+<div class="cell">
+<div id="cb55" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a tabindex="-1" aria-hidden="true" href="#cb55-1"></a>M1_random_slope_Bedingung <span class="ot">&lt;-</span> <span class="fu">lme</span>(BDI <span class="sc">~</span> Gruppe <span class="sc">*</span> Zeitpunkt, <span class="at">random =</span> <span class="sc">~</span>Gruppe<span class="sc">|</span>ID, <span class="at">data =</span> dat_1_long_b)</span>
+<span id="cb55-2"><a tabindex="-1" aria-hidden="true" href="#cb55-2"></a><span class="fu">lrtest</span>(M1, M1_random_slope_Bedingung)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: BDI ~ Gruppe * Zeitpunkt
+Model 2: BDI ~ Gruppe * Zeitpunkt
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)  
+1   8 -1836.4                       
+2  10 -1838.7  2 4.6816    0.09625 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="cb57" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a tabindex="-1" aria-hidden="true" href="#cb57-1"></a><span class="fu">AIC</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3688.765</code></pre>
+</div>
+<div id="cb59" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a tabindex="-1" aria-hidden="true" href="#cb59-1"></a><span class="fu">AIC</span>(M1_random_slope_Bedingung)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3697.447</code></pre>
+</div>
+<div id="cb61" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a tabindex="-1" aria-hidden="true" href="#cb61-1"></a><span class="do">## Nein</span></span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+</div>
+<p>Auch das ist hier keine sinnvolle Annahme.</p>
+<p>Besonders hilfreich werden Modellvergleiche bei Growth models. Als kleinen Vorgriff auf das, was kommt: Gibt es vielleicht Abhängigkeiten in der Autokorrelation des Kriteriums, die modelliert werden müssen?</p>
+<div class="cell">
+<div id="cb62" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a tabindex="-1" aria-hidden="true" href="#cb62-1"></a>M1_dependencies <span class="ot">&lt;-</span> <span class="fu">lme</span>(BDI <span class="sc">~</span> Gruppe <span class="sc">*</span> Zeitpunkt, <span class="at">random =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>ID, <span class="at">correlation =</span> <span class="fu">corARMA</span>(<span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>), <span class="at">form =</span> <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>ID, <span class="at">p=</span><span class="dv">1</span>, <span class="at">q=</span><span class="dv">1</span>), <span class="at">data =</span> dat_1_long_b)</span>
+<span id="cb62-2"><a tabindex="-1" aria-hidden="true" href="#cb62-2"></a><span class="fu">lrtest</span>(M1, M1_dependencies)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: BDI ~ Gruppe * Zeitpunkt
+Model 2: BDI ~ Gruppe * Zeitpunkt
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)
+1   8 -1836.4                     
+2  10 -1838.3  2 3.8033     0.1493</code></pre>
+</div>
+<div id="cb64" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a tabindex="-1" aria-hidden="true" href="#cb64-1"></a><span class="fu">summary</span>(M1_dependencies)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: dat_1_long_b 
+       AIC      BIC    logLik
+  3696.568 3740.404 -1838.284
+
+Random effects:
+ Formula: ~1 | ID
+        (Intercept) Residual
+StdDev:    6.850174 3.540281
+
+Correlation Structure: ARMA(1,1)
+ Formula: ~1 | ID 
+ Parameter estimate(s):
+      Phi1     Theta1 
+0.05883387 0.05322722 
+Fixed effects:  BDI ~ Gruppe * Zeitpunkt 
+                         Value Std.Error  DF  t-value p-value
+(Intercept)          25.590000 0.7193160 394 35.57546  0.0000
+GruppeKVT            -7.116955 1.0174766 198 -6.99471  0.0000
+Zeitpunkt1           -0.765000 0.2359805 394 -3.24179  0.0013
+Zeitpunkt2           -0.645000 0.1415004 394 -4.55829  0.0000
+GruppeKVT:Zeitpunkt1  1.091222 0.3349443 394  3.25792  0.0012
+GruppeKVT:Zeitpunkt2  3.967879 0.2002944 394 19.81023  0.0000
+ Correlation: 
+                     (Intr) GrpKVT Ztpnk1 Ztpnk2 GKVT:Z1
+GruppeKVT            -0.707                             
+Zeitpunkt1            0.013 -0.009                      
+Zeitpunkt2           -0.007  0.005  0.066               
+GruppeKVT:Zeitpunkt1 -0.009  0.013 -0.705 -0.046        
+GruppeKVT:Zeitpunkt2  0.005 -0.008 -0.046 -0.706  0.065 
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-2.57030107 -0.56069566 -0.03174915  0.48617371  2.39974270 
+
+Number of Observations: 598
+Number of Groups: 200 </code></pre>
+</div>
+<div id="cb66" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a tabindex="-1" aria-hidden="true" href="#cb66-1"></a><span class="fu">AIC</span>(M1)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3688.765</code></pre>
+</div>
+<div id="cb68" class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a tabindex="-1" aria-hidden="true" href="#cb68-1"></a><span class="fu">AIC</span>(M1_dependencies)</span></code><button class="code-copy-button" title="Copy to Clipboard"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3696.568</code></pre>
+</div>
+</div>
+<p>Bei diesen Daten scheinen solche Abhängigkeiten nicht vorzuliegen.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script type="application/javascript" id="quarto-html-after-body">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+<script src="1_ALM_4_files/libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
