@@ -96,6 +96,8 @@ a:visited {
     --smooth-edge-radius: 10px;
 
     display: flex;
+    position: relative;
+    z-index: 1;
     height: var(--header-height);
     border-radius: 1000vmax;
     margin: 0.5em;
