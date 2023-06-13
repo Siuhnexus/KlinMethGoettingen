@@ -1,7 +1,7 @@
 ---
 title: "Logistische Regression"
 author: "YH"
-date: "11 2022"
+date: "11-01-2022"
 format:
   html:
     toc: true
@@ -12,15 +12,20 @@ format:
 editor: visual
 ---
 
-## Packages
+# Logistische Regression
+
+Heute wollen wir eine Methode kennenlernen, mit der wir dichotome Outcomes modellieren können. Hier sind Mittelwert und Standardabweichung nicht berechenbar, sodass wir uns beim Modellieren stattdessen auf die Wahrscheinlichkeit des Auftretens einer Ausprägung beziehen. Was das bedeutet, muss euch nicht jetzt schon klar sein, aber hoffentlich wird es das bis zum Ende der Sitzung.
+
+## Vorbereitung
 
 ```{r}
+#| warning: false
 library(car)
 library(readr)
 library(lmtest)
 library(rcompanion)
 library(questionr)
-#library(glmm)
+library(glmm)
 library(ggplot2)
 library(psych)
 library(Hmisc)
@@ -28,11 +33,9 @@ library(tidyr)
 library(tables)
 ```
 
-## Working directory und Datei oeffnen
-
 ```{r}
-setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg")
-dat_log1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg/BDI_2_LR.csv", header = TRUE, sep = ",", dec = ".")
+#setwd("Sitzungen")
+dat_log1 <- read.csv(file = "BDI_2_LR.csv", header = TRUE, sep = ",", dec = ".")
 dat_log1$ID <- as.factor(dat_log1$ID)
 dat_log1$Therapie <- as.factor(dat_log1$Therapie)
 ```
@@ -61,7 +64,12 @@ ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) +
 
 ## Berechnung von Indikatoren für klinisch relevante Veränderung
 
-Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind. 1. Reduktion der Symptomatik um 50% zum Postzeitpunkt 2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich 3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8 4. Clinically significant change: Normalbereich BDI Score \<=12
+Ziel ist es, verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind.
+
+1.  Reduktion der Symptomatik um 50% zum Postzeitpunkt
+2.  Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich
+3.  Reliable Change Index: SD (BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8
+4.  Clinically significant change: Normalbereich BDI Score \<=12
 
 ```{r}
 # Reduktion der Symptomatik
@@ -85,7 +93,7 @@ table_krit_half
 
 ## Logistische Regression
 
-Es wird ein Modell definiert. Dazu nutzen wir die den Befehl glm() und spezifizieren die Verteilung der Kriteriumsvariable ueber family = binomial. Die Bernoulli-Verteilung des Kriteriums ist ein Spezialfall der Binomialverteilung.
+Es wird ein Modell definiert. Dazu nutzen wir den Befehl glm() und spezifizieren die Verteilung der Kriteriumsvariable über family = binomial. Die Bernoulli-Verteilung des Kriteriums ist ein Spezialfall der Binomialverteilung.
 
 ```{r}
 # Kriterium 50% Reduktion des Scores in BDI 2
@@ -102,7 +110,7 @@ odds_ratios
 
 ## Testung des Modells auf Signifikanz
 
-Zuerst definieren wir ein Nullmodell. Mittels eines likelihood ratio tests ueberpruefen wir, ob das Modell die dichotome Kriteriumsvariable vorhersagt. Da es hier nur einen Praediktor gibt, wird durch den Vergleich auch der Praediktor auf Signifikanz getestet.
+Zuerst definieren wir ein Nullmodell. Mittels eines likelihood ratio tests überprüfen wir, ob das Modell die dichotome Kriteriumsvariable vorhersagt. Da es hier nur einen Prädiktor gibt, wird durch den Vergleich auch der Prädiktor auf Signifikanz getestet.
 
 ```{r}
 Nullmodell <- glm(dat_log1$Krit_Half ~ 1, family = binomial(), data = dat_log1)
@@ -112,7 +120,7 @@ AIC(Nullmodell)
 AIC(Log.Model1)
 ```
 
-## Effektstaerke Modell
+## Effektstärke Modell
 
 Normale R\^2 lassen sich bei einer logistischen Regression nicht berechnen. Stattdessen gibt es sogenannte Pseudo-R\^2, welche die gleiche Bedeutung haben (aber auf den Likelihoods beruhen).
 

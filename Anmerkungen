@@ -1,2 +1,15 @@
-Sitzung 4 Deskriptive + Data Wrangling + Rekodieren + Unterschied Deskr. Inf.
-Sitzung 5 ANOVA + einfache Regression
+ALM1: Modellschätzung, Modellvergleich, HA: neuer Datensatz
+ALM2: Interpretation Ergebnis, Residuen, Annahmenprüfung
+ALM3: Kontraste, HA: neuer Datensatz
+ALM4: Trendkontraste
+Multi1: Zeit als Faktor
+Interaktion1: Wirksamkeit von Therapie
+Interaktion2: Autokorrelationsproblem
+Growth1: Zeitprädiktor, Autokorrelation, poly
+Growth2: weitere Prädiktoren
+Power1: Simulationsbasiert mit simR oder mixedpower package
+Power2: Verschiedene Modellarten
+SEM1: lavaan
+SEM2: 
+
+GitLab Import

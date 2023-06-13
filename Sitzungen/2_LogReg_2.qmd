@@ -1,7 +1,7 @@
 ---
 title: "Logistische Regression"
 author: "YH"
-date: "11 2022"
+date: "11-01-2022"
 format:
   html:
     toc: true
@@ -12,7 +12,11 @@ format:
 editor: visual
 ---
 
-## Packages
+# Logistische Regression - Ordinale Regression
+
+Heute wollen wir unser Modell so erweitern, dass wir auch ordinalskalierte Outcomes analysiert werden können. Außerdem schauen wir uns an, ob wir weitere Prädiktoren ins Modell einschließen sollten.
+
+## Vorbereitung
 
 ```{r}
 library(car)
@@ -30,11 +34,9 @@ library(tables)
 library(MASS)
 ```
 
-## Working directory und Datei oeffnen
-
 ```{r}
-setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg")
-dat_log1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg/BDI_2_LR.csv", header = TRUE, sep = ",", dec = ".")
+#setwd("Sitzungen")
+dat_log1 <- read.csv(file = "BDI_2_LR.csv", header = TRUE, sep = ",", dec = ".")
 dat_log1$ID <- as.factor(dat_log1$ID)
 dat_log1$Therapie <- as.factor(dat_log1$Therapie)
 ```
@@ -63,7 +65,12 @@ ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) +
 
 ## Berechnung von Indikatoren für klinisch relevante Veränderung
 
-Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind. 1. Reduktion der Symptomatik um 50% zum Postzeitpunkt 2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich 3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8 4. Clinically significant change: Normalbereich BDI Score \<=12
+Ziel ist es, verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind.
+
+1.  Reduktion der Symptomatik um 50% zum Postzeitpunkt
+2.  Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich
+3.  Reliable Change Index: SD (BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8
+4.  Clinically significant change: Normalbereich BDI Score \<=12
 
 ```{r}
 # Reduktion der Symptomatik
@@ -111,7 +118,7 @@ g
 
 ## Einfache Logistische Regression
 
-Es wird ein Modell definiert. Dazu nutzen wir die den Befehl glm() und spezifizieren die Verteilung der Kriteriumsvariable ueber family = binomial. Die Bernoulli-Verteilung des Kriteriums ist ein Spezialfall der Binomialverteilung.
+Es wird ein Modell definiert. Dazu nutzen wir den Befehl glm() und spezifizieren die Verteilung der Kriteriumsvariable ueber family = binomial. Die Bernoulli-Verteilung des Kriteriums ist ein Spezialfall der Binomialverteilung.
 
 ```{r}
 # Kriterium Clinically Significant Change CSC
@@ -128,7 +135,7 @@ odds_ratios
 
 ## Testung des Modells auf Signifikanz
 
-Zuerst definieren wir ein Nullmodell. Mittels eines likelihood ratio tests ueberpruefen wir, ob das Modell die dichotome Kriteriumsvariable vorhersagt. Da es hier nur einen Praediktor gibt, wird durch den Vergleich auch der Praediktor auf Signifikanz getestet.
+Zuerst definieren wir ein Nullmodell. Mittels eines likelihood ratio tests überprüfen wir, ob das Modell die dichotome Kriteriumsvariable vorhersagt. Da es hier nur einen Prädiktor gibt, wird durch den Vergleich auch der Prädiktor auf Signifikanz getestet.
 
 ```{r}
 Nullmodell <- glm(dat_log1$CSC ~ 1, family = binomial(), data = dat_log1)
@@ -138,7 +145,7 @@ AIC(Nullmodell)
 AIC(Log.Model1)
 ```
 
-## Effektstaerke Modell
+## Effektstärke Modell
 
 Normale R\^2 lassen sich bei einer logistischen Regression nicht berechnen. Stattdessen gibt es sogenannte Pseudo-R\^2, welche die gleiche Bedeutung haben (aber auf den Likelihoods beruhen).
 
@@ -166,9 +173,14 @@ nagelkerke(Log.Model2)
 
 ```
 
-# Ordinale Regression
+## Ordinale Regression
 
-Nach dem Modell von Nelson und Hiller sollte als klinisch relevantes Outcome vier unterschiedeliche Kategorien unterschieden werden: 1. Reliable Verschlechterung 2. Non Responder 3. Responder (Reliable Verbesserung aber nicht Unterschreiten eines Cut-offs für klinische Relevanz) 4. Clinical significant Change (Reliable Verbesserung und Unterschreiten des Cut-offs)
+Nach dem Modell von Nelson und Hiller sollte als klinisch relevantes Outcome vier unterschiedeliche Kategorien unterschieden werden:
+
+1.  Reliable Verschlechterung
+2.  Non Responder
+3.  Responder (Reliable Verbesserung aber nicht Unterschreiten eines Cut-offs für klinische Relevanz)
+4.  Clinical significant Change (Reliable Verbesserung und Unterschreiten des Cut-offs)
 
 ```{r}
 # Definition der vier Kategorien
@@ -187,8 +199,11 @@ table_CSC2
 # Ordinale Regression
 Modell_ordinal <- polr(CSC2 ~ Therapie + Pre_c, method = "logistic", data = dat_log1, Hess = TRUE)
 summary(Modell_ordinal)
+```
 
+Bei ordinaler Regression müssen p-Werte leider von Hand ausgerechnet werden. Dies tun wir nun und schauen uns dann noch die Effektstärken an.
 
+```{r}
 # Berechnung p-Werte
 ctable <- coef(summary(Modell_ordinal))
 # p Werte mittels t Verteilung , df = N - k - 1
@@ -203,8 +218,11 @@ OR <- exp(coef(Modell_ordinal))
 CI <- exp(confint(Modell_ordinal))
 OR
 CI
+```
 
-# Prüfung ob Annahme, dass die Odds ratios proportional sind (d.h. der Anstieg für alle Stufen gleich ist) angemessen ist
+Bei ordinaler Regression wird die Annahme gemacht, dass der Anstieg in den Odds für alle Stufen gleich ist. Diese Annahme muss überprüft werden. Außerdem können wir auch für diese Modellklasse weitere Prädiktoren einschließen.
+
+```{r}
 poTest(Modell_ordinal)
 ## der Test sollte nicht signifikant sein
 

@@ -31,16 +31,28 @@ library(MASS)
 library(lme4)
 ```
 
-## Working directory und Datei oeffnen
+## Vorbereitung
 
 ```{r}
-setwd("~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg")
-dat_log1 <- read.csv(file = "~/Teaching/Master/Methoden_Klippt/Methoden Klippt 2022/Datenbeispiele/Woche6_log_reg/BDI_2_LR_ML.csv", header = TRUE, sep = ",", dec = ".")
+#| warning: false
+library(car)
+library(readr)
+library(lmtest)
+library(rcompanion)
+library(questionr)
+library(glmm)
+library(ggplot2)
+library(psych)
+library(Hmisc)
+library(tidyr)
+library(tables)
+```
+
+```{r}
+#setwd("Sitzungen")
+dat_log1 <- read.csv(file = "BDI_2_LR.csv", header = TRUE, sep = ",", dec = ".")
 dat_log1$ID <- as.factor(dat_log1$ID)
 dat_log1$Therapie <- as.factor(dat_log1$Therapie)
-dat_log1$Rezidiv <- as.factor(dat_log1$Rezidiv)
-dat_log1$Rezidiv <- factor(dat_log1$Rezidiv, levels = c("Kein", "Ein", "Zwei_und_mehr"))
-dat_log1$Study <- as.factor(dat_log1$Study)
 ```
 
 ## Visuelle Analyse
@@ -54,7 +66,7 @@ dat_log1_long$Zeitpunkt <- factor(dat_log1_long$Zeitpunkt, levels = c("Pre", "Po
 dat_log1_long$ID <- as.factor(dat_log1_long$ID)
 
 ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) + 
-  facet_grid(Therapie ~ Study)+
+  facet_wrap(~Therapie)+
   geom_line(aes(color= ID), show.legend = FALSE) +
   geom_hline(yintercept=19.5, color = "red") +
   annotate("text", x = 0.6, y = 19.5, label = "Depression", vjust = -0.5, color = "red", size =2) +
@@ -62,42 +74,36 @@ ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) +
   annotate("text", x = 0.6, y = 12.5, label = "Normal", vjust = -0.5, color = "darkgreen", size =2) +
   ylab("Score BDI 2") + 
   xlab("Zeitpunkt") +
-  ggtitle("Depression in Abhängigkeit von Therapieform und Studie")
-
-ggplot(dat_log1_long, aes(x=Zeitpunkt, y=BDI, group = ID)) + 
-  facet_grid(Therapie ~ Rezidiv)+
-  geom_line(aes(color= ID), show.legend = FALSE) +
-  geom_hline(yintercept=19.5, color = "red") +
-  annotate("text", x = 0.6, y = 19.5, label = "Depression", vjust = -0.5, color = "red", size =2) +
-  geom_hline(yintercept=12.5, color = "darkgreen") +
-  annotate("text", x = 0.6, y = 12.5, label = "Normal", vjust = -0.5, color = "darkgreen", size =2) +
-  ylab("Score BDI 2") + 
-  xlab("Zeitpunkt") +
-  ggtitle("Depression in Abhängigkeit von Therapieform und Anzahl Rezidive")
+  ggtitle("Depression in Abhängigkeit von Therapieform und Zeitpunkt")
 ```
 
 ## Berechnung von Indikatoren für klinisch relevante Veränderung
 
-Ziel ist es verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind. 1. Reduktion der Symptomatik um 30% zum Postzeitpunkt 2. Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich 3. Reliable Change Index: SD(BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8 4. Clinically significant change: Normalbereich BDI Score \<=12
+Ziel ist es, verschiedene Indikatoren zu berechnen und zu sehen, wie unterschiedlich die Ergebnisse sind.
+
+1.  Reduktion der Symptomatik um 50% zum Postzeitpunkt
+2.  Absinken auf einen Wert unter 13 = Reduktion der Symptomatik in den Normalbereich
+3.  Reliable Change Index: SD (BDI in klinischen Samples ca. 9.5), Reliabilität ca. 0.8
+4.  Clinically significant change: Normalbereich BDI Score \<=12
 
 ```{r}
 # Reduktion der Symptomatik
-## Berechnung 70% Symptomatik des Prä-Werts = -30%
-dat_log1$Third_Pre <- dat_log1$Pre*0.7
+## Berechnung 50% Symptomatik des Prä-Werts
+dat_log1$Half_Pre <- dat_log1$Pre*0.5
 ## Bestimmung, ob Kriterium erreicht ist
-dat_log1$Krit_1_3 <- ifelse(dat_log1$Post <= dat_log1$Third_Pre, 1, 0)
-dat_log1$Krit_1_3 <- as.factor(dat_log1$Krit_1_3)
-dat_log1$Krit_1_3 <- factor(dat_log1$Krit_1_3, labels = c("No_30%_Red", "30%_Reduction"))
+dat_log1$Krit_Half <- ifelse(dat_log1$Post <= dat_log1$Half_Pre, 1, 0)
+dat_log1$Krit_Half <- as.factor(dat_log1$Krit_Half)
+dat_log1$Krit_Half <- factor(dat_log1$Krit_Half, labels = c("No_50%_Red", "50%_Reduction"))
 ## Tabelle zur Veranschaulichung
-table_krit_1_3 <- tabulr(Krit_1_3 ~ Therapie * Rezidiv, data = dat_log1)
-table_krit_1_3
+table_krit_half <- tabulr(Therapie ~ Krit_Half, data = dat_log1)
+table_krit_half
 
 
 # Absinken in den Normalbereich
 dat_log1$Sink_Norm = ifelse(dat_log1$Pre >= 13 & dat_log1$Post < 13, 1, 0)
 dat_log1$Sink_Norm <- as.factor(dat_log1$Sink_Norm)
 dat_log1$Sink_Norm <- factor(dat_log1$Sink_Norm, labels = c("No_Sink", "Sink"))
-table_sink <- tabulr(Sink_Norm ~ Therapie * Rezidiv, data = dat_log1)
+table_sink <- tabulr(Therapie ~ Sink_Norm, data = dat_log1)
 table_sink
 
 # Reliable Change Index
@@ -105,21 +111,23 @@ dat_log1$RCI = (dat_log1$Post - dat_log1$Pre) / (sd(dat_log1$Pre) * sqrt(2*(1-0.
 dat_log1$Signif_RCI = ifelse(dat_log1$RCI < -1.96, 1, 0)
 dat_log1$Signif_RCI <- as.factor(dat_log1$Signif_RCI)
 dat_log1$Signif_RCI <- factor(dat_log1$Signif_RCI, labels = c("No_RCI", "RCI"))
-table_RCI <- tabulr(Signif_RCI ~ Therapie * Rezidiv, data = dat_log1)
+table_RCI <- tabulr(Therapie ~ Signif_RCI, data = dat_log1)
 table_RCI
 
 # Clinically significant change vs. no clinically significant change
 dat_log1$CSC = ifelse(dat_log1$Sink_Norm == "Sink" & dat_log1$Signif_RCI == "RCI", 1, 0)
 dat_log1$CSC = as.factor(dat_log1$CSC)
 dat_log1$CSC <- factor(dat_log1$CSC, labels = c("No_CSC", "CSC"))
-table_CSC <- tabulr(CSC ~ Therapie * Rezidiv, data = dat_log1)
+table_CSC <- tabulr(Therapie ~ CSC, data = dat_log1)
 table_CSC
 
-# Graphik für 30% Reduktion
+# Graphik für Clinically significant change
 g = ggplot(dat_log1) +
-  geom_mosaic(aes(x=product(Therapie, Rezidiv), fill=Krit_1_3))
-g = g + ggtitle("Anteil Reduktion 30% Symptomatik in den Therapiebedingungen")
-g 
+  geom_mosaic(aes(x=product(CSC, Therapie), fill=CSC), divider=c("vspine", "hspine"))
+g = g + ggtitle("Anteil klinisch signifikanter Veränderung in den Therapiebedingungen")
+g = g + geom_text(data=as.data.frame(ggplot_build(g)$data),
+              aes(x = (xmin + xmax) * 0.5, y = (ymin + ymax) * 0.5, label = .n / sum(.n)))
+g
 ```
 
 # Multilevel logistische Regression

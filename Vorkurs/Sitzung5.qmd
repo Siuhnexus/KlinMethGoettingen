@@ -23,6 +23,7 @@ Dazu laden wir zunächst Pakete, setzen dann das working directory, laden die Da
 ## Vorbereitung
 
 ```{r}
+#| warnings: false
 library(ggplot2)
 library(psych)
 library(car)
