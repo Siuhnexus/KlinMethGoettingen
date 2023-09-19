@@ -1,0 +1,155 @@
+---
+title: "Structural Equation Modelling (SEM)"
+author: "Bente Hinkenhuis"
+date: '2023-09-11'
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+# Structural Equation Modelling (SEM) - CLPM--RI
+
+Heute bauen wir einfach da weiter, wo wir letztes Mal aufgehört haben. Dazu laden wir alles nötige und setzen dann ein neues Modell auf.
+
+```{r}
+library(lavaan)
+source("SEMgraph.R")
+
+dat = read.table("CLPM.dat", header=TRUE)
+```
+
+```{r}
+clpm = '
+# 1. Autoregression
+x2 ~ a1 * x1
+x3 ~ a1 * x2
+x4 ~ a1 * x3
+y2 ~ a2 * y1
+y3 ~ a2 * y2
+y4 ~ a2 * y3
+
+# 2. Kreuzregression
+y2 ~ c1 * x1
+y3 ~ c1 * x2
+y4 ~ c1 * x3
+x2 ~ c2 * y1
+x3 ~ c2 * y2
+x4 ~ c2 * y3
+
+# 3. Kovarianzen
+x1 ~~ cov1 * y1
+x2 ~~ cov2 * y2
+x3 ~~ cov2 * y3
+x4 ~~ cov2 * y4
+
+# 4. Intercepts
+x1 ~ 1
+y1 ~ 1
+x2 ~ 1
+y2 ~ 1
+x3 ~ 1
+y3 ~ 1
+x4 ~ 1
+y4 ~ 1
+
+# 5. Varianzen
+x1 ~~ x1
+x2 ~~ x2
+x3 ~~ x3
+x4 ~~ x4
+y1 ~~ y1
+y2 ~~ y2
+y3 ~~ y3
+y4 ~~ y4
+'
+
+clpmfit = sem(clpm, dat)
+summary(clpmfit, fit.measures=TRUE)
+SEMgraph(clpmfit, showPar=FALSE)
+```
+
+An den Fitstatistiken können wir ablesen, dass RMSEA zwar zu hoch, CFI und TLI aber hoch genug sind. Das Modell ist also im Gegensatz zum Nullmodell gut geeignet, passt aber noch nicht perfekt zu den Daten.
+
+Mit explorativer Modellsuche haben wir uns aber schon in der letzten Sitzung beschäftigt und wollen deshalb nun noch einen Blick auf eine mögliche Modellerweiterung werfen: das CLPM-RI. Idee ist es hier, für jede Versuchsperson einen Random Intercept zu schätzen, um die Kreuzkorrelationen von between-subjects-Effekten zu befreien.
+
+```{r}
+clpmri = '
+# 1. Faktoren
+ix =~ 1 * x1 + 1 * x2 + 1 * x3 + 1 * x4
+iy =~ 1 * y1 + 1 * y2 + 1 * y3 + 1 * y4
+
+# 2. Autoregression
+x2 ~ a1 * x1
+x3 ~ a1 * x2
+x4 ~ a1 * x3
+y2 ~ a2 * y1
+y3 ~ a2 * y2
+y4 ~ a2 * y3
+
+# 3. Kreuzregression
+y2 ~ c1 * x1
+y3 ~ c1 * x2
+y4 ~ c1 * x3
+x2 ~ c2 * y1
+x3 ~ c2 * y2
+x4 ~ c2 * y3
+
+# 4. Kovarianzen
+x1 ~~ cov1 * y1
+x2 ~~ cov2 * y2
+x3 ~~ cov2 * y3
+x4 ~~ cov2 * y4
+
+ix ~~ covi*iy
+
+x1 ~~ 0 * ix
+y1 ~~ 0 * ix
+x1 ~~ 0 * iy
+y1 ~~ 0 * iy
+
+# 5. Intercepts
+x1 ~ 0 * 1
+y1 ~ 0 * 1
+x2 ~ 0 * 1
+y2 ~ 0 * 1
+x3 ~ 0 * 1
+y3 ~ 0 * 1
+x4 ~ 0 * 1
+y4 ~ 0 * 1
+
+ix ~ 1
+iy ~ 1
+
+# 6. Varianzen
+x1 ~~ x1
+x2 ~~ x2
+x3 ~~ x3
+x4 ~~ x4
+y1 ~~ y1
+y2 ~~ y2
+y3 ~~ y3
+y4 ~~ y4
+
+ix ~~ varix * ix
+iy ~~ variy * iy
+'
+
+clpmrifit = sem(clpmri, dat)
+summary(clpmrifit, fit.measures=TRUE)
+SEMgraph(clpmrifit, showPar=FALSE)
+```
+
+In diesem Modell gibt es eine neue Gleichungsart. Die Kombination aus Gleichhheitszeichen und Tilde `=~` bedeutet "wird manifestiert durch" und lässt darauf schließen, dass es sich bei der Variable auf der linken Seite um einen Faktor handelt.
+
+Dieser Faktor bindet alle stabilen Unterschiede zwischen Personen (bildet für jede Person einen Mittelwert über alle Zeitpunkte hinweg), sodass nur noch die Schwankungen innerhalb von Personen für den CLPM-Teil des Modells übrigbleiben. Dies schlägt sich auch in den Estimates wieder; die Autoregressionen sind viel kleiner, `c1` ist nicht mehr signifikant und `c2` ist auf einmal negativ und signifikant.
+
+## Einschluss von Kovariaten
+
+Nehmen wir jetzt mal an, wir würden uns dafür interessieren, ob die gefundenen Effekte immer noch existieren, wenn wir eine wichtige Kovariate für das Einkommen einschließen; die Arbeitszeit pro Woche.
