@@ -14,16 +14,33 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r include=FALSE, echo=FALSE}
+knitr::opts_knit$set(root.dir = '../')
+```
+
 # Structural Equation Modelling (SEM)
 
 In der heutigen Sitzung werfen wir einen ersten Blick auf das Modellieren mit Strukturgleichungen. In diesem Teilbereich der Statistik geht es darum, die Beziehungsstruktur zwischen verschiedenen gemessenen oder latenten Variablen herauszufinden bzw. eine vorher festgelegte Struktur (bspw. eine, die durch eine Theorie vorgegeben wird) an einem Datensatz zu evaluieren.
 
-Was das bedeutet, machen wir uns heute an einer einfachen, aber in der Forschung intensiv genutzten Unterklasse von SEMs klar; den Cross-Legged Panel Models (CLPM). Um solche Modelle aufzustellen, benötigen wir das R package `lavaan`. Außerdem wollen wir uns zur Veranschaulichung visuelle Strukturgleichungen plotten lassen. Dazu lesen wir eine Funktion ein, die das Paket `DiagrammeR` benötigt.
+Was das bedeutet, machen wir uns im Laufe der Woche an einer einfachen, aber in der Forschung intensiv genutzten Unterklasse von SEMs klar; den Cross-Legged Panel Models (CLPM). Um solche Modelle aufzustellen, benötigen wir das R package `lavaan` und müssen damit vertraut sein. Deshalb fangen wir heute mit einfachen, und hoffentlich schon bekannt vorkommenden Beispielen an.
+
+Wir wollen zur Veranschaulichung der Modelle visuelle Strukturgleichungen plotten lassen. Dazu lesen wir eine Funktion ein, die das Paket `DiagrammeR` benötigt.
 
 ```{r}
 #install.packages(c("lavaan", "DiagrammeR"))
 library(lavaan)
-source("SEMgraph.R") # Enthält eine Funktion, die unsere Modelle visualisiert
+source("Sitzungen/SEMgraph.R") # Enthält eine Funktion, die unsere Modelle visualisiert
+```
+
+Der folgende Datensatz enthält jeweils 3 Indikatoren für die beiden Variablen, um die sich diese Woche dreht:
+
+1.  Schlaf (indiziert durch zwei Fragebögen `psqi` und `fas` und die durchschnittliche Schlafdauer in der letzten Woche `sh`)
+2.  Mental Wellbeing (indiziert durch 3 Fragebögen `q1mwb`, `q2mwb` und `q3mwb`)
+
+Jeder Indikator wurde an 4 Zeitpunkten gemessen. Bis auf die Schlafdauer sind alle Variablen im Datensatz praktischerweise schon z-standardisiert.
+
+```{r}
+dat = read.csv("Sitzungen/SleepMWB.csv")
 ```
 
 ## Erste Schritte
@@ -31,23 +48,23 @@ source("SEMgraph.R") # Enthält eine Funktion, die unsere Modelle visualisiert
 Bevor wir mit dem Aufstellen von CLPMs beginnen, wollen wir die Syntax für die Modellaufstellung in `lavaan` näher kennenlernen. Dazu bauen wir mit dem folgenden Datensatz erstmal eine einfache Regression, die wir von den Sitzungen zum ALM gewohnt sind.
 
 ```{r}
-dat = read.table("CLPM.dat", header=TRUE)
-```
-
-```{r}
 familiar = '
-y4 ~ x1 + x2 + x3 + x4 + 1
-y4 ~~ y4
+psqi1 ~ sh1 + fas1 + 1
+psqi1 ~~ psqi1
 '
 
 famfit = lavaan(familiar, dat)
 ```
 
-Die zweite Zeile sollte euch bekannt vorkommen. Dort legen wir fest, welche Regression eigentlich stattfinden soll. Die einzelne Tilde sagt uns "Die Variablen rechts von mir regressieren auf die Variable links von mir".
+Durch dieses Beispiel können wir schon einige wichtige Punkte zur Modellsyntax bei `lavaan` festhalten:
 
-Bei SEMs müssen wir in die Regressionsgleichung den Intercept mit hinschreiben (die 1 am Ende), wenn wir ihn schätzen wollen. Bei der `lm()`-Funktion war es so, dass der Intercept auch dann ins Modell aufgenommen wird, wenn er nicht in der Modellgleichung steht.
+-   Die zweite Zeile sollte euch bekannt vorkommen. Dort legen wir fest, welche Regression eigentlich stattfinden soll. Die einzelne Tilde sagt uns "Die Variablen rechts von mir regressieren auf die Variable links von mir".
 
-Die doppelte Tilde in der Zeile darunter sagt uns "Die Variable links von mir kovariiert mit den Variablen rechts von mir". Wenn die einzige Variable rechts von der doppelten Tilde die gleiche ist wie auf der linken Seite, heißt das "Schätze bitte zusätzlich eine Varianz für diese Variable". Diese Zeile bringt also das ins Modell ein, was wir beim ALM die **Fehlervarianz** oder $\varepsilon_y$ genannt haben. Die unterste Zeile sorgt dafür, dass der Modellfit stattfindet.
+-   Bei SEMs müssen wir in die Regressionsgleichung den Intercept mit hinschreiben (die 1 am Ende), wenn wir ihn schätzen wollen.
+
+-   Die doppelte Tilde in der Zeile darunter sagt uns "Die Variable links von mir kovariiert mit den Variablen rechts von mir". Wenn die einzige Variable rechts von der doppelten Tilde die gleiche ist wie auf der linken Seite, heißt das "Schätze bitte eine Varianz für diese Variable". Die Zeile bringt also das ins Modell ein, was wir beim ALM die **Fehlervarianz** oder $\varepsilon_y$ genannt haben.
+
+Die unterste Zeile sorgt dafür, dass der Modellfit gemacht wird.
 
 Varianzen von gemessenen Variablen müssen wir in der Modellstruktur vor allem definieren, wenn wir als Fitfunktion `lavaan()` nutzen. Wir werden uns noch andere Fitfunktionen anschauen, die Varianzen automatisch einbringen.
 
@@ -57,58 +74,39 @@ summary(famfit)
 
 Wenn wir uns die Ergebnisse anschauen, können wir feststellen, dass es eine Tabelle für die geschätzten Parameter gibt, die uns an die Ergebnistabelle eines ALM erinnert (die geschätzten Parameter sind tatsächlich genau die, die uns eine Regression mit `lm()` liefern würde). Die Unterschiede sind nur, dass das Intercept für `y4` ganz unten steht, die Fehlervarianz im selben Format wie die anderen Parameter zu sehen ist und statt einem t-Test ein z-Test gerechnet wird.
 
-Bevor wir uns den CLPMs zuwenden, visualisieren wir unsere Modellstruktur und die eben beleuchteten Ergebnisse.
+Nun visualisieren wir unsere Modellstruktur und die eben beleuchteten Ergebnisse.
 
 ```{r}
 SEMgraph(famfit)
 ```
 
-## Einfaches CLPM
+## SEM mit Messmodell - Faktoranalyse
 
-Nun stellen wir ein erstes CLPM auf. In dem geladenen Datensatz befinden sich zwei Variablen, die zu 4 Zeitpunkten erhoben wurden (`x1`-`x4` und `y1`-`y4`). Obwohl das eigentlich nur zufällig generierte Beispielzahlen sind, können wir uns vorstellen, dass es sich bei `x` um "Income" und bei `y` um "Life Satisfaction" handelt. An dieser Stelle ist wichtig, zwischen Variablennamen und Prädiktoren-/Kriteriumsstatus zu trennen; `x` ist nicht der Prädiktor und `y` nicht das Kriterium, die beiden sind auf gleicher Ebene.
-
-Wenn wir nun herausfinden wollen, ob ein höheres Einkommen die Lebenszufriedenheit erhöht und/oder ob es den umgekehrten Effekt gibt, können wir ein CLPM verwenden. Wir schauen uns dafür erstmal nur die ersten beiden Zeitpunkte an.
+Wie die Einleitung zu den Daten nahelegt, lassen sich bei SEM mit `lavaan` auch Faktoren definieren und testen. Eine konfirmatorische Faktorenanalyse lässt sich so relativ einfach machen.
 
 ```{r}
-clpm = '
-# 1. Autoregression
-x2 ~ a1 * x1
-y2 ~ a2 * y1
+cfa1 = '
+# 1. Faktoren
+sleep1 =~ psqi1 + sh1 + fas1
+mwb2 =~ q1mwb2 + q2mwb2 + q3mwb2
 
-# 2. Kreuzregression
-y2 ~ c1 * x1
-x2 ~ c2 * y1
-
-# 3. Kovarianzen
-x1 ~~ cov1 * y1
-x2 ~~ cov2 * y2
-
-# 4. Intercepts
-x1 ~ 1
-x2 ~ 1
-y1 ~ 1
-y2 ~ 1
-
-# 5. Varianzen
-x1 ~~ vx * x1
-x2 ~~ vx * x2
-y1 ~~ vy * y1
-y2 ~~ vy * y2
+# 2. Regressionen
+mwb2 ~ predictiveness * sleep1
 '
 
-clpmfit = sem(clpm, dat)
-summary(clpmfit, fit.measures=TRUE)
+cfa1fit = sem(cfa1, dat)
+summary(cfa1fit, fit.measures=TRUE)
 ```
 
 In dieser Modelldefinition gibt es einiges, was wir noch nicht kennen:
 
--   Geschätzte Parameter lassen sich **benennen**. schreiben wir in einer Formel auf der rechten Seite `NAME * VARIABLE`, dann benennt `lavaan` den Parameter für die entsprechende Variable mit `NAME`. Bspw. bennenen wir hier die Autoregression von `x1` auf `x2` mit `a1` (Autoregression 1).
+-   Die Kombination aus Gleichheitszeichen und Tilde `=~` bedeutet soviel wie "wird manifestiert durch" und sorgt dafür, dass die Variable auf der linken Seite der Gleichung als latente Variable (Faktor) definiert wird, auf den die Indikatoren auf der rechten Seite laden.
 
--   Benannte Parameter lassen sich nutzen, um eigentlich verschiedene Parameter **gleichzusetzen**. Dadurch, dass wir in den letzten beiden Zeilen für die Varianzen von `y1` und `y2` den gleichen Parameternamen verwenden, legen wir fest, dass nur ein Wert als Varianz für `y1` und `y2` geschätzt werden soll. Wir nehmen also an, dass sich die Varianz der Lebenszufriedenheit über die Zeit hinweg gleich bleibt.
+-   Geschätzte Parameter lassen sich **benennen**. schreiben wir in einer Formel auf der rechten Seite `NAME * VARIABLE`, dann benennt `lavaan` den Parameter für die entsprechende Variable mit `NAME`. Bspw. bennenen wir hier die Regression von `sleep1` auf `mwb2` mit `predictiveness` (Prädiktivität von Schlaf für mentales Wohlbefinden).
 
--   Mit der doppelten Tilde definieren wir hier die erste "richtige" Kovarianz: Wir nehmen an, dass Einkommen und Lebenszufriedenheit miteinander zusammenhängen. Solche Annahmen sollten immer inhaltlich motiviert sein.
+-   Wie bei normalem R-Code auch werden Zeilen, die mit einem `#` beginnen, ignoriert. So lassen sich einfach Kommentare zur Strukturierung einfügen.
 
-Am Output der Summaryfunktion können wir ablesen, dass alle Regressions- und Kovarianzparameter bis auf `cov1` signifikant sind, wobei die Kreuzkorrelationen ziemlich klein sind, besonders im Vergleich zur Autoregression.
+Am Output der Summaryfunktion können wir ablesen, dass die Regressionsparameter signifikant geworden sind. Auffällig ist außerdem, dass für jede beteiligte Variable Varianzen geschätzt wurden, obwohl wir das gar nicht in unsere Modellgleichungen aufgenommen haben. Das liegt daran, dass wir zum Schätzen des Modells hier `sem()` verwendet haben, was die Varianzen automatisch aufnimmt (meist ziemlich praktisch).
 
 Wie bei herkömmlichen Modellen gibt es bei SEMs auch die Möglichkeit, das Modell als Ganzes zu evaluieren. Dazu gibt es verschiedene Indikatoren, von denen einige im Output aufgelistet sind, weil wir `fit.measures=TRUE` geschrieben haben. Dazu gehören:
 
@@ -116,55 +114,48 @@ Wie bei herkömmlichen Modellen gibt es bei SEMs auch die Möglichkeit, das Mode
 2.  CFI: Drückt aus, wie sich der Modellfit im Gegensatz zum Nullmodell verbessert. Werte über 0.95 sprechen für ein gutes Modell.
 3.  TLI: Die Interpretation ist ähnlich wie beim CFI, aber der TLI ist bei kleinen Stichproben besser geeignet.
 
-Das Nullmodell ist dabei ein Modell ohne Beziehungen zwischen Variablen, was also nur Intercept und Varianz für jede einzelne Variable schätzt.
+Das Nullmodell ist dabei ein Modell ohne Beziehungen zwischen Variablen, das heißt es schätzt nur Intercept und Varianz für jede einzelne Variable.
 
 Auch dieses Modell wollen wir nun visualisieren.
 
 ```{r}
-SEMgraph(clpmfit)
+SEMgraph(cfa1fit)
 ```
 
-Alle Indikatoren sprechen für einen schlechten Modellfit. Deshalb versuchen wir im nächsten Schritt, diesen zu verbessern. Dazu eliminieren wir die Kovarianz zwischen `x1` und `y1`, weil diese ja nicht signifikant geworden ist. Außerdem lassen wir die Annahme gleicher Varianzen für `x` und `y` fallen.
+## Faktoranalyse mit allen Zeitpunkten
+
+Zum Abschluss der Sitzung wollen wir ein Modell aufbauen, das alle 4 Zeitpunkte enthält.
 
 ```{r}
-clpm2 = '
-# 1. Autoregression
-x2 ~ a1 * x1
-y2 ~ a2 * y1
+cfa2 = '
+# 1. Faktoren
+sleep1 =~ psqi1 + lsh * sh1 + lfas * fas1
+sleep2 =~ psqi2 + lsh * sh2 + lfas * fas2
+sleep3 =~ psqi3 + lsh * sh3 + lfas * fas3
+sleep4 =~ psqi4 + lsh * sh4 + lfas * fas4
+mwb1 =~ q1mwb1 + lq2 * q2mwb1 + lq3 * q3mwb1
+mwb2 =~ q1mwb2 + lq2 * q2mwb2 + lq3 * q3mwb2
+mwb3 =~ q1mwb3 + lq2 * q2mwb3 + lq3 * q3mwb3
+mwb4 =~ q1mwb4 + lq2 * q2mwb4 + lq3 * q3mwb4
 
-# 2. Kreuzregression
-y2 ~ c1 * x1
-x2 ~ c2 * y1
+sleep =~ sleep1 + sleep2 + sleep3 + sleep4
+mwb =~ mwb1 + mwb2 + mwb3 + mwb4
 
-# 3. Kovarianzen
-x1 ~~ 0 * y1
-x2 ~~ cov2 * y2
-
-# 4. Intercepts
-x1 ~ 1
-x2 ~ 1
-y1 ~ 1
-y2 ~ 1
-
-# 5. Varianzen
-x1 ~~ x1
-x2 ~~ x2
-y1 ~~ y1
-y2 ~~ y2
+# 2. Kovarianzen
+sleep ~~ cov * mwb
 '
 
-clpm2fit = sem(clpm2, dat)
-summary(clpm2fit, fit.measures=TRUE)
+cfa2fit = sem(cfa2, dat)
+SEMgraph(cfa2fit, verticalFlow=FALSE)
+summary(cfa2fit, fit.measures=TRUE)
 ```
 
-Schreiben wir eine Zahl vor eine Variable auf der rechten Seite einer Gleichung, fixieren wir damit den Parameter für die Variable auf diesen Zahlenwert (hier 0).
+Zwei weitere wichtige Syntax-Grundlagen wenden wir hier an:
 
-Wie sich an den Fit-Indikatoren ablesen lässt, haben wir jetzt ein ziemlich gutes Modell. Wir können sogar das neue Modell gegen das alte testen:
+-   Durch die Verwendung des gleichen Namens für verschiedene Parameter (`lsh` vor jedem `sh`-Indikator) können wir diese Parameter **gleichsetzen**. Faktorladungen sollten sich nicht über die Zeit verändern, deshalb ergibt das hier Sinn.
 
-```{r}
-anova(clpmfit, clpm2fit)
-```
+-   Was wir im ersten Modell nur als Varianz gesehen haben gibt es nun als erste "richtige" Kovarianz zwischen `sleep` und `mwb`.
 
-Ein signifikanter p-Wert spricht bei dem Vergleich von SEMs für das Modell mit weniger Freiheitsgraden, in diesem Fall also `clpm2`.
+Wie sich an den Fit-Indikatoren ablesen lässt, ist das schon ein ziemlich gutes Modell. Wir haben hier je eine Metavariable für unsere beiden Variablen, die das Gemeinsame der Variablen über die 4 Zeitpunkte hinweg ausdrücken und stark miteinander kovariieren. Ungeklärt ist aber noch einiges. Wie verändern sich die Variablen über die Zeit? Gibt es eine Autokorrelation? Sagt Schlafqualität mentales Wohlbefinden zum nächsten Zeitpunkt vorher? Sagt mentales Wohlbefinden Schlafqualität zum nächsten Zeitpunkt vorher?
 
-In der nächsten Sitzung wollen wir unser CLPM durch mehr Zeitpunkte erweitern und uns anschauen, wie man bei den Kreuzkorrelationen die within-Effekte von den between-Effekten trennen kann.
+In der nächsten Sitzung wollen wir die Daten mit einem CLPM untersuchen, um diese zeitlichen Effekte besser voneinander zu trennen.

@@ -14,60 +14,68 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Structural Equation Modelling (SEM) - CLPM--RI
+```{r include=FALSE, echo=FALSE}
+knitr::opts_knit$set(root.dir = '../')
+```
 
-Heute bauen wir einfach da weiter, wo wir letztes Mal aufgehört haben. Dazu laden wir alles nötige und setzen dann ein neues Modell auf.
+# Structural Equation Modelling (SEM) - Cross-Legged Panel Models
+
+Heute arbeiten wir mit Cross-Legged Panel Models und verstehen dabei, wie sich aus korrelativen Daten differenzieren lässt, welche Variable wie auf welche andere Variable im zeitlichen Verlauf wirkt. Dazu laden wir erstmal alles nötige.
 
 ```{r}
 library(lavaan)
-source("SEMgraph.R")
+source("Sitzungen/SEMgraph.R")
 
-dat = read.table("CLPM.dat", header=TRUE)
+dat = read.csv("Sitzungen/SleepMWBScored.csv")
 ```
+
+Wie beim untersuchen des Datensatzes ersichtlich wird, gibt es hier keine Indikatoren mehr, sondern nur noch die beiden latenten Variablen zu vier Zeitpunkten. Es handelt sich hier nicht mehr um gemessene Variablen, sondern um Faktor-Scores, die sich aus den Ladungen errechnen lassen. Dies dient einfach nur dazu, das Modell nicht zu komplex werden zu lassen und den Fokus dieser Sitzung auf den CLPM zu halten.
+
+Prinzipiell gibt es bei CLPMs zwei wichtige Komponenten; die Autoregression und die Kreuzregression (unter bestimmten Umständen auch Kreuzkorrelationen genannt). Jede Variable zum Zeitpunkt $t$ wirkt also auf sich selbst zu Zeitpunkt $t+1$ und auf die jeweils andere Variable zum Zeitpunkt $t+1$. Zum Verständnis gibt es weiter unten aber auch wieder eine Abbildung zum Modell.
 
 ```{r}
 clpm = '
+# 1. Latente Variablen
+sleep1 =~ fssleep1
+sleep2 =~ fssleep2
+sleep3 =~ fssleep3
+sleep4 =~ fssleep4
+mwb1 =~ fsmwb1
+mwb2 =~ fsmwb2
+mwb3 =~ fsmwb3
+mwb4 =~ fsmwb4
+
 # 1. Autoregression
-x2 ~ a1 * x1
-x3 ~ a1 * x2
-x4 ~ a1 * x3
-y2 ~ a2 * y1
-y3 ~ a2 * y2
-y4 ~ a2 * y3
+sleep2 ~ a1 * sleep1
+sleep3 ~ a1 * sleep2
+sleep4 ~ a1 * sleep3
+mwb2 ~ a2 * mwb1
+mwb3 ~ a2 * mwb2
+mwb4 ~ a2 * mwb3
 
 # 2. Kreuzregression
-y2 ~ c1 * x1
-y3 ~ c1 * x2
-y4 ~ c1 * x3
-x2 ~ c2 * y1
-x3 ~ c2 * y2
-x4 ~ c2 * y3
+mwb2 ~ c1 * sleep1
+mwb3 ~ c1 * sleep2
+mwb4 ~ c1 * sleep3
+sleep2 ~ c2 * mwb1
+sleep3 ~ c2 * mwb2
+sleep4 ~ c2 * mwb3
 
 # 3. Kovarianzen
-x1 ~~ cov1 * y1
-x2 ~~ cov2 * y2
-x3 ~~ cov2 * y3
-x4 ~~ cov2 * y4
+sleep1 ~~ cov1 * mwb1
+sleep2 ~~ cov2 * mwb2
+sleep3 ~~ cov2 * mwb3
+sleep4 ~~ cov2 * mwb4
 
 # 4. Intercepts
-x1 ~ 1
-y1 ~ 1
-x2 ~ 1
-y2 ~ 1
-x3 ~ 1
-y3 ~ 1
-x4 ~ 1
-y4 ~ 1
-
-# 5. Varianzen
-x1 ~~ x1
-x2 ~~ x2
-x3 ~~ x3
-x4 ~~ x4
-y1 ~~ y1
-y2 ~~ y2
-y3 ~~ y3
-y4 ~~ y4
+fssleep1 ~ 0 * 1
+fssleep2 ~ 0 * 1
+fssleep3 ~ 0 * 1
+fssleep4 ~ 0 * 1
+fsmwb1 ~ 0 * 1
+fsmwb2 ~ 0 * 1
+fsmwb3 ~ 0 * 1
+fsmwb4 ~ 0 * 1
 '
 
 clpmfit = sem(clpm, dat)
@@ -75,70 +83,78 @@ summary(clpmfit, fit.measures=TRUE)
 SEMgraph(clpmfit, showPar=FALSE)
 ```
 
-An den Fitstatistiken können wir ablesen, dass RMSEA zwar zu hoch, CFI und TLI aber hoch genug sind. Das Modell ist also im Gegensatz zum Nullmodell gut geeignet, passt aber noch nicht perfekt zu den Daten.
+Für dieses Modell haben wir eine Syntax gebraucht, die uns noch unbekannt ist:
 
-Mit explorativer Modellsuche haben wir uns aber schon in der letzten Sitzung beschäftigt und wollen deshalb nun noch einen Blick auf eine mögliche Modellerweiterung werfen: das CLPM-RI. Idee ist es hier, für jede Versuchsperson einen Random Intercept zu schätzen, um die Kreuzkorrelationen von between-subjects-Effekten zu befreien.
+-   Schreiben wir einen Zahlenwert vor einen Parameter, wird dieser auf den angegebenen Zahlenwert **fixiert**.
+
+Dies nutzen wir bei den Intercepts für die Variablen aus dem Datensatz aus, um diese Variablen (die von `lavaan` als gemessen behandelt werden, obwohl wir sie ja nicht gemessen, sondern als Faktor-Scores aus gemessenen Indikatoren berechnet haben) in latente Variablen umzuwandeln. Bspw. führen die beiden Zeilen `sleep1 =~ fssleep1` und `fssleep1 ~ 0 * 1` dazu, dass `sleep1` die Werte von `fssleep1` annimmt, intern aber trotzdem als latente Variable behandelt wird.
+
+Obwohl wir beeindruckend hohe Parameter für die Auto- und Kreuzregressionen sehen, sollten wir vorsichtig sein. Die Fitstatistiken sprechen nämlich alle gegen dieses Modell. Das kann viele Gründe haben; vielleicht sollten wir die Kovarianzen zwischen den Variablen ab Zeitpunkt 2 nicht gleichsetzen. Vielleicht sollten wir aber auch manche Varianzen gleichsetzen. Es gäbe viele Möglichkeiten, von hier aus weiterzuarbeiten. In dieser Sitzung wählen wir eine, die nebenbei auch noch ein grundsätzliches konzeptuelles Problem an CLPMs offenlegt.
+
+## Cross-Legged Panel Models with Random Intercept
+
+Momentan trennen wir noch nicht zwischen Effekten within- und between-subjects. Die Varianz, die dadurch zustande kommt, dass manche Leute einfach grundsätzlich (über die Zeit stabil) länger schlafen als andere und manche ein grundlegend geringeres psychisches Wohlbefinden haben als andere, verteilt sich momentan gemeinsam mit den Entwicklungen einzelner Personen über die Zeit hinweg auf die Auto- und Kreuzregressionsparameter. Wir können aber dafür sorgen, dass das nicht mehr geschieht, indem wir pro Variable eine weitere latente Variable in das Modell einbringen.
+
+Dieses Vorgehen ähnelt dem, was wir am Ende der letzten Sitzung gemacht haben. Dort haben wir mit einer weiteren latenten Variable die gemeinsame Varianz der 4 latenten Variablen des jeweiligen Konstrukts "herausgezogen". Statistisch gesehen ist das so, als ob wir für jede Person einen Mittelwert pro Konstrukt über die Zeit hinweg bilden und die Werte dieser Person anhand ihres Mittelwertes zentrieren. So bleiben nur die Veränderungen der Personen über die Zeit übrig.
+
+Das Modell entwickelt sich so zu einem Modell mit Random Intercept für jede Person. Deshalb heißt diese neue Modellklasse Cross-Legged Panel Model with Random Intercept (CLPM-RI).
 
 ```{r}
 clpmri = '
-# 1. Faktoren
-ix =~ 1 * x1 + 1 * x2 + 1 * x3 + 1 * x4
-iy =~ 1 * y1 + 1 * y2 + 1 * y3 + 1 * y4
+# 1. Latente Variablen
+sleep1 =~ 1 * fssleep1
+sleep2 =~ 1 * fssleep2
+sleep3 =~ 1 * fssleep3
+sleep4 =~ 1 * fssleep4
+mwb1 =~ 1 * fsmwb1
+mwb2 =~ 1 * fsmwb2
+mwb3 =~ 1 * fsmwb3
+mwb4 =~ 1 * fsmwb4
+isleep =~ 1 * sleep1 + 1 * sleep2 + 1 * sleep3 + 1 * sleep4
+imwb =~ 1 * mwb1 + 1 * mwb2 + 1 * mwb3 + 1 * mwb4
+
 
 # 2. Autoregression
-x2 ~ a1 * x1
-x3 ~ a1 * x2
-x4 ~ a1 * x3
-y2 ~ a2 * y1
-y3 ~ a2 * y2
-y4 ~ a2 * y3
+sleep2 ~ a1 * sleep1
+sleep3 ~ a1 * sleep2
+sleep4 ~ a1 * sleep3
+mwb2 ~ a2 * mwb1
+mwb3 ~ a2 * mwb2
+mwb4 ~ a2 * mwb3
 
 # 3. Kreuzregression
-y2 ~ c1 * x1
-y3 ~ c1 * x2
-y4 ~ c1 * x3
-x2 ~ c2 * y1
-x3 ~ c2 * y2
-x4 ~ c2 * y3
+mwb2 ~ c1 * sleep1
+mwb3 ~ c1 * sleep2
+mwb4 ~ c1 * sleep3
+sleep2 ~ c2 * mwb1
+sleep3 ~ c2 * mwb2
+sleep4 ~ c2 * mwb3
 
 # 4. Kovarianzen
-x1 ~~ cov1 * y1
-x2 ~~ cov2 * y2
-x3 ~~ cov2 * y3
-x4 ~~ cov2 * y4
+sleep1 ~~ cov1 * mwb1
+sleep2 ~~ cov2 * mwb2
+sleep3 ~~ cov2 * mwb3
+sleep4 ~~ cov2 * mwb4
 
-ix ~~ covi*iy
+isleep ~~ covi*imwb
 
-x1 ~~ 0 * ix
-y1 ~~ 0 * ix
-x1 ~~ 0 * iy
-y1 ~~ 0 * iy
+sleep1 ~~ 0 * isleep
+mwb1 ~~ 0 * isleep
+sleep1 ~~ 0 * imwb
+mwb1 ~~ 0 * imwb
 
 # 5. Intercepts
-x1 ~ 0 * 1
-y1 ~ 0 * 1
-x2 ~ 0 * 1
-y2 ~ 0 * 1
-x3 ~ 0 * 1
-y3 ~ 0 * 1
-x4 ~ 0 * 1
-y4 ~ 0 * 1
+fssleep1 ~ 0 * 1
+fssleep2 ~ 0 * 1
+fssleep3 ~ 0 * 1
+fssleep4 ~ 0 * 1
+fsmwb1 ~ 0 * 1
+fsmwb2 ~ 0 * 1
+fsmwb3 ~ 0 * 1
+fsmwb4 ~ 0 * 1
 
-ix ~ 1
-iy ~ 1
-
-# 6. Varianzen
-x1 ~~ x1
-x2 ~~ x2
-x3 ~~ x3
-x4 ~~ x4
-y1 ~~ y1
-y2 ~~ y2
-y3 ~~ y3
-y4 ~~ y4
-
-ix ~~ varix * ix
-iy ~~ variy * iy
+isleep ~ 1
+imwb ~ 1
 '
 
 clpmrifit = sem(clpmri, dat)
@@ -146,10 +162,16 @@ summary(clpmrifit, fit.measures=TRUE)
 SEMgraph(clpmrifit, showPar=FALSE)
 ```
 
-In diesem Modell gibt es eine neue Gleichungsart. Die Kombination aus Gleichhheitszeichen und Tilde `=~` bedeutet "wird manifestiert durch" und lässt darauf schließen, dass es sich bei der Variable auf der linken Seite um einen Faktor handelt.
+Die Änderung schlägt sich in den Estimates wieder; die Auto- und Kreuzregressionen sind deutlich kleiner. Auch die Interpretation dieser Parameter hat sich dahingehend verändert, dass sie sich nur noch auf die Entwicklungen within-subjects beziehen. Die between-subjects Effekte finden sich in der Kovarianz zwischen den beiden Intercept-Faktoren wieder. Es scheint eine starke, positive Assoziation zwischen der durchschnittlichen Schlafmenge über die Zeit hinweg und dem durchschnittlichen mentalen Wohlbefinden über die Zeit hinweg zu geben.
 
-Dieser Faktor bindet alle stabilen Unterschiede zwischen Personen (bildet für jede Person einen Mittelwert über alle Zeitpunkte hinweg), sodass nur noch die Schwankungen innerhalb von Personen für den CLPM-Teil des Modells übrigbleiben. Dies schlägt sich auch in den Estimates wieder; die Autoregressionen sind viel kleiner, `c1` ist nicht mehr signifikant und `c2` ist auf einmal negativ und signifikant.
+Bei diesem Modell sind die Fitstatistiken auch wieder gut (wobei das vielleicht daran liegen könnte, dass die Daten simuliert sind und genau auf diesem Modell basieren 😉).
 
-## Einschluss von Kovariaten
+## Anmerkungen zu SEM und `lavaan`
 
-Nehmen wir jetzt mal an, wir würden uns dafür interessieren, ob die gefundenen Effekte immer noch existieren, wenn wir eine wichtige Kovariate für das Einkommen einschließen; die Arbeitszeit pro Woche.
+Mit den in diesen Sitzungen behandelten Themen sind wir gut ausgerüstet für Datenanalysen mit SEM. Dennoch gibt es noch einige wichtige Anmerkungen zu machen:
+
+-   Egal, welche Daten und welches Modell man hat, `lavaan` wird signifikante Parameter finden. Eine gründliche Evaluation jedes Modells und Vorsicht bei der Datenauswahl sind sehr wichtig.
+
+-   `lavaan` kann noch viel mehr, als das, was wir behandelt haben. Falls euch das Thema interessiert, schaut doch mal in dem Paper "lavaan: An R Package for Structural Equation Modelling" von Yves Roseel (2012) nach.
+
+-   Das CLPM-RI ist nicht die einzige Lösung für das within-between Problem. Eine weitere Methode wird von Mund (2021) beschrieben.

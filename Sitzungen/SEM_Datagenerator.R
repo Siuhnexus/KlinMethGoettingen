@@ -139,8 +139,7 @@ SEMgraph(clpmrifit) # for funzies
 
 #----------------------------------------------------------------------------
 
-library(psych)
-library(stringr)
+#library(psych)
 rm(dat, clpmrifit)
 dat = read.csv("SleepMWB.csv")
 clpmrifit = sem(clpmri, data=dat)
@@ -152,9 +151,9 @@ for(i in 1:(length(factorLoadings) / 3)) {
   loadingMatrix[startRow:(startRow+2), i] = factorLoadings[startRow:(startRow+2)]
 }
 
-#scoreDat = data.frame(factor.scores(dat, loadingMatrix, method="tenBerge")$scores)
+#scoreDat = data.frame(factor.scores(dat, loadingMatrix, method="tenBerge")$scores) # needs psych package
 #scoreDat = data.frame(as.matrix(dat) %*% (cor(dat) %*% loadingMatrix))
-scoreDat = as.data.frame(lavPredict(clpmrifit)[,1:8])
+scoreDat = as.data.frame(lavPredict(clpmrifit)[,1:8]) # most appropriate technique
 colnames(scoreDat) = c("fssleep1", "fssleep2", "fssleep3", "fssleep4", "fsmwb1", "fsmwb2", "fsmwb3", "fsmwb4")
 
 # clpmrishort definition ----
@@ -217,7 +216,7 @@ imwb ~ 1
 
 clpmrishortfit = sem(clpmrishort, scoreDat)
 summary(clpmrishortfit, fit.measures=T)
-SEMgraph(clpmrishortfit) # for funzies
+SEMgraph(clpmrishortfit)
 pebig = parameterEstimates(clpmrifit)
 pesmall = parameterEstimates(clpmrishortfit)
 merged = merge(pebig[c(cols, "est")], pesmall[c(cols, "est")], by=cols)

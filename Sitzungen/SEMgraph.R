@@ -1,7 +1,7 @@
 library(lavaan)
 library(DiagrammeR)
 
-SEMgraph = function(lavaanFit, showPar=TRUE, showSignif=TRUE, showCov=TRUE, showInt=TRUE, showVar=FALSE, filterPhant=TRUE) {
+SEMgraph = function(lavaanFit, showPar=TRUE, showSignif=TRUE, showCov=TRUE, showInt=TRUE, showVar=FALSE, filterPhant=TRUE, constrainInt=NA, verticalFlow=TRUE) {
   generateEdges = function(perows, showPar=T, showSignif=T, startDir=F, endDir=T) {
     if(endDir == T) {
       endDir = startDir
@@ -33,9 +33,11 @@ SEMgraph = function(lavaanFit, showPar=TRUE, showSignif=TRUE, showCov=TRUE, show
   fd = pe[pe$op == "=~",]
   pe = pe[!pe$op == "=~" & (!is.na(pe$z) | pe$op == "~"),]
   # Filter phantom latents
+  filteredLatents = c()
   if(filterPhant) {
     for(f in unique(fd$lhs)) {
       if(nrow(fd[fd$lhs == f,]) == 1) {
+        filteredLatents = c(filteredLatents, f)
         fd = fd[fd$lhs != f,]
       }
     }
@@ -49,7 +51,7 @@ SEMgraph = function(lavaanFit, showPar=TRUE, showSignif=TRUE, showCov=TRUE, show
   
   isFactor = rep(0, length(nodeNames))
   for(i in 1:length(nodeNames)) {
-    isFactor[i] = nrow(pe[pe$op == "=~" & pe$lhs == nodeNames[i],]) > 0
+    isFactor[i] = nrow(pe[pe$op == "=~" & pe$lhs == nodeNames[i],]) > 0 | nodeNames[i] %in% filteredLatents
   }
   
   addIntercept = nrow(pe[pe$op == "~1",]) > 0 && showInt
@@ -59,14 +61,20 @@ SEMgraph = function(lavaanFit, showPar=TRUE, showSignif=TRUE, showCov=TRUE, show
   covariances = pe[pe$op == "~~" & pe$lhs != pe$rhs,]
   variances = pe[pe$op == "~~" & pe$lhs == pe$rhs,]
   
+  if(is.na(constrainInt)) constrainInt = nrow(regressions) + nrow(factors) > 5
+  
   vizStr = paste0(
-    "digraph{node[penwidth=2];",
+    "digraph{",
+    if (!verticalFlow) "rankdir=LR;",
+    "node[penwidth=2];",
     ifelse(addIntercept, "subgraph{rank=source;node[shape=triangle];1;}", ""),
     "node[shape=box]",
     paste0(nodeNames[!isFactor], ";", collapse="", recycle0=T),
     "node[shape=circle];",
     paste0(nodeNames[isFactor == T], ";", collapse="", recycle0=T),
-    "edge[minlen=2,constraint=false];",
+    "edge[minlen=2,constraint=",
+    ifelse(constrainInt, "true", "false"), 
+    "];",
     ifelse(addIntercept, paste0("1->", pe[pe$op == "~1",]$lhs, ";", collapse="", recycle0 = T), ""),
     "edge[constraint=true];",
     generateEdges(regressions, showPar=showPar, showSignif=showSignif),
