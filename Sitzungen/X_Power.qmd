@@ -1,0 +1,106 @@
+---
+title: "Structural Equation Modelling (SEM)"
+author: "Bente Hinkenhuis"
+date: '2023-09-11'
+format:
+  html:
+    toc: true
+    smooth-scroll: true
+    css: ../style.css
+    grid: 
+      body-width: 1200px
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE, echo=FALSE}
+knitr::opts_knit$set(root.dir = '../')
+```
+
+# Poweranalyse
+
+In dieser Sitzung wollen wir uns mit Teststärke auseinandersetzen, also der Frage, wie wahrscheinlich es ist, einen bestimmten Effekt in einer Stichprobe zu entdecken, wenn er in der Population vorherrscht.
+
+```{r}
+if (!require("devtools")) {
+  install.packages("devtools", dependencies = TRUE)
+}
+devtools::install_github("DejanDraschkow/mixedpower")
+library(mixedpower)
+library(lme4)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r}
+dat = read.csv("Sitzungen/BodyImage.csv")
+dat$time = factor(dat$time, levels=c("followup", "post", "pre"))
+dat$group = as.factor(dat$group)
+contrasts(dat$time) = contr.helmert(3)
+```
+
+```{r}
+m = lmer(dieting ~ group * time + (1|id), dat)
+summary(m)
+```
+
+```{r}
+#powers = mixedpower(m, dat, fixed_effects=c("group", "time"), simvar="id", steps=c(20, 50, 100, 500, 1000), critical_value=1.65)
+load("Sitzungen/PowerSim.RData")
+
+powersLong = pivot_longer(powers, cols=c("20", "50", "100", "500", "1000"), names_to = "n", values_to="power")
+powersLong$n = factor(powersLong$n, levels=c(20, 50, 100, 500, 1000))
+
+ggplot(powersLong, aes(n, power, color=effect)) +
+  geom_point() +
+  geom_line(aes(group=effect)) +
+  geom_hline(yintercept = 0.8, color="red") +
+  theme_classic()
+```
+
+```{r}
+cis = confint(m)
+cis = cis[3:8,]
+SESOI = apply(cis, MARGIN=1, function(vec) {
+  if (vec[1] * vec[2] < 0) 0 else min(abs(vec))
+})
+
+#powersSESOI = mixedpower(m, dat, fixed_effects=c("group", "time"), simvar="id", steps=c(20, 50, 100, 500, 1000), critical_value=1.65, SESOI=SESOI, databased=F, n_sim=1000)
+load("Sitzungen/PowerSimSESOI.RData")
+
+powersSESOILong = pivot_longer(powersSESOI, cols=c("20", "50", "100", "500", "1000"), names_to = "n", values_to="power")
+powersSESOILong$n = factor(powersSESOILong$n, levels=c(20, 50, 100, 500, 1000))
+
+ggplot(powersSESOILong, aes(n, power, color=effect)) +
+  geom_point() +
+  geom_line(aes(group=effect)) +
+  geom_hline(yintercept = 0.8, color="red") +
+  theme_classic()
+```
+
+```{r}
+#powersDetail = mixedpower(m, dat, fixed_effects=c("group", "time"), simvar="id", steps=c(600, 700, 800, 900), critical_value=1.65, SESOI=SESOI, databased=F, n_sim=1000)
+load("Sitzungen/PowerSimDetail.RData")
+
+powersDetailLong = pivot_longer(powersDetail, cols=c("600", "700", "800", "900"), names_to = "n", values_to="power")
+powersDetailLong$n = factor(powersDetailLong$n, levels=c(600, 700, 800, 900))
+powersSESOILongFull = rbind(powersSESOILong, powersDetailLong)
+powersSESOILongFull$n = factor(powersSESOILongFull$n, levels=c(20, 50, 100, 500, 600, 700, 800, 900, 1000))
+
+ggplot(powersSESOILongFull, aes(n, power, color=effect)) +
+  geom_point() +
+  geom_line(aes(group=effect)) +
+  geom_hline(yintercept = 0.8, color="red") +
+  theme_classic()
+```
+
+```{r}
+datPilot = read.csv("Sitzungen/BodyImagePilot.csv")
+dat$time = factor(dat$time, levels=c("followup", "post", "pre"))
+dat$group = as.factor(dat$group)
+contrasts(dat$time) = contr.helmert(3)
+
+mPilot = lmer(dieting ~ group * time + (1|id), datPilot)
+summary(mPilot)
+```

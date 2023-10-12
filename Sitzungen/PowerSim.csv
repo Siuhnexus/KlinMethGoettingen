@@ -1,0 +1,6 @@
+"20","50","100","500","1000","mode","effect"
+0.141,0.2,0.294,0.741,0.943,"databased","groupintervention"
+0.121,0.189,0.264,0.73,0.94,"databased","time1"
+0.145,0.23,0.327,0.822,0.977,"databased","time2"
+0.095,0.099,0.098,0.119,0.107,"databased","groupintervention:time1"
+0.242,0.36,0.608,0.995,1,"databased","groupintervention:time2"
