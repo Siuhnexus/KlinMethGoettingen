@@ -230,7 +230,7 @@ a:visited {
 
 .cta {
     width: 100%;
-	grid-column: page-start/page-end;
+	  grid-column: page-start/page-end;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -262,6 +262,7 @@ pre {
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+	  grid-column: page-start/page-end;
 }
 
 .btn, a.btn {
